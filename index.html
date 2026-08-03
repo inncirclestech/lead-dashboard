@@ -745,7 +745,7 @@
       </div>
     </div>
     <div class="meta-row">
-      <span class="asof-pill"><span class="dot"></span>Data as of 03 Aug 2026, 5:24 PM IST &middot; Source: Togile</span>
+      <span class="asof-pill"><span class="dot"></span>Data as of 03 Aug 2026, 6:19 PM IST &middot; Source: Togile</span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
         <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
       </button>
@@ -830,7 +830,7 @@
       <div class="card">
         <div class="callout callout-info">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-          <div><b>Task data pulled via Togile's API.</b> Every one of the 61 open leads/deals was checked directly through Togile's official Tasks API, across all owners — 33 have a logged task (some with no note text, shown as "Task logged" with the task name), and 28 are from the last 14 days, highlighted <span class="new-dot"></span> New. A new Nurturing stage, "Upsell Proposal," has been added and now counts as open pipeline.</div>
+          <div><b>Task data pulled via Togile's API.</b> Every one of the 56 open leads/deals was checked directly through Togile's official Tasks API, across all owners — 37 have a logged task (some with no note text, shown as "Task logged" with the task name), and 33 are from the last 14 days, highlighted <span class="new-dot"></span> New. 8 leads/deals moved to Won/Lost since the last refresh; 2 new Nurturing deals (Gulfspic, Avcon Technics) were added.</div>
         </div>
       </div>
 
@@ -902,8 +902,8 @@ function stageMetaCombined() {
 }
 
 const byStageBySegment = {
-  Discovery: {"Won":39,"Lost":46,"Contacted":7,"Demo":8,"SalesQualifiedLead":10,"Prospects":17,"Unspecified":6,"Disqualified":4},
-  Nurturing: {"Unspecified":1,"Proposal":6,"Value Demonstration/POC":11,"Upsell Proposal":2,"Lost":23,"Won":6}
+  Discovery: {"Won":39,"Lost":52,"Contacted":7,"Demo":7,"SalesQualifiedLead":9,"Prospects":13,"Unspecified":6,"Disqualified":4},
+  Nurturing: {"Proposal":8,"Value Demonstration/POC":10,"Upsell Proposal":2,"Lost":24,"Won":6}
 };
 
 const byOwnerBySegment = {
@@ -933,22 +933,26 @@ const SEGMENT_META = {
 };
 
 const TASK_NOTES = {
-  "saravanan": { note: "Client: Gulf Spic, EPC contractor (Kuwait) — handles industrial, EPC, and O&M projects, with multiple ongoing projects in Kuwait Requirement: Automation + Field Management Systems Demonstrated so far: Field management systems, total project monitoring, and AI subscription-based add-on (InnDoc AI) Next step: Client requesting a ballpark number for budgetary approval before proceeding further  Gulf Spic — Phased Rollout Plan (Field Management + Contract AI) Phase 1: Implement Field Management System for one project to monitor progress Phase 2 (contingent): Scale to enterprise level across all projects, once confidence is built from Phase 1 Parallel ask: Contract Management using InnDoc AI  Priority: High ", status: "In Progress", isNew: true, updatedAt: "2026-08-03T07:03:09.367Z" },
-  "Anant Salunkhe": { note: "Data Center Contact — CtrlS Current contact: MEP Vice President He will route us to the relevant department for controls/controllers discussion Company has multiple ongoing data center projects across India and internationally Major active projects: Navi Mumbai and Hyderabad", status: "In Progress", isNew: true, updatedAt: "2026-08-03T05:36:55.242Z" },
-  "Dowlath Pasha": { note: "They are into township development, ask to schedule demo on Monday 2 half", status: "In Progress", isNew: true, updatedAt: "2026-07-31T13:52:31.280Z" },
-  "Swapnil Kadam": { note: "Monday, in the second half, we have a demo scheduled, they are into residential construction, Their primary focus is on site material tracking.", status: "In Progress", isNew: true, updatedAt: "2026-07-31T13:55:39.409Z" },
+  "Anant Salunkhe": { note: "- Connected with MEP Vice President (Navi Mumbai office) - Planning to connect with the right Digitalization/PMO Head at the Hyderabad office - Action plan: Follow up to identify and reach the correct contact", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:33:48.127Z" },
+  "S V Koteswara Rao": { note: "Action: Follow up and align a demo showcasing value for their current infrastructure investments Focus: Demonstrate how the platform monitors construction projects relevant to their portfolio Next step: Schedule the demo", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:30:51.760Z" },
+  "Dowlath Pasha": { note: "Follow-up call to reschedule the missed demo.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:56:04.836Z" },
+  "Swapnil Kadam": { note: "Follow-up call to reschedule the missed demo.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:55:25.948Z" },
   "Krupa J": { note: "MD is in travel to UK, will resume the discussion after he comes back to India on 18th Aug.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:53:49.655Z" },
   "S Madan Kumar": { note: "Task logged: Follow-up for Demo for the entire Team (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T05:07:40.916Z" },
   "Pravindra": { note: "Task logged: Follow-up Call (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T10:43:26.458Z" },
   "Satish": { note: "Connected with Mr. Satish, yet to get his time for the demo call. ", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:49:19.969Z" },
   "Avinash Kotla": { note: "Platform Demo Outreach (Dashboard–Field Gap) Problem statement identified: Gap between dashboards and field data capturing Currently in the process of reaching out to the client Next step: Schedule and showcase platform demo addressing this gap", status: "In Progress", isNew: true, updatedAt: "2026-08-03T08:14:10.156Z" },
   "Saptarshi Basu": { note: "- Details already shared with the concerned person - Contact confirmed he'll forward documents to the internal digital team - Status: Awaiting response-  in follow-up - Client currently implementing 4D & 5D models and progress monitoring in-house - Gap identified: Lacking Field Management and BIM assistance- potential entry point for Inncircles", status: "In Progress", isNew: true, updatedAt: "2026-08-03T09:02:07.036Z" },
+  "Aditya (Lenskart)": { note: "Task logged: Not responding to calls. (no note added)", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:01:13.278Z" },
   "Smruthi Ranjan": { note: "Adani Road Projects  Pursuit — Next Steps - Detailed presentation already shared with the client's representative (in addition to the road project materials) - Security documentation for the Inncircles application also shared - Next step: VAPT (Vulnerability Assessment and Penetration Testing) - POC planned for one project in Bangalore Priority: High", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:19:43.620Z" },
-  "Abhinav Agarwal": { note: "Task logged: Aligning a Demo with Godrej  (no note added)", status: "In Progress", isNew: true, updatedAt: "2026-08-03T05:43:28.693Z" },
+  "Vishal Mudda": { note: "- Approach channel: LinkedIn (client showed interest via LinkedIn campaign) - Current status: Unable to reach the contact so far - Action plan: Continue attempting to connect via LinkedIn for up to 1 week If no response within that window: Close the pursuit", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:44:33.906Z" },
+  "Abhinav Agarwal": { note: "- Client has existing systems in place - Goal: Show how Inncircles can effectively complement/add value to their current setup, rather than replace it Next action: Align a call to showcase a demo", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:35:33.864Z" },
   "NHAI": { note: "Task logged: Submission of Bid along with NKI (no note added)", status: "In Progress", isNew: true, updatedAt: "2026-08-03T10:44:12.207Z" },
+  "Atul Shirke": { note: "- Action: Follow up with Turner's Country Head to schedule a demo - Goal: Understand their current systems to identify how Inncircles can create value - Action plan: Follow up via WhatsApp and email over the next 7–10 days", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:47:10.111Z" },
   "Santosh Sahu,Ameya": { note: "Got a call from Santosh, DGM–Projects at BPCL, through Siga Srinivas Rao, Chief GM at BPCL, who shared my contact with him. I spoke with Santosh, and he mentioned that they are currently using only Primavera P6 and MS Project and are not using any project monitoring system.", status: "Completed", isNew: false, updatedAt: "2026-04-10T07:02:57.931Z" },
   "Masood Khan": { note: "Tried reaching him for a demo but call not answered.", status: "Completed", isNew: false, updatedAt: "2026-03-18T14:02:38.923Z" },
   "Vinodh": { note: "A follow-up email has been sent to him asking for a 30 min discovery call", status: "Completed", isNew: false, updatedAt: "2026-02-11T13:56:13.134Z" },
+  "Gulfspic": { note: "- Client looking to move forward with one project implementation: Field Management + InnDoc AI for contract management - Action: Provide ballpark number and progress next steps to close the order Priority: High", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:39:57.894Z" },
   "SRR": { note: "Shared proposal on 25th June, we will receive an update after customer wedding, Meeting to be setup after 20th Aug.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:43:10.339Z" },
   "Ramky Estates & Farms Limited": { note: "Submitted quotation on 28th July, Awaiting for PO from REFL by 5th Aug.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:31:40.486Z" },
   "Birdi Systems Inc": { note: "- Demo already delivered - Proposal already shared - Next step: Nurture the account — showcase value through: - Sharing assets/videos - DPR (Daily Progress Report) automation - Automation of their current project workflows", status: "In Progress", isNew: true, updatedAt: "2026-08-03T09:08:07.296Z" },
@@ -959,17 +963,19 @@ const TASK_NOTES = {
   "Bi RIDE": { note: "Task logged: Technical Presentation to Bi-Ride Team (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T10:41:37.809Z" },
   "TTD": { note: "Task logged: Follow-up for new CE onboarding for a demo / meeting (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T05:06:18.452Z" },
   "MEIL (Megha Engineering & Infrastructures Ltd.)": { note: "- looking forward to an appointment to showcase our platform for their current projects - Priority: High - Next action: Secure appointment date/time with MEIL", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:41:11.378Z" },
-  "Vedant Group": { note: "- Segments: Vedanta Energy and Vedanta Aluminum (Greenfield plant) - Plan: Build video assets/walkthroughs showcasing how these project types can be monitored on the platform - Next action: Share the walkthrough videos with Vedanta demonstrating monitoring capabilities for energy and aluminum greenfield projects", status: "Open", isNew: true, updatedAt: "2026-08-03T11:22:18.703Z" },
+  "NTPC Limited (formerly National Thermal Power Corporation)": { note: "- Status: Waiting on confirmation for a meeting at the NTPC head office, with the Contracts team and Digital team - Next action: Align and confirm meeting schedule with head office stakeholders", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:58:37.117Z" },
+  "Vedant Group": { note: "- Nurture approach: Share energy and aluminum greenfield project walkthrough video via the Inncircles platform - Action 1: Share the walkthrough video with Vedanta - Action 2: Secure an appointment to showcase the platform at their head office", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:01:49.098Z" },
   "Almaviva Saudi Arabia": { note: "- Client currently presenting a smart program for the PMBS Corridor project, under Jeddah Municipality - We are providing latest dashboard screenshots from our platform to support their presentation - Next action: Follow up to schedule and showcase a full application demo to the client", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:14:39.804Z" },
   "Inorbit Malls (India) Private Limited": { note: "- Plan: Deploy the solution as a POC at one specific site - Goal: Drive actual usage at that site to demonstrate real value - Approach: Prove value through hands-on implementation at a single site before scaling further", status: "In Progress", isNew: true, updatedAt: "2026-08-03T09:13:21.967Z" },
+  "HCC": { note: "- Status: In touch, relevant details shared - Approach: Long-term nurture — client will reconnect once requirement becomes a priority on their end - Action plan: Stay in touch and follow up periodically with HCC until requirement converts into an active opportunity", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:17:48.437Z" },
   "GMR Group": { note: "- Requirement: GMR wants Inncircles to validate their current systems and provide a comparison - Goal: Demonstrate how Inncircles can drive additional value over their existing setup - Next action: Align with GMR to understand their current systems in detail, then prepare a comparison submission showing value-add potential", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:11:07.332Z" },
-  "Arvind Techno": { note: "MOM sent with next steps - asking their data for a POC setup", status: "Completed", isNew: false, updatedAt: "2026-02-19T12:24:19.681Z" },
-  "Honer Homes": { note: "We completed the demo and showcased the handover module for Ananda Homes, along with a few forms configured in Eminent. He also opened one of his friends SmartApp dashboards, shared some MIR dashboards, and requested a table-format report with filtering options in each coloumn", status: "Completed", isNew: false, updatedAt: "2026-04-07T09:49:44.068Z" },
-  "Gaurav (HDFC Capital)": { note: "Approached via LinkedIn - Requirement not yet fully clear - Client wants to see the application (walkthrough) — currently not an immediate/active need on their end - we have shared the deck for reference", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:51:05.774Z" }
+  "Honer Homes": { note: "We completed the demo and showcased the handover module for Ananda Homes, along with a few forms configured in Eminent. He also opened one of his friends SmartApp dashboards, shared some MIR dashboards, and requested a table-format report with filtering options in each coloumn", status: "Completed", isNew: false, updatedAt: "2026-04-07T09:49:44.068Z" }
 };
 
 const LEAD_COSTS = {
   "SRR": { arr: 4800000, cv: 16800000 },
+  "Gulfspic": { arr: 2000000, cv: 7000000 },
+  "Avcon Technics Pvt. Ltd.": { arr: 1600000, cv: 5600000 },
   "Ramky Estates & Farms Limited": { arr: 300000, cv: 1050000 },
   "Dowlath Pasha": { arr: 2000000, cv: 7000000 },
   "Swapnil Kadam": { arr: 2000000, cv: 7000000 },
@@ -991,7 +997,7 @@ const LEAD_COSTS = {
   "Mrs. Vishaka Waghmare": { arr: 2000000, cv: 7000000 },
   "Brij": { arr: 2500000, cv: 8750000 },
   "Bhaskar K": { arr: 2500000, cv: 8750000 },
-  "Aditya": { arr: 2500000, cv: 8750000 },
+  "Aditya (Lenskart)": { arr: 2500000, cv: 8750000 },
   "Anant Salunkhe": { arr: 2500000, cv: 8750000 },
   "Harsh Desai": { arr: 2000000, cv: 7000000 },
   "Suhotra Banerjee": { arr: 2000000, cv: 7000000 },
@@ -1042,6 +1048,8 @@ const LEAD_COSTS = {
 
 const sampleLeads = [
   {"n": "SRR", "c": "SRR", "o": "Prateek Shendre", "s": "Upsell Proposal", "i": "Infrastructure & Construction", "seg": "Nurturing"},
+  {"n": "Gulfspic", "c": "Gulfspic", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing"},
+  {"n": "Avcon Technics Pvt. Ltd.", "c": "Avcon Technics Pvt. Ltd.", "o": "Vara Tejesh", "s": "Proposal", "i": "Engineering & Consulting", "seg": "Nurturing"},
   {"n": "Ramky Estates & Farms Limited", "c": "Ramky Estates & Farms Limited", "o": "Prateek Shendre", "s": "Upsell Proposal", "i": "Residential & Real Estate", "seg": "Nurturing"},
   {"n": "Chaitanya Chinnam", "c": "Sree Chaitanya Constructions", "o": "Anushi Surya", "s": "Won", "i": "Government & Other", "seg": "Discovery"},
   {"n": "Bhaskar", "c": "Govt Project", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
@@ -1138,13 +1146,13 @@ const sampleLeads = [
   {"n": "Rajendra Singh", "c": "Bauer India", "o": "Prateek Shendre", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
   {"n": "Pravindra", "c": "K-RIDE Bengaluru", "o": "Abhinav Bommisetty - 041", "s": "Prospects", "i": "Government & Other", "seg": "Discovery"},
   {"n": "Satish", "c": "Jakson", "o": "Prateek Shendre", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery"},
-  {"n": "Gaurav (HDFC Capital)", "c": "HDFC Capital", "o": "Vara Tejesh", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "Gaurav (HDFC Capital)", "c": "HDFC Capital", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery"},
   {"n": "Avinash Kotla", "c": "Reliance Industries Limited", "o": "Vara Tejesh", "s": "Contacted", "i": "Corporate & Technology", "seg": "Discovery"},
   {"n": "Sandesh S Kamblee", "c": "Painterior", "o": "Vara Tejesh", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
   {"n": "C", "c": "Duracool", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery"},
   {"n": "Vaibhav", "c": "Livingstone Infra", "o": "Lasya Ganapathi", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery"},
   {"n": "Gaurav (CEM India)", "c": "CEM India", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "saravanan", "c": "Gulfspic", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "saravanan", "c": "Gulfspic", "o": "Vara Tejesh", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery"},
   {"n": "Narendra Verma", "c": "Powerica Ltd", "o": "Vara Tejesh", "s": "Prospects", "i": "Energy & Power", "seg": "Discovery"},
   {"n": "Saptarshi Basu", "c": "Welspun Enterprises", "o": "Vara Tejesh", "s": "Prospects", "i": "Energy & Power", "seg": "Discovery"},
   {"n": "Amit Deshmukh", "c": "Toyo Engineering India Private Limited", "o": "Vara Tejesh", "s": "Prospects", "i": "Engineering & Consulting", "seg": "Discovery"},
@@ -1153,18 +1161,18 @@ const sampleLeads = [
   {"n": "Mrs. Vishaka Waghmare", "c": "PSP Projects", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery"},
   {"n": "Brij", "c": "Wind World India L.T.D", "o": "Vara Tejesh", "s": "Lost", "i": "Energy & Power", "seg": "Discovery"},
   {"n": "Bhaskar K", "c": "DA Realty", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Aditya", "c": "Lenskart", "o": "Akash Parmar - 235", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Aditya (Lenskart)", "c": "Lenskart", "o": "Akash Parmar - 235", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery"},
   {"n": "Anant Salunkhe", "c": "CtrlS", "o": "Vara Tejesh", "s": "Prospects", "i": "Engineering & Consulting", "seg": "Discovery"},
   {"n": "Harsh Desai", "c": "Shapoorji Pallonji Real Estate", "o": "Vara Tejesh", "s": "Disqualified", "i": "Residential & Real Estate", "seg": "Discovery"},
   {"n": "Suhotra Banerjee", "c": "Dosti Realty", "o": "Vara Tejesh", "s": "Prospects", "i": "Residential & Real Estate", "seg": "Discovery"},
   {"n": "Paras", "c": "GAR Infobahn", "o": "Prateek Shendre", "s": "SalesQualifiedLead", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "Shahanshah Alam", "c": "TNA READYMIX INDIA PRIVATE LIMITED", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Likhitha", "c": "Hilti India", "o": "Vara Tejesh", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "Shahanshah Alam", "c": "TNA READYMIX INDIA PRIVATE LIMITED", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Likhitha", "c": "Hilti India", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery"},
   {"n": "RAJU", "c": "QURM STONE DEVELOPMENT LLC", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
   {"n": "Smruthi Ranjan", "c": "Adani Group", "o": "Vara Tejesh", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery"},
   {"n": "Vishwas", "c": "WSP", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery"},
   {"n": "Vishal Mudda", "c": "NCCCL", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Soumik Paul", "c": "Cemindia Projects Limited", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Soumik Paul", "c": "Cemindia Projects Limited", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
   {"n": "S V Koteswara Rao", "c": "Athaang Infrastructure", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Infrastructure & Construction", "seg": "Discovery"},
   {"n": "Panchu", "c": "Isprava", "o": "Vara Tejesh", "s": "Prospects", "i": "Residential & Real Estate", "seg": "Discovery"},
   {"n": "Lead (GHB)", "c": "GHB", "o": "Chandra", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery"},
@@ -1172,7 +1180,7 @@ const sampleLeads = [
   {"n": "Abhinav Agarwal", "c": "Godrej Enterprises", "o": "Vara Tejesh", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery"},
   {"n": "NHAI", "c": "NHAI", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery"},
   {"n": "Prateek Mudia", "c": "Max Healthcare", "o": "Vara Tejesh", "s": "Lost", "i": "Healthcare", "seg": "Discovery"},
-  {"n": "Rahul Negi", "c": "Brahmaputra infrastructure limited", "o": "Akash Parmar - 235", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Rahul Negi", "c": "Brahmaputra infrastructure limited", "o": "Akash Parmar - 235", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
   {"n": "Atul Shirke", "c": "Turner Project Management India Pvt. Ltd.", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery"},
   {"n": "Vishal", "c": "L&T Realty, Mumbai", "o": "Prateek Shendre", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery"},
   {"n": "Sesha Sai", "c": "Amazon", "o": "Arun", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery"},
@@ -1196,7 +1204,7 @@ const sampleLeads = [
   {"n": "Inorbit Malls (India) Private Limited", "c": "Inorbit Malls (India) Private Limited", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing"},
   {"n": "HCC", "c": "HCC", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Infrastructure & Construction", "seg": "Nurturing"},
   {"n": "GMR Group", "c": "GMR Group", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Government & Other", "seg": "Nurturing"},
-  {"n": "Arvind Techno", "c": "Arvind Techno", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Corporate & Technology", "seg": "Nurturing"},
+  {"n": "Arvind Techno", "c": "Arvind Techno", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Nurturing"},
   {"n": "Honer Homes", "c": "Honer Homes", "o": "Akash Parmar - 235", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing"},
 ];
 
@@ -1598,7 +1606,7 @@ function renderStats() {
   statArrSub.textContent = missing ? `${withCost} of ${open} leads costed` : 'across open pipeline';
 
   if (activeSegment === 'All') {
-    statTotalSub.textContent = '137 Discovery · 48 Nurturing';
+    statTotalSub.textContent = '137 Discovery · 50 Nurturing';
     segmentSplitCard.style.display = '';
     wonTile.style.display = 'none';
     lostTile.style.display = 'none';
