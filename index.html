@@ -211,6 +211,7 @@
     gap: 12px;
     margin-bottom: 20px;
   }
+  .stat-strip.stat-strip-3 { grid-template-columns: repeat(3, 1fr); }
 
   .stat-tile {
     background: var(--surface);
@@ -373,6 +374,10 @@
     padding: 1px 7px;
     border-radius: var(--radius-pill);
   }
+  .task-feed-time {
+    font-size: 10.5px;
+    color: var(--text-muted);
+  }
   .task-feed-empty {
     font-size: 12.5px;
     color: var(--text-muted);
@@ -471,6 +476,36 @@
 
   tr.row-new-task td { background: var(--stage-lost-bg); }
   tr.row-new-task:hover td { background: var(--stage-lost-bg); filter: brightness(0.97); }
+
+  /* ---------- Owner filter ---------- */
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .owner-filter-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-subtle);
+  }
+  .owner-filter-select {
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-normal);
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 6px 28px 6px 10px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  .owner-filter-select:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
 
   /* ---------- Industry chip bar ---------- */
   .chip-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
@@ -623,7 +658,7 @@
 
     /* Screen-only controls never belong in the report */
     .theme-toggle, .archive-toggle, .archive-toggle-row, tr.archived-row,
-    .segment-toggle, .chip-bar { display: none !important; }
+    .segment-toggle, .chip-bar, .filter-row { display: none !important; }
 
     /* Compact, letterhead-style header */
     .topbar { align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid var(--brand); }
@@ -710,7 +745,7 @@
       </div>
     </div>
     <div class="meta-row">
-      <span class="asof-pill"><span class="dot"></span>Data as of 03 Aug 2026, 3:37 PM IST &middot; Source: Togile</span>
+      <span class="asof-pill"><span class="dot"></span>Data as of 03 Aug 2026, 5:24 PM IST &middot; Source: Togile</span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
         <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
       </button>
@@ -736,11 +771,11 @@
       <span class="label">Potential ARR (Open)</span>
       <div class="value-row"><span class="value" id="statArr">₹0</span><span class="sub" id="statArrSub">across open pipeline</span></div>
     </div>
-    <div class="stat-tile accent-won">
+    <div class="stat-tile accent-won" id="wonTile">
       <span class="label">Won</span>
       <div class="value-row"><span class="value" id="statWon">45</span><span class="sub" id="statWonSub">24.6% of total</span></div>
     </div>
-    <div class="stat-tile accent-lost">
+    <div class="stat-tile accent-lost" id="lostTile">
       <span class="label">Lost</span>
       <div class="value-row"><span class="value" id="statLost">61</span><span class="sub" id="statLostSub">33.3% of total</span></div>
     </div>
@@ -795,7 +830,7 @@
       <div class="card">
         <div class="callout callout-info">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-          <div><b>Task data pulled via Togile's API.</b> Every one of the 58 open leads/deals was checked directly through Togile's official Tasks API, across all owners — 23 have a logged task (some with no note text, shown as "Task logged" with the task name), and 18 are from the last 14 days, highlighted <span class="new-dot"></span> New. 8 leads/deals moved to Won/Lost/Disqualified since the last refresh and have been reclassified accordingly.</div>
+          <div><b>Task data pulled via Togile's API.</b> Every one of the 61 open leads/deals was checked directly through Togile's official Tasks API, across all owners — 33 have a logged task (some with no note text, shown as "Task logged" with the task name), and 28 are from the last 14 days, highlighted <span class="new-dot"></span> New. A new Nurturing stage, "Upsell Proposal," has been added and now counts as open pipeline.</div>
         </div>
       </div>
 
@@ -806,6 +841,10 @@
         <div class="card-head">
           <h2>All Leads</h2>
           <span class="count-tag" id="tableCount">both segments</span>
+        </div>
+        <div class="filter-row">
+          <label class="owner-filter-label" for="ownerFilter">Owner</label>
+          <select class="owner-filter-select" id="ownerFilter"></select>
         </div>
         <div class="chip-bar" id="industryChips" role="tablist" aria-label="Filter by industry"></div>
         <div class="table-scroll">
@@ -852,18 +891,19 @@ const DISCOVERY_STAGE_META = {
 const NURTURING_STAGE_META = {
   "Proposal":                 { color: "var(--stage-sql)",     bg: "var(--stage-sql-bg)",     order: 0 },
   "Value Demonstration/POC":  { color: "var(--stage-demo)",    bg: "var(--stage-demo-bg)",    order: 1, label: "Value Demo / POC" },
-  "Won":                      { color: "var(--stage-won)",     bg: "var(--stage-won-bg)",     order: 2 },
-  "Lost":                     { color: "var(--stage-lost)",    bg: "var(--stage-lost-bg)",    order: 3 },
-  "Unspecified":               { color: "var(--stage-other)",   bg: "var(--stage-other-bg)",   order: 4, label: "No stage set" }
+  "Upsell Proposal":          { color: "var(--stage-contacted)", bg: "var(--stage-contacted-bg)", order: 2 },
+  "Won":                      { color: "var(--stage-won)",     bg: "var(--stage-won-bg)",     order: 3 },
+  "Lost":                     { color: "var(--stage-lost)",    bg: "var(--stage-lost-bg)",    order: 4 },
+  "Unspecified":               { color: "var(--stage-other)",   bg: "var(--stage-other-bg)",   order: 5, label: "No stage set" }
 };
 
 function stageMetaCombined() {
-  return { ...DISCOVERY_STAGE_META, "Proposal": NURTURING_STAGE_META["Proposal"], "Value Demonstration/POC": { ...NURTURING_STAGE_META["Value Demonstration/POC"], order: 8 } };
+  return { ...DISCOVERY_STAGE_META, "Proposal": NURTURING_STAGE_META["Proposal"], "Value Demonstration/POC": { ...NURTURING_STAGE_META["Value Demonstration/POC"], order: 8 }, "Upsell Proposal": { ...NURTURING_STAGE_META["Upsell Proposal"], order: 9 } };
 }
 
 const byStageBySegment = {
   Discovery: {"Won":39,"Lost":46,"Contacted":7,"Demo":8,"SalesQualifiedLead":10,"Prospects":17,"Unspecified":6,"Disqualified":4},
-  Nurturing: {"Unspecified":1,"Proposal":6,"Value Demonstration/POC":10,"Lost":23,"Won":6}
+  Nurturing: {"Unspecified":1,"Proposal":6,"Value Demonstration/POC":11,"Upsell Proposal":2,"Lost":23,"Won":6}
 };
 
 const byOwnerBySegment = {
@@ -893,32 +933,44 @@ const SEGMENT_META = {
 };
 
 const TASK_NOTES = {
-  "saravanan": { note: "Client: Gulf Spic, EPC contractor (Kuwait) — handles industrial, EPC, and O&M projects, with multiple ongoing projects in Kuwait Requirement: Automation + Field Management Systems Demonstrated so far: Field management systems, total project monitoring, and AI subscription-based add-on (InnDoc AI) Next step: Client requesting a ballpark number for budgetary approval before proceeding further  Gulf Spic — Phased Rollout Plan (Field Management + Contract AI) Phase 1: Implement Field Management System for one project to monitor progress Phase 2 (contingent): Scale to enterprise level across all projects, once confidence is built from Phase 1 Parallel ask: Contract Management using InnDoc AI  Priority: High ", status: "In Progress", isNew: true },
-  "Anant Salunkhe": { note: "Data Center Contact — CtrlS Current contact: MEP Vice President He will route us to the relevant department for controls/controllers discussion Company has multiple ongoing data center projects across India and internationally Major active projects: Navi Mumbai and Hyderabad", status: "In Progress", isNew: true },
-  "Dowlath Pasha": { note: "They are into township development, ask to schedule demo on Monday 2 half", status: "In Progress", isNew: true },
-  "Swapnil Kadam": { note: "Monday, in the second half, we have a demo scheduled, they are into residential construction, Their primary focus is on site material tracking.", status: "In Progress", isNew: true },
-  "Krupa J": { note: "MD is in travel to UK, will resume the discussion after he comes back to India on 18th Aug.", status: "In Progress", isNew: true },
-  "S Madan Kumar": { note: "Task logged: Follow-up for Demo for the entire Team (no note added)", status: "Open", isNew: true },
-  "Satish": { note: "Connected with Mr. Satish, yet to get his time for the demo call. ", status: "In Progress", isNew: true },
-  "Avinash Kotla": { note: "Platform Demo Outreach (Dashboard–Field Gap) Problem statement identified: Gap between dashboards and field data capturing Currently in the process of reaching out to the client Next step: Schedule and showcase platform demo addressing this gap", status: "In Progress", isNew: true },
-  "Saptarshi Basu": { note: "- Details already shared with the concerned person - Contact confirmed he'll forward documents to the internal digital team - Status: Awaiting response-  in follow-up - Client currently implementing 4D & 5D models and progress monitoring in-house - Gap identified: Lacking Field Management and BIM assistance- potential entry point for Inncircles", status: "In Progress", isNew: true },
-  "Smruthi Ranjan": { note: "Adani Road Projects  Pursuit — Next Steps - Detailed presentation already shared with the client's representative (in addition to the road project materials) - Security documentation for the Inncircles application also shared - Next step: VAPT (Vulnerability Assessment and Penetration Testing) - POC planned for one project in Bangalore Priority: High", status: "In Progress", isNew: true },
-  "Abhinav Agarwal": { note: "Task logged: Aligning a Demo with Godrej  (no note added)", status: "In Progress", isNew: true },
-  "Santosh Sahu,Ameya": { note: "Got a call from Santosh, DGM–Projects at BPCL, through Siga Srinivas Rao, Chief GM at BPCL, who shared my contact with him. I spoke with Santosh, and he mentioned that they are currently using only Primavera P6 and MS Project and are not using any project monitoring system.", status: "Completed", isNew: false },
-  "Masood Khan": { note: "Tried reaching him for a demo but call not answered.", status: "Completed", isNew: false },
-  "Vinodh": { note: "A follow-up email has been sent to him asking for a 30 min discovery call", status: "Completed", isNew: false },
-  "Birdi Systems Inc": { note: "- Demo already delivered - Proposal already shared - Next step: Nurture the account — showcase value through: - Sharing assets/videos - DPR (Daily Progress Report) automation - Automation of their current project workflows", status: "In Progress", isNew: true },
-  "CARE Hospitals": { note: "- Demo given; client has shown interest - Next step: Nurture by sharing asset videos - Value angle: Highlight that hospital projects specifically are monitored on our platform - Next action: Share a video walkthrough of hospital projects on the Inncircles platform", status: "In Progress", isNew: true },
-  "Ankura Homes": { note: "Mr. Bhushan will revert on the quotation submitted by end of this week 7th Aug", status: "In Progress", isNew: true },
-  "Sri Avantika Contractor ltd": { note: "POC is not responding to our calls", status: "Open", isNew: true },
-  "TTD": { note: "Task logged: Follow-up for new CE onboarding for a demo / meeting (no note added)", status: "Open", isNew: true },
-  "Inorbit Malls (India) Private Limited": { note: "- Plan: Deploy the solution as a POC at one specific site - Goal: Drive actual usage at that site to demonstrate real value - Approach: Prove value through hands-on implementation at a single site before scaling further", status: "In Progress", isNew: true },
-  "Arvind Techno": { note: "MOM sent with next steps - asking their data for a POC setup", status: "Completed", isNew: false },
-  "Honer Homes": { note: "We completed the demo and showcased the handover module for Ananda Homes, along with a few forms configured in Eminent. He also opened one of his friends SmartApp dashboards, shared some MIR dashboards, and requested a table-format report with filtering options in each coloumn", status: "Completed", isNew: false },
-  "Gaurav (HDFC Capital)": { note: "Approached via LinkedIn - Requirement not yet fully clear - Client wants to see the application (walkthrough) — currently not an immediate/active need on their end - we have shared the deck for reference", status: "In Progress", isNew: true }
+  "saravanan": { note: "Client: Gulf Spic, EPC contractor (Kuwait) — handles industrial, EPC, and O&M projects, with multiple ongoing projects in Kuwait Requirement: Automation + Field Management Systems Demonstrated so far: Field management systems, total project monitoring, and AI subscription-based add-on (InnDoc AI) Next step: Client requesting a ballpark number for budgetary approval before proceeding further  Gulf Spic — Phased Rollout Plan (Field Management + Contract AI) Phase 1: Implement Field Management System for one project to monitor progress Phase 2 (contingent): Scale to enterprise level across all projects, once confidence is built from Phase 1 Parallel ask: Contract Management using InnDoc AI  Priority: High ", status: "In Progress", isNew: true, updatedAt: "2026-08-03T07:03:09.367Z" },
+  "Anant Salunkhe": { note: "Data Center Contact — CtrlS Current contact: MEP Vice President He will route us to the relevant department for controls/controllers discussion Company has multiple ongoing data center projects across India and internationally Major active projects: Navi Mumbai and Hyderabad", status: "In Progress", isNew: true, updatedAt: "2026-08-03T05:36:55.242Z" },
+  "Dowlath Pasha": { note: "They are into township development, ask to schedule demo on Monday 2 half", status: "In Progress", isNew: true, updatedAt: "2026-07-31T13:52:31.280Z" },
+  "Swapnil Kadam": { note: "Monday, in the second half, we have a demo scheduled, they are into residential construction, Their primary focus is on site material tracking.", status: "In Progress", isNew: true, updatedAt: "2026-07-31T13:55:39.409Z" },
+  "Krupa J": { note: "MD is in travel to UK, will resume the discussion after he comes back to India on 18th Aug.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:53:49.655Z" },
+  "S Madan Kumar": { note: "Task logged: Follow-up for Demo for the entire Team (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T05:07:40.916Z" },
+  "Pravindra": { note: "Task logged: Follow-up Call (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T10:43:26.458Z" },
+  "Satish": { note: "Connected with Mr. Satish, yet to get his time for the demo call. ", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:49:19.969Z" },
+  "Avinash Kotla": { note: "Platform Demo Outreach (Dashboard–Field Gap) Problem statement identified: Gap between dashboards and field data capturing Currently in the process of reaching out to the client Next step: Schedule and showcase platform demo addressing this gap", status: "In Progress", isNew: true, updatedAt: "2026-08-03T08:14:10.156Z" },
+  "Saptarshi Basu": { note: "- Details already shared with the concerned person - Contact confirmed he'll forward documents to the internal digital team - Status: Awaiting response-  in follow-up - Client currently implementing 4D & 5D models and progress monitoring in-house - Gap identified: Lacking Field Management and BIM assistance- potential entry point for Inncircles", status: "In Progress", isNew: true, updatedAt: "2026-08-03T09:02:07.036Z" },
+  "Smruthi Ranjan": { note: "Adani Road Projects  Pursuit — Next Steps - Detailed presentation already shared with the client's representative (in addition to the road project materials) - Security documentation for the Inncircles application also shared - Next step: VAPT (Vulnerability Assessment and Penetration Testing) - POC planned for one project in Bangalore Priority: High", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:19:43.620Z" },
+  "Abhinav Agarwal": { note: "Task logged: Aligning a Demo with Godrej  (no note added)", status: "In Progress", isNew: true, updatedAt: "2026-08-03T05:43:28.693Z" },
+  "NHAI": { note: "Task logged: Submission of Bid along with NKI (no note added)", status: "In Progress", isNew: true, updatedAt: "2026-08-03T10:44:12.207Z" },
+  "Santosh Sahu,Ameya": { note: "Got a call from Santosh, DGM–Projects at BPCL, through Siga Srinivas Rao, Chief GM at BPCL, who shared my contact with him. I spoke with Santosh, and he mentioned that they are currently using only Primavera P6 and MS Project and are not using any project monitoring system.", status: "Completed", isNew: false, updatedAt: "2026-04-10T07:02:57.931Z" },
+  "Masood Khan": { note: "Tried reaching him for a demo but call not answered.", status: "Completed", isNew: false, updatedAt: "2026-03-18T14:02:38.923Z" },
+  "Vinodh": { note: "A follow-up email has been sent to him asking for a 30 min discovery call", status: "Completed", isNew: false, updatedAt: "2026-02-11T13:56:13.134Z" },
+  "SRR": { note: "Shared proposal on 25th June, we will receive an update after customer wedding, Meeting to be setup after 20th Aug.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:43:10.339Z" },
+  "Ramky Estates & Farms Limited": { note: "Submitted quotation on 28th July, Awaiting for PO from REFL by 5th Aug.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:31:40.486Z" },
+  "Birdi Systems Inc": { note: "- Demo already delivered - Proposal already shared - Next step: Nurture the account — showcase value through: - Sharing assets/videos - DPR (Daily Progress Report) automation - Automation of their current project workflows", status: "In Progress", isNew: true, updatedAt: "2026-08-03T09:08:07.296Z" },
+  "CARE Hospitals": { note: "- Demo given; client has shown interest - Next step: Nurture by sharing asset videos - Value angle: Highlight that hospital projects specifically are monitored on our platform - Next action: Share a video walkthrough of hospital projects on the Inncircles platform", status: "In Progress", isNew: true, updatedAt: "2026-08-03T09:10:11.979Z" },
+  "Ankura Homes": { note: "Mr. Bhushan will revert on the quotation submitted by end of this week 7th Aug", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:57:19.022Z" },
+  "Sri Avantika Contractor ltd": { note: "POC is not responding to our calls", status: "Open", isNew: true, updatedAt: "2026-08-03T06:58:19.824Z" },
+  "Linesight": { note: "- Client requesting a training session for their employees - Validation needed: ROI and time/effort savings from using the platform on-site - Next action: Check with the client on their preferred approach to move forward, based on current solutions offered", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:25:03.215Z" },
+  "Bi RIDE": { note: "Task logged: Technical Presentation to Bi-Ride Team (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T10:41:37.809Z" },
+  "TTD": { note: "Task logged: Follow-up for new CE onboarding for a demo / meeting (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T05:06:18.452Z" },
+  "MEIL (Megha Engineering & Infrastructures Ltd.)": { note: "- looking forward to an appointment to showcase our platform for their current projects - Priority: High - Next action: Secure appointment date/time with MEIL", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:41:11.378Z" },
+  "Vedant Group": { note: "- Segments: Vedanta Energy and Vedanta Aluminum (Greenfield plant) - Plan: Build video assets/walkthroughs showcasing how these project types can be monitored on the platform - Next action: Share the walkthrough videos with Vedanta demonstrating monitoring capabilities for energy and aluminum greenfield projects", status: "Open", isNew: true, updatedAt: "2026-08-03T11:22:18.703Z" },
+  "Almaviva Saudi Arabia": { note: "- Client currently presenting a smart program for the PMBS Corridor project, under Jeddah Municipality - We are providing latest dashboard screenshots from our platform to support their presentation - Next action: Follow up to schedule and showcase a full application demo to the client", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:14:39.804Z" },
+  "Inorbit Malls (India) Private Limited": { note: "- Plan: Deploy the solution as a POC at one specific site - Goal: Drive actual usage at that site to demonstrate real value - Approach: Prove value through hands-on implementation at a single site before scaling further", status: "In Progress", isNew: true, updatedAt: "2026-08-03T09:13:21.967Z" },
+  "GMR Group": { note: "- Requirement: GMR wants Inncircles to validate their current systems and provide a comparison - Goal: Demonstrate how Inncircles can drive additional value over their existing setup - Next action: Align with GMR to understand their current systems in detail, then prepare a comparison submission showing value-add potential", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:11:07.332Z" },
+  "Arvind Techno": { note: "MOM sent with next steps - asking their data for a POC setup", status: "Completed", isNew: false, updatedAt: "2026-02-19T12:24:19.681Z" },
+  "Honer Homes": { note: "We completed the demo and showcased the handover module for Ananda Homes, along with a few forms configured in Eminent. He also opened one of his friends SmartApp dashboards, shared some MIR dashboards, and requested a table-format report with filtering options in each coloumn", status: "Completed", isNew: false, updatedAt: "2026-04-07T09:49:44.068Z" },
+  "Gaurav (HDFC Capital)": { note: "Approached via LinkedIn - Requirement not yet fully clear - Client wants to see the application (walkthrough) — currently not an immediate/active need on their end - we have shared the deck for reference", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:51:05.774Z" }
 };
 
 const LEAD_COSTS = {
+  "SRR": { arr: 4800000, cv: 16800000 },
+  "Ramky Estates & Farms Limited": { arr: 300000, cv: 1050000 },
   "Dowlath Pasha": { arr: 2000000, cv: 7000000 },
   "Swapnil Kadam": { arr: 2000000, cv: 7000000 },
   "Krupa J": { arr: 2500000, cv: 8750000 },
@@ -989,6 +1041,8 @@ const LEAD_COSTS = {
 };
 
 const sampleLeads = [
+  {"n": "SRR", "c": "SRR", "o": "Prateek Shendre", "s": "Upsell Proposal", "i": "Infrastructure & Construction", "seg": "Nurturing"},
+  {"n": "Ramky Estates & Farms Limited", "c": "Ramky Estates & Farms Limited", "o": "Prateek Shendre", "s": "Upsell Proposal", "i": "Residential & Real Estate", "seg": "Nurturing"},
   {"n": "Chaitanya Chinnam", "c": "Sree Chaitanya Constructions", "o": "Anushi Surya", "s": "Won", "i": "Government & Other", "seg": "Discovery"},
   {"n": "Bhaskar", "c": "Govt Project", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
   {"n": "Vijay", "c": "Keyura Infra", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
@@ -1151,6 +1205,7 @@ function industryLabel(i) { return i === "Unclassified" ? "Unclassified / No com
 
 let activeSegment = 'All';
 let activeIndustry = 'All';
+let activeOwner = 'All';
 let printActiveOnly = false;
 const ARCHIVED_STAGE_NAMES = ['Won', 'Lost', 'Disqualified'];
 
@@ -1298,6 +1353,37 @@ function renderOwnerWorkload() {
   });
 }
 
+const ownerFilterSelect = document.getElementById('ownerFilter');
+
+function ownerShortName(o) { return (o || '').replace(/ - \d+$/, ''); }
+
+function renderOwnerFilter() {
+  const segments = activeSegment === 'All' ? ['Discovery', 'Nurturing'] : [activeSegment];
+  const owners = new Set();
+  sampleLeads.forEach(l => { if (segments.includes(l.seg)) owners.add(ownerShortName(l.o)); });
+  const sortedOwners = [...owners].sort((a, b) => a.localeCompare(b));
+
+  const prevValue = activeOwner;
+  ownerFilterSelect.innerHTML = '';
+  const allOpt = document.createElement('option');
+  allOpt.value = 'All';
+  allOpt.textContent = 'All Owners';
+  ownerFilterSelect.appendChild(allOpt);
+  sortedOwners.forEach(o => {
+    const opt = document.createElement('option');
+    opt.value = o;
+    opt.textContent = o;
+    ownerFilterSelect.appendChild(opt);
+  });
+  activeOwner = sortedOwners.includes(prevValue) || prevValue === 'All' ? prevValue : 'All';
+  ownerFilterSelect.value = activeOwner;
+}
+
+ownerFilterSelect.addEventListener('change', () => {
+  activeOwner = ownerFilterSelect.value;
+  renderTable();
+});
+
 const chipBar = document.getElementById('industryChips');
 
 function renderChips() {
@@ -1361,6 +1447,7 @@ function renderTable() {
   let filtered = sampleLeads;
   if (activeSegment !== 'All') filtered = filtered.filter(l => l.seg === activeSegment);
   if (activeIndustry !== 'All') filtered = filtered.filter(l => l.i === activeIndustry);
+  if (activeOwner !== 'All') filtered = filtered.filter(l => ownerShortName(l.o) === activeOwner);
 
   const meta = currentStageMeta();
   const orderedStages = Object.keys(meta).sort((a,b)=>meta[a].order-meta[b].order);
@@ -1431,16 +1518,41 @@ const statLostSub = document.getElementById('statLostSub');
 const statArr = document.getElementById('statArr');
 const statArrSub = document.getElementById('statArrSub');
 const segmentSplitCard = document.getElementById('segmentSplitCard');
+const wonTile = document.getElementById('wonTile');
+const lostTile = document.getElementById('lostTile');
+const statStrip = document.querySelector('.stat-strip');
 
 const OPEN_STAGES = {
   Discovery: ["Prospects","Contacted","SalesQualifiedLead","Demo"],
-  Nurturing: ["Proposal","Value Demonstration/POC"]
+  Nurturing: ["Proposal","Value Demonstration/POC","Upsell Proposal"]
 };
 
 function formatINR(amount) {
   if (amount >= 10000000) return `₹${(amount/10000000).toFixed(2)} Cr`;
   if (amount >= 100000) return `₹${(amount/100000).toFixed(1)} L`;
   return `₹${amount.toLocaleString('en-IN')}`;
+}
+
+function formatRelativeTime(isoString) {
+  if (!isoString) return '';
+  const then = new Date(isoString);
+  const now = new Date();
+  const diffMs = now - then;
+  const diffMin = Math.floor(diffMs / 60000);
+  const diffHr = Math.floor(diffMin / 60);
+  const diffDay = Math.floor(diffHr / 24);
+
+  const isToday = then.toDateString() === now.toDateString();
+  const yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
+  const isYesterday = then.toDateString() === yesterday.toDateString();
+  const timeStr = then.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true });
+
+  if (diffMin < 1) return 'Just now';
+  if (diffMin < 60) return `${diffMin} min${diffMin === 1 ? '' : 's'} ago`;
+  if (isToday) return `Today, ${timeStr}`;
+  if (isYesterday) return `Yesterday, ${timeStr}`;
+  if (diffDay < 7) return `${diffDay} day${diffDay === 1 ? '' : 's'} ago`;
+  return then.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) + `, ${timeStr}`;
 }
 
 function computeOpenArr() {
@@ -1486,11 +1598,17 @@ function renderStats() {
   statArrSub.textContent = missing ? `${withCost} of ${open} leads costed` : 'across open pipeline';
 
   if (activeSegment === 'All') {
-    statTotalSub.textContent = '137 Discovery · 46 Nurturing';
+    statTotalSub.textContent = '137 Discovery · 48 Nurturing';
     segmentSplitCard.style.display = '';
+    wonTile.style.display = 'none';
+    lostTile.style.display = 'none';
+    statStrip.classList.add('stat-strip-3');
   } else {
     statTotalSub.textContent = `in ${activeSegment}`;
     segmentSplitCard.style.display = 'none';
+    wonTile.style.display = '';
+    lostTile.style.display = '';
+    statStrip.classList.remove('stat-strip-3');
   }
 }
 
@@ -1500,7 +1618,9 @@ const leadOwnerByName = Object.fromEntries(sampleLeads.map(l => [l.n, l]));
 
 function renderTaskFeed() {
   taskFeed.innerHTML = '';
-  const entries = Object.entries(TASK_NOTES);
+  const entries = Object.entries(TASK_NOTES).sort((a, b) => {
+    return new Date(b[1].updatedAt || 0) - new Date(a[1].updatedAt || 0);
+  });
   taskFeedCount.textContent = `${entries.length} update${entries.length === 1 ? '' : 's'}`;
 
   if (!entries.length) {
@@ -1523,7 +1643,7 @@ function renderTaskFeed() {
           ${info.isNew ? '<span class="new-badge"><span class="dot"></span>New</span>' : ''}
         </div>
         <div class="task-feed-note">${info.note}</div>
-        <div class="task-feed-meta"><span class="task-feed-status">${info.status}</span></div>
+        <div class="task-feed-meta"><span class="task-feed-status">${info.status}</span><span class="task-feed-time">${formatRelativeTime(info.updatedAt)}</span></div>
       </div>
     `;
     taskFeed.appendChild(item);
@@ -1536,6 +1656,7 @@ function renderAll() {
   renderStackBar();
   renderStageBars();
   renderOwnerWorkload();
+  renderOwnerFilter();
   renderChips();
   renderTable();
 }
