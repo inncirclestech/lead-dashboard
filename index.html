@@ -1,0 +1,1566 @@
+<meta charset="UTF-8">
+<title>Discovery & Nurturing — Lead Status Dashboard</title>
+<style>
+  @font-face {
+    font-family: 'InterVar';
+    src: local('Inter'), local('Inter-Regular');
+    font-weight: 100 900;
+  }
+
+  :root {
+    color-scheme: light;
+    --bg: #f4f5f8;
+    --surface: #ffffff;
+    --surface-2: #f9fafb;
+    --border-subtle: #e9ecf1;
+    --border-normal: #d2d8e3;
+    --text-normal: #1f2329;
+    --text-subtle: #4a5261;
+    --text-muted: #7b88a0;
+    --brand: #52bba9;
+    --brand-dark: #33746a;
+    --brand-subtle-bg: #eef8f6;
+    --brand-subtle-border: #bae4dd;
+    --shadow-sm: 0 2px 16px 0 rgba(31,35,41,0.05);
+    --shadow-md: 0 8px 24px 0 rgba(31,35,41,0.08);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-pill: 1000px;
+
+    --stage-prospects: #52bba9;
+    --stage-contacted: #2e90fa;
+    --stage-sql: #6172f3;
+    --stage-demo: #ee46bc;
+    --stage-won: #0e8f53;
+    --stage-lost: #d92d20;
+    --stage-other: #7b88a0;
+
+    --stage-prospects-bg: #eef8f6;
+    --stage-contacted-bg: #eff8ff;
+    --stage-sql-bg: #eef4ff;
+    --stage-demo-bg: #fdf2fa;
+    --stage-won-bg: #e7f8f0;
+    --stage-lost-bg: #fbeae9;
+    --stage-other-bg: #f4f5f8;
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #16181c;
+    --surface: #1f2329;
+    --surface-2: #262b32;
+    --border-subtle: #2e333c;
+    --border-normal: #3c424e;
+    --text-normal: #f4f5f8;
+    --text-subtle: #d2d8e3;
+    --text-muted: #8f9eba;
+    --brand: #6ac5b5;
+    --brand-dark: #97d7cb;
+    --brand-subtle-bg: #1a3c36;
+    --brand-subtle-border: #224f47;
+    --shadow-sm: 0 2px 16px 0 rgba(0,0,0,0.24);
+    --shadow-md: 0 8px 24px 0 rgba(0,0,0,0.32);
+
+    --stage-prospects: #6ac5b5;
+    --stage-contacted: #5aa8f7;
+    --stage-sql: #8791f6;
+    --stage-demo: #f16dcb;
+    --stage-won: #3fbd80;
+    --stage-lost: #e8695f;
+    --stage-other: #8f9eba;
+
+    --stage-prospects-bg: #1a3c36;
+    --stage-contacted-bg: #16324f;
+    --stage-sql-bg: #232659;
+    --stage-demo-bg: #3a1e34;
+    --stage-won-bg: #123526;
+    --stage-lost-bg: #3a1815;
+    --stage-other-bg: #262b32;
+  }
+
+  /* Light is the default regardless of OS preference — dark mode only via the explicit toggle (data-theme="dark"). */
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text-normal);
+    font-family: 'InterVar', Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 28px 24px 64px;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .brand-row { display: flex; align-items: center; gap: 10px; }
+
+  .logomark {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .logomark svg { width: 18px; height: 18px; }
+
+  .brand-text { display: flex; flex-direction: column; line-height: 1.15; }
+  .brand-text .org { font-size: 12px; font-weight: 600; letter-spacing: 0.02em; color: var(--text-muted); text-transform: uppercase; }
+  .brand-text .title { font-size: 19px; font-weight: 600; color: var(--text-normal); }
+
+  .meta-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  .asof-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-subtle);
+    box-shadow: var(--shadow-sm);
+  }
+  .asof-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand); }
+
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface);
+    color: var(--text-subtle);
+    cursor: pointer;
+  }
+  .theme-toggle:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+
+  /* ---------- Segment toggle ---------- */
+  .segment-toggle {
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    margin-bottom: 16px;
+  }
+
+  .seg-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 14px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-subtle);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .seg-btn:hover { color: var(--text-normal); }
+  .seg-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+
+  .seg-btn .seg-count {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: var(--surface);
+    padding: 1px 7px;
+    border-radius: var(--radius-pill);
+  }
+
+  .seg-btn.is-active {
+    background: var(--surface);
+    color: var(--text-normal);
+    box-shadow: var(--shadow-sm);
+  }
+  .seg-btn.is-active .seg-count { background: var(--brand); color: #ffffff; }
+
+  /* ---------- Stat strip ---------- */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .stat-tile {
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 16px 18px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .stat-tile .label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .stat-tile .value-row { display: flex; align-items: baseline; gap: 8px; }
+  .stat-tile .value { font-size: 30px; font-weight: 600; letter-spacing: -0.01em; }
+  .stat-tile .sub { font-size: 12.5px; color: var(--text-muted); }
+
+  .stat-tile.accent-open .value { color: var(--stage-sql); }
+  .stat-tile.accent-won .value { color: var(--stage-won); }
+  .stat-tile.accent-lost .value { color: var(--stage-lost); }
+  .stat-tile.accent-value .value { color: var(--brand); }
+
+  /* ---------- Layout grid ---------- */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 18px 20px;
+  }
+
+  .card + .card { margin-top: 16px; }
+
+  .card-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    gap: 8px;
+  }
+
+  .card-head h2 { font-size: 15px; font-weight: 600; margin: 0; color: var(--text-normal); }
+  .card-head .count-tag { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+
+  /* ---------- Stage bar chart ---------- */
+  .stage-bars { display: flex; flex-direction: column; gap: 10px; }
+  .stage-bar-row { display: grid; grid-template-columns: 108px 1fr 34px; align-items: center; gap: 10px; }
+
+  .stage-bar-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-subtle);
+  }
+
+  .stage-bar-label .swatch { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+  .stage-bar-track {
+    position: relative;
+    height: 18px;
+    background: var(--surface-2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .stage-bar-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    border-radius: 4px;
+    min-width: 3px;
+    transition: width 0.4s cubic-bezier(0.3,0,0.2,1);
+  }
+
+  .stage-bar-count { font-size: 13px; font-weight: 600; text-align: right; color: var(--text-normal); }
+
+  .stack-bar {
+    display: flex;
+    width: 100%;
+    height: 28px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+  }
+  .stack-seg { height: 100%; position: relative; }
+  .stack-seg:not(:last-child) { border-right: 2px solid var(--surface); }
+
+  .stack-legend { display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 12px; }
+  .stack-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-subtle); }
+  .stack-legend-item .swatch { width: 8px; height: 8px; border-radius: 2px; }
+  .stack-legend-item b { color: var(--text-normal); font-weight: 600; }
+
+  /* ---------- Latest task updates feed ---------- */
+  .task-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 260px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .task-feed-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px 4px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .task-feed-item:last-child { border-bottom: none; }
+  .task-feed-avatar {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--brand-subtle-bg);
+    color: var(--brand-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    flex-shrink: 0;
+    border: 1px solid var(--brand-subtle-border);
+    margin-top: 1px;
+  }
+  .task-feed-body { min-width: 0; flex: 1; }
+  .task-feed-top {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .task-feed-name { font-size: 13px; font-weight: 600; color: var(--text-normal); }
+  .task-feed-lead { font-size: 12px; color: var(--text-subtle); }
+  .task-feed-note {
+    font-size: 12.5px;
+    color: var(--text-subtle);
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+  .task-feed-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .task-feed-status {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    padding: 1px 7px;
+    border-radius: var(--radius-pill);
+  }
+  .task-feed-empty {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 8px 4px;
+  }
+
+  /* ---------- Owner workload ---------- */
+  .owner-rows { display: flex; flex-direction: column; gap: 10px; }
+  .owner-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; }
+  .owner-name-row { display: flex; align-items: center; gap: 8px; }
+
+  .owner-avatar {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--brand-subtle-bg);
+    color: var(--brand-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    flex-shrink: 0;
+    border: 1px solid var(--brand-subtle-border);
+  }
+
+  .owner-name { font-size: 13px; font-weight: 500; color: var(--text-normal); }
+  .owner-count-badge {
+    font-size: 12px; font-weight: 600; color: var(--text-subtle);
+    background: var(--surface-2);
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    min-width: 28px;
+    text-align: center;
+  }
+
+  .owner-track { grid-column: 1 / -1; height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; margin-top: -4px; }
+  .owner-fill { height: 100%; background: var(--brand); border-radius: 3px; }
+
+  .owner-row-inactive { opacity: 0.55; }
+  .owner-row-inactive .owner-fill { background: var(--text-muted); }
+  .owner-tag-exited {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+    margin-left: 4px;
+  }
+
+  /* ---------- Task callout ---------- */
+  .callout {
+    display: flex;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--stage-lost-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    font-size: 12.5px;
+    color: var(--text-subtle);
+    line-height: 1.5;
+  }
+  .callout svg { flex-shrink: 0; margin-top: 1px; color: var(--stage-lost); }
+  .callout b { color: var(--text-normal); }
+
+  .callout.callout-info { background: var(--stage-contacted-bg); }
+  .callout.callout-info svg { color: var(--stage-contacted); }
+
+  .new-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--stage-lost);
+    margin: 0 2px;
+    vertical-align: middle;
+  }
+
+  .task-note {
+    font-size: 12.5px;
+    color: var(--text-subtle);
+    max-width: 260px;
+    line-height: 1.4;
+  }
+
+  .new-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--stage-lost);
+    background: var(--stage-lost-bg);
+    padding: 2px 7px;
+    border-radius: var(--radius-pill);
+    margin-left: 6px;
+  }
+  .new-badge .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--stage-lost); }
+
+  tr.row-new-task td { background: var(--stage-lost-bg); }
+  tr.row-new-task:hover td { background: var(--stage-lost-bg); filter: brightness(0.97); }
+
+  /* ---------- Industry chip bar ---------- */
+  .chip-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 13px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-normal);
+    background: var(--surface);
+    color: var(--text-subtle);
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+
+  .chip:hover { background: var(--surface-2); border-color: var(--border-normal); }
+  .chip:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+
+  .chip .chip-count {
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--surface-2);
+    color: var(--text-muted);
+    padding: 1px 6px;
+    border-radius: var(--radius-pill);
+    min-width: 18px;
+    text-align: center;
+  }
+
+  .chip.is-active { background: var(--brand-subtle-bg); border-color: var(--brand-subtle-border); color: var(--brand-dark); }
+  .chip.is-active .chip-count { background: var(--brand); color: #ffffff; }
+
+  /* ---------- Table ---------- */
+  .table-scroll { overflow-x: auto; }
+
+  table.leads-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+  .leads-table thead th {
+    text-align: left;
+    font-size: 11.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+    padding: 0 10px 10px;
+    border-bottom: 1px solid var(--border-subtle);
+    white-space: nowrap;
+  }
+
+  .leads-table tbody td {
+    padding: 10px 10px;
+    border-bottom: 1px solid var(--border-subtle);
+    vertical-align: middle;
+    color: var(--text-subtle);
+  }
+
+  .leads-table tbody tr:last-child td { border-bottom: none; }
+  .leads-table tbody tr:hover td { background: var(--surface-2); }
+
+  .lead-name { color: var(--text-normal); font-weight: 500; }
+  .lead-company { color: var(--text-muted); font-size: 12.5px; }
+
+  .stage-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px 3px 7px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .stage-chip .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+  .task-empty { color: var(--text-muted); font-style: italic; font-size: 12.5px; }
+
+  .group-divider td { padding: 16px 10px 8px; border-bottom: none; }
+  .group-divider-inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+  }
+  .group-divider-inner .swatch { width: 7px; height: 7px; border-radius: 2px; }
+  .group-divider-inner .line { flex: 1; height: 1px; background: var(--border-subtle); }
+
+  .table-note { margin-top: 12px; font-size: 12px; color: var(--text-muted); }
+
+  .archive-toggle-row td { padding: 0; border-bottom: none; }
+  .archive-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 10px;
+    margin-top: 6px;
+    background: var(--surface-subtle);
+    border: 1px dashed var(--border-subtle);
+    border-radius: var(--radius-md);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    text-align: left;
+  }
+  .archive-toggle:hover { color: var(--text-normal); border-color: var(--border-default); }
+  .archive-toggle .chev { transition: transform 0.15s ease; flex-shrink: 0; }
+  .archive-toggle.is-open .chev { transform: rotate(90deg); }
+  .archive-toggle .count-tag { margin-left: auto; }
+  tr.archived-row { display: none; }
+  tr.archived-row.is-visible { display: table-row; }
+
+  footer.page-footer {
+    margin-top: 28px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (max-width: 900px) {
+    .stat-strip { grid-template-columns: repeat(2, 1fr); }
+    .main-grid { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    @page { size: A4; margin: 14mm 12mm; }
+
+    * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+
+    html, body {
+      background: #fff !important;
+      font-size: 11.5px;
+    }
+    .page { max-width: none; padding: 0; }
+
+    /* Screen-only controls never belong in the report */
+    .theme-toggle, .archive-toggle, .archive-toggle-row, tr.archived-row,
+    .segment-toggle, .chip-bar { display: none !important; }
+
+    /* Compact, letterhead-style header */
+    .topbar { align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid var(--brand); }
+    .logomark { width: 30px; height: 30px; }
+    .brand-text .org { font-size: 10px; }
+    .brand-text .title { font-size: 15px; }
+    .asof-pill { box-shadow: none; border: 1px solid #e2e4e8; font-size: 10.5px; }
+
+    /* Stat strip becomes a tight 4-up row that never splits across a page */
+    .stat-strip {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+      break-inside: avoid;
+    }
+    body.print-active-only .stat-strip { grid-template-columns: repeat(2, 1fr); }
+    body.print-active-only .accent-won,
+    body.print-active-only .accent-lost { display: none !important; }
+    .stat-tile { padding: 10px 12px; break-inside: avoid; }
+    .stat-tile .label { font-size: 9.5px; }
+    .stat-tile .value { font-size: 20px; }
+    .stat-tile .sub { font-size: 9.5px; }
+
+    /* Charts/metrics reflow into a compact 2-column grid instead of one long left column */
+    .main-grid { display: block; }
+    .left-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .left-col .card:first-child { grid-column: 1 / -1; }
+
+    .card {
+      box-shadow: none !important;
+      border: 1px solid #e2e4e8 !important;
+      border-radius: 8px;
+      padding: 12px;
+      break-inside: avoid;
+      margin-bottom: 0;
+    }
+    .card-head h2 { font-size: 12px; }
+    .count-tag { font-size: 9.5px; }
+
+    .task-feed { max-height: none !important; overflow: visible !important; }
+    .task-feed-item { padding: 7px 2px; }
+    .task-feed-note { font-size: 10.5px; }
+
+    .owner-rows { gap: 6px; }
+    .stage-bars { gap: 6px; }
+
+    .callout { padding: 10px; font-size: 10.5px; }
+
+    /* Table section starts on a clean page of its own */
+    .right-col { break-before: page; }
+    .right-col .card { border: none !important; padding: 0; }
+    .right-col .card-head { margin-bottom: 8px; }
+    .leads-table { font-size: 10.5px; }
+    .leads-table th { position: static; padding: 6px 8px; }
+    .leads-table td { padding: 6px 8px; }
+    .group-divider, tr { break-inside: avoid; }
+    .group-divider td { padding: 10px 8px 5px; }
+    table { page-break-inside: auto; border-collapse: collapse; }
+    thead { display: table-header-group; }
+    .table-scroll { overflow: visible !important; max-height: none !important; }
+    .task-note { font-size: 10.5px; max-width: 220px; }
+
+    footer.page-footer { break-inside: avoid; margin-top: 14px; padding-top: 10px; font-size: 9.5px; }
+  }
+</style>
+
+<div class="page">
+
+  <div class="topbar">
+    <div class="brand-row">
+      <div class="logomark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 12L10 6V10H20V14H10V18L4 12Z" fill="white"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="org">Inncircles &middot; Business Development</span>
+        <span class="title">Discovery &amp; Nurturing — Lead Status</span>
+      </div>
+    </div>
+    <div class="meta-row">
+      <span class="asof-pill"><span class="dot"></span>Data as of 03 Aug 2026, 3:37 PM IST &middot; Source: Togile</span>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
+        <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="segment-toggle" id="segmentToggle" role="tablist" aria-label="Filter by segment">
+    <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">183</span></button>
+    <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">137</span></button>
+    <button class="seg-btn" data-seg="Nurturing" role="tab" aria-selected="false">Nurturing <span class="seg-count">46</span></button>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-tile">
+      <span class="label">Total Leads</span>
+      <div class="value-row"><span class="value" id="statTotal">183</span><span class="sub" id="statTotalSub">137 Discovery &middot; 46 Nurturing</span></div>
+    </div>
+    <div class="stat-tile accent-open">
+      <span class="label">Open Pipeline</span>
+      <div class="value-row"><span class="value" id="statOpen">67</span><span class="sub" id="statOpenSub">active, not yet won/lost</span></div>
+    </div>
+    <div class="stat-tile accent-value">
+      <span class="label">Potential ARR (Open)</span>
+      <div class="value-row"><span class="value" id="statArr">₹0</span><span class="sub" id="statArrSub">across open pipeline</span></div>
+    </div>
+    <div class="stat-tile accent-won">
+      <span class="label">Won</span>
+      <div class="value-row"><span class="value" id="statWon">45</span><span class="sub" id="statWonSub">24.6% of total</span></div>
+    </div>
+    <div class="stat-tile accent-lost">
+      <span class="label">Lost</span>
+      <div class="value-row"><span class="value" id="statLost">61</span><span class="sub" id="statLostSub">33.3% of total</span></div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <div class="left-col">
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Latest Task Updates</h2>
+          <span class="count-tag" id="taskFeedCount"></span>
+        </div>
+        <div class="task-feed" id="taskFeed"></div>
+      </div>
+
+      <div class="card" id="segmentSplitCard">
+        <div class="card-head">
+          <h2>Discovery vs Nurturing</h2>
+          <span class="count-tag">183 total</span>
+        </div>
+        <div class="stack-bar" id="segStackBar"></div>
+        <div class="stack-legend" id="segStackLegend"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2 id="stageCardTitle">Leads by Stage</h2>
+          <span class="count-tag" id="stageCardCount">183 total</span>
+        </div>
+        <div class="stack-bar" id="stackBar"></div>
+        <div class="stack-legend" id="stackLegend"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Stage Breakdown</h2>
+          <span class="count-tag" id="stageBreakdownNote"></span>
+        </div>
+        <div class="stage-bars" id="stageBars"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Owner Workload</h2>
+          <span class="count-tag" id="ownerCountTag">8 reps</span>
+        </div>
+        <div class="owner-rows" id="ownerRows"></div>
+      </div>
+
+      <div class="card">
+        <div class="callout callout-info">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <div><b>Task data pulled via Togile's API.</b> Every one of the 58 open leads/deals was checked directly through Togile's official Tasks API, across all owners — 23 have a logged task (some with no note text, shown as "Task logged" with the task name), and 18 are from the last 14 days, highlighted <span class="new-dot"></span> New. 8 leads/deals moved to Won/Lost/Disqualified since the last refresh and have been reclassified accordingly.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="right-col">
+      <div class="card">
+        <div class="card-head">
+          <h2>All Leads</h2>
+          <span class="count-tag" id="tableCount">both segments</span>
+        </div>
+        <div class="chip-bar" id="industryChips" role="tablist" aria-label="Filter by industry"></div>
+        <div class="table-scroll">
+          <table class="leads-table">
+            <thead>
+              <tr>
+                <th>Lead</th>
+                <th>Company</th>
+                <th>Owner</th>
+                <th>Segment</th>
+                <th>Stage</th>
+                <th>Potential ARR</th>
+                <th>Next action</th>
+              </tr>
+            </thead>
+            <tbody id="leadsBody"></tbody>
+          </table>
+        </div>
+        <p class="table-note" id="tableNote">Showing sampled leads — full list lives in Togile → Discovery / Nurturing.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="page-footer">
+    <span>Generated from Togile Discovery + Nurturing export &middot; Owner: Aashray Raj Mathur</span>
+    <span>Refreshed on request — ask to update for the latest snapshot</span>
+  </footer>
+
+</div>
+
+<script>
+const DISCOVERY_STAGE_META = {
+  "Prospects":         { color: "var(--stage-prospects)", bg: "var(--stage-prospects-bg)", order: 0 },
+  "Contacted":         { color: "var(--stage-contacted)", bg: "var(--stage-contacted-bg)", order: 1 },
+  "SalesQualifiedLead":{ color: "var(--stage-sql)",        bg: "var(--stage-sql-bg)",        order: 2, label: "Sales Qualified" },
+  "Demo":              { color: "var(--stage-demo)",       bg: "var(--stage-demo-bg)",       order: 3 },
+  "Won":               { color: "var(--stage-won)",        bg: "var(--stage-won-bg)",        order: 4 },
+  "Lost":              { color: "var(--stage-lost)",       bg: "var(--stage-lost-bg)",       order: 5 },
+  "Disqualified":      { color: "var(--stage-other)",      bg: "var(--stage-other-bg)",      order: 6 },
+  "Unspecified":       { color: "var(--stage-other)",      bg: "var(--stage-other-bg)",      order: 7, label: "No stage set" }
+};
+
+const NURTURING_STAGE_META = {
+  "Proposal":                 { color: "var(--stage-sql)",     bg: "var(--stage-sql-bg)",     order: 0 },
+  "Value Demonstration/POC":  { color: "var(--stage-demo)",    bg: "var(--stage-demo-bg)",    order: 1, label: "Value Demo / POC" },
+  "Won":                      { color: "var(--stage-won)",     bg: "var(--stage-won-bg)",     order: 2 },
+  "Lost":                     { color: "var(--stage-lost)",    bg: "var(--stage-lost-bg)",    order: 3 },
+  "Unspecified":               { color: "var(--stage-other)",   bg: "var(--stage-other-bg)",   order: 4, label: "No stage set" }
+};
+
+function stageMetaCombined() {
+  return { ...DISCOVERY_STAGE_META, "Proposal": NURTURING_STAGE_META["Proposal"], "Value Demonstration/POC": { ...NURTURING_STAGE_META["Value Demonstration/POC"], order: 8 } };
+}
+
+const byStageBySegment = {
+  Discovery: {"Won":39,"Lost":46,"Contacted":7,"Demo":8,"SalesQualifiedLead":10,"Prospects":17,"Unspecified":6,"Disqualified":4},
+  Nurturing: {"Unspecified":1,"Proposal":6,"Value Demonstration/POC":10,"Lost":23,"Won":6}
+};
+
+const byOwnerBySegment = {
+  Discovery: {"Anushi Surya":18,"Prateek Shendre":12,"Arun":42,"Lasya Ganapathi":11,"Vara Tejesh":37,"Akash Parmar - 235":12,"Abhinav Bommisetty - 041":4,"Chandra":1},
+  Nurturing: {"Prateek Shendre":6,"Vara Tejesh":13,"Abhinav Bommisetty - 041":2,"Akash Parmar - 235":5,"Arun":16,"Anushi Surya":3,"Chandra":1}
+};
+
+const byIndustryBySegment = {
+  Discovery: {"Government & Other":14,"Residential & Real Estate":28,"Healthcare":3,"Infrastructure & Construction":43,"Engineering & Consulting":14,"Energy & Power":8,"Corporate & Technology":10,"Unclassified":17},
+  Nurturing: {"Energy & Power":6,"Corporate & Technology":3,"Healthcare":2,"Residential & Real Estate":17,"Infrastructure & Construction":12,"Engineering & Consulting":2,"Government & Other":4}
+};
+
+function sumDicts(...dicts) {
+  const out = {};
+  dicts.forEach(d => Object.entries(d).forEach(([k,v]) => { out[k] = (out[k]||0) + v; }));
+  return out;
+}
+
+const byOwnerAll = sumDicts(byOwnerBySegment.Discovery, byOwnerBySegment.Nurturing);
+const byIndustryAll = sumDicts(byIndustryBySegment.Discovery, byIndustryBySegment.Nurturing);
+
+const INDUSTRY_ORDER = ["Infrastructure & Construction","Residential & Real Estate","Engineering & Consulting","Government & Other","Corporate & Technology","Energy & Power","Healthcare","Unclassified"];
+
+const SEGMENT_META = {
+  Discovery: { color: "var(--stage-prospects)" },
+  Nurturing: { color: "var(--stage-sql)" }
+};
+
+const TASK_NOTES = {
+  "saravanan": { note: "Client: Gulf Spic, EPC contractor (Kuwait) — handles industrial, EPC, and O&M projects, with multiple ongoing projects in Kuwait Requirement: Automation + Field Management Systems Demonstrated so far: Field management systems, total project monitoring, and AI subscription-based add-on (InnDoc AI) Next step: Client requesting a ballpark number for budgetary approval before proceeding further  Gulf Spic — Phased Rollout Plan (Field Management + Contract AI) Phase 1: Implement Field Management System for one project to monitor progress Phase 2 (contingent): Scale to enterprise level across all projects, once confidence is built from Phase 1 Parallel ask: Contract Management using InnDoc AI  Priority: High ", status: "In Progress", isNew: true },
+  "Anant Salunkhe": { note: "Data Center Contact — CtrlS Current contact: MEP Vice President He will route us to the relevant department for controls/controllers discussion Company has multiple ongoing data center projects across India and internationally Major active projects: Navi Mumbai and Hyderabad", status: "In Progress", isNew: true },
+  "Dowlath Pasha": { note: "They are into township development, ask to schedule demo on Monday 2 half", status: "In Progress", isNew: true },
+  "Swapnil Kadam": { note: "Monday, in the second half, we have a demo scheduled, they are into residential construction, Their primary focus is on site material tracking.", status: "In Progress", isNew: true },
+  "Krupa J": { note: "MD is in travel to UK, will resume the discussion after he comes back to India on 18th Aug.", status: "In Progress", isNew: true },
+  "S Madan Kumar": { note: "Task logged: Follow-up for Demo for the entire Team (no note added)", status: "Open", isNew: true },
+  "Satish": { note: "Connected with Mr. Satish, yet to get his time for the demo call. ", status: "In Progress", isNew: true },
+  "Avinash Kotla": { note: "Platform Demo Outreach (Dashboard–Field Gap) Problem statement identified: Gap between dashboards and field data capturing Currently in the process of reaching out to the client Next step: Schedule and showcase platform demo addressing this gap", status: "In Progress", isNew: true },
+  "Saptarshi Basu": { note: "- Details already shared with the concerned person - Contact confirmed he'll forward documents to the internal digital team - Status: Awaiting response-  in follow-up - Client currently implementing 4D & 5D models and progress monitoring in-house - Gap identified: Lacking Field Management and BIM assistance- potential entry point for Inncircles", status: "In Progress", isNew: true },
+  "Smruthi Ranjan": { note: "Adani Road Projects  Pursuit — Next Steps - Detailed presentation already shared with the client's representative (in addition to the road project materials) - Security documentation for the Inncircles application also shared - Next step: VAPT (Vulnerability Assessment and Penetration Testing) - POC planned for one project in Bangalore Priority: High", status: "In Progress", isNew: true },
+  "Abhinav Agarwal": { note: "Task logged: Aligning a Demo with Godrej  (no note added)", status: "In Progress", isNew: true },
+  "Santosh Sahu,Ameya": { note: "Got a call from Santosh, DGM–Projects at BPCL, through Siga Srinivas Rao, Chief GM at BPCL, who shared my contact with him. I spoke with Santosh, and he mentioned that they are currently using only Primavera P6 and MS Project and are not using any project monitoring system.", status: "Completed", isNew: false },
+  "Masood Khan": { note: "Tried reaching him for a demo but call not answered.", status: "Completed", isNew: false },
+  "Vinodh": { note: "A follow-up email has been sent to him asking for a 30 min discovery call", status: "Completed", isNew: false },
+  "Birdi Systems Inc": { note: "- Demo already delivered - Proposal already shared - Next step: Nurture the account — showcase value through: - Sharing assets/videos - DPR (Daily Progress Report) automation - Automation of their current project workflows", status: "In Progress", isNew: true },
+  "CARE Hospitals": { note: "- Demo given; client has shown interest - Next step: Nurture by sharing asset videos - Value angle: Highlight that hospital projects specifically are monitored on our platform - Next action: Share a video walkthrough of hospital projects on the Inncircles platform", status: "In Progress", isNew: true },
+  "Ankura Homes": { note: "Mr. Bhushan will revert on the quotation submitted by end of this week 7th Aug", status: "In Progress", isNew: true },
+  "Sri Avantika Contractor ltd": { note: "POC is not responding to our calls", status: "Open", isNew: true },
+  "TTD": { note: "Task logged: Follow-up for new CE onboarding for a demo / meeting (no note added)", status: "Open", isNew: true },
+  "Inorbit Malls (India) Private Limited": { note: "- Plan: Deploy the solution as a POC at one specific site - Goal: Drive actual usage at that site to demonstrate real value - Approach: Prove value through hands-on implementation at a single site before scaling further", status: "In Progress", isNew: true },
+  "Arvind Techno": { note: "MOM sent with next steps - asking their data for a POC setup", status: "Completed", isNew: false },
+  "Honer Homes": { note: "We completed the demo and showcased the handover module for Ananda Homes, along with a few forms configured in Eminent. He also opened one of his friends SmartApp dashboards, shared some MIR dashboards, and requested a table-format report with filtering options in each coloumn", status: "Completed", isNew: false },
+  "Gaurav (HDFC Capital)": { note: "Approached via LinkedIn - Requirement not yet fully clear - Client wants to see the application (walkthrough) — currently not an immediate/active need on their end - we have shared the deck for reference", status: "In Progress", isNew: true }
+};
+
+const LEAD_COSTS = {
+  "Dowlath Pasha": { arr: 2000000, cv: 7000000 },
+  "Swapnil Kadam": { arr: 2000000, cv: 7000000 },
+  "Krupa J": { arr: 2500000, cv: 8750000 },
+  "S Madan Kumar": { arr: 2500000, cv: 8750000 },
+  "Rajendra Singh": { arr: 2500000, cv: 8750000 },
+  "Pravindra": { arr: 0, cv: 0 },
+  "Satish": { arr: 5000000, cv: 17500000 },
+  "Avinash Kotla": { arr: 2500000, cv: 8750000 },
+  "Sandesh S Kamblee": { arr: 2000000, cv: 7000000 },
+  "C": { arr: 2500000, cv: 8750000 },
+  "Vaibhav": { arr: 2000000, cv: 7000000 },
+  "saravanan": { arr: 0, cv: 0 },
+  "Narendra Verma": { arr: 2000000, cv: 7000000 },
+  "Saptarshi Basu": { arr: 2000000, cv: 7000000 },
+  "Amit Deshmukh": { arr: 2500000, cv: 8750000 },
+  "Mayur Somani": { arr: 2000000, cv: 7000000 },
+  "Vishwajit Kate": { arr: 2000000, cv: 7000000 },
+  "Mrs. Vishaka Waghmare": { arr: 2000000, cv: 7000000 },
+  "Brij": { arr: 2500000, cv: 8750000 },
+  "Bhaskar K": { arr: 2500000, cv: 8750000 },
+  "Aditya": { arr: 2500000, cv: 8750000 },
+  "Anant Salunkhe": { arr: 2500000, cv: 8750000 },
+  "Harsh Desai": { arr: 2000000, cv: 7000000 },
+  "Suhotra Banerjee": { arr: 2000000, cv: 7000000 },
+  "Paras": { arr: 2000000, cv: 7000000 },
+  "Shahanshah Alam": { arr: 2000000, cv: 7000000 },
+  "Likhitha": { arr: 2000000, cv: 7000000 },
+  "RAJU": { arr: 2000000, cv: 7000000 },
+  "Smruthi Ranjan": { arr: 5000000, cv: 17500000 },
+  "Vishwas": { arr: 2000000, cv: 7000000 },
+  "Vishal Mudda": { arr: 25000000, cv: 87500000 },
+  "Soumik Paul": { arr: 2000000, cv: 7000000 },
+  "S V Koteswara Rao": { arr: 2000000, cv: 7000000 },
+  "Panchu": { arr: 2000000, cv: 7000000 },
+  "Lead (GHB)": { arr: 25000000, cv: 87500000 },
+  "BABUL GOMASTA": { arr: 2500000, cv: 8750000 },
+  "Abhinav Agarwal": { arr: 2500000, cv: 8750000 },
+  "NHAI": { arr: 25600000, cv: 30000000 },
+  "Prateek Mudia": { arr: 2500000, cv: 8750000 },
+  "Rahul Negi": { arr: 2000000, cv: 7000000 },
+  "Atul Shirke": { arr: 2000000, cv: 7000000 },
+  "Vishal": { arr: 2500000, cv: 8750000 },
+  "Sesha Sai": { arr: 0, cv: 0 },
+  "Santosh Sahu,Ameya": { arr: 2000000, cv: 7000000 },
+  "Prerna K": { arr: 0, cv: 0 },
+  "Masood Khan": { arr: 2500000, cv: 8750000 },
+  "Vinodh": { arr: 2000000, cv: 7000000 },
+  "Birdi Systems Inc": { arr: 1000000, cv: 3500000 },
+  "CARE Hospitals": { arr: 2000000, cv: 7000000 },
+  "Mangalmurty Realty": { arr: 2000000, cv: 7000000 },
+  "Ankura Homes": { arr: 2000000, cv: 7000000 },
+  "Sri Avantika Contractor ltd": { arr: 1000000, cv: 3500000 },
+  "Linesight": { arr: 1000000, cv: 3500000 },
+  "G R Infraprojects Limited": { arr: 2000000, cv: 7000000 },
+  "Bi RIDE": { arr: 15000000, cv: 52500000 },
+  "TTD": { arr: 30000000, cv: 105000000 },
+  "MEIL (Megha Engineering & Infrastructures Ltd.)": { arr: 2500000, cv: 8750000 },
+  "NTPC Limited (formerly National Thermal Power Corporation)": { arr: 2500000, cv: 8750000 },
+  "Vedant Group": { arr: 2500000, cv: 8750000 },
+  "Almaviva Saudi Arabia": { arr: 5000000, cv: 17500000 },
+  "Inorbit Malls (India) Private Limited": { arr: 2000000, cv: 7000000 },
+  "HCC": { arr: 2500000, cv: 8750000 },
+  "GMR Group": { arr: 2500000, cv: 8750000 },
+  "Arvind Techno": { arr: 1500000, cv: 5250000 },
+  "Honer Homes": { arr: 1000000, cv: 3500000 },
+  "Gaurav (CEM India)": { arr: 2000000, cv: 7000000 },
+  "Gaurav (HDFC Capital)": { arr: 0, cv: 0 }
+};
+
+const sampleLeads = [
+  {"n": "Chaitanya Chinnam", "c": "Sree Chaitanya Constructions", "o": "Anushi Surya", "s": "Won", "i": "Government & Other", "seg": "Discovery"},
+  {"n": "Bhaskar", "c": "Govt Project", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
+  {"n": "Vijay", "c": "Keyura Infra", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
+  {"n": "Jayant Ganiga", "c": "GMR Group", "o": "Anushi Surya", "s": "Won", "i": "Government & Other", "seg": "Discovery"},
+  {"n": "Harish Gagwani", "c": "R D Brothers realty", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
+  {"n": "Mohammad Shoaib", "c": "Mohammad Shoaib", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
+  {"n": "Capt. Zahid Shaikh", "c": "Marimex Global", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
+  {"n": "Mohit R Mehta", "c": "R Mehta Registered Valuer", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
+  {"n": "Krishna", "c": "IBS", "o": "Abhinav Bommisetty - 041", "s": "Won", "i": "Government & Other", "seg": "Discovery"},
+  {"n": "Sandip Patil", "c": "Purvankara", "o": "Anushi Surya", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Aniket Apte", "c": "Rohan Builders", "o": "Anushi Surya", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Krishna Chaitanya", "c": "Honer Homes", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Aditya", "c": "Speed Housing LLP", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Ravi", "c": "Bhartiya Urban", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Mridul Naidu", "c": "Maia Estates", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Sriram Reddy Kumbam", "c": "Keerthi Estates", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Harsh Thakkar", "c": "Ashoka Real Estate - Institutional", "o": "Anushi Surya", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Amruth", "c": "Ananda Homes", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Gupta Boda", "c": "Sumadhura Group", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Rajendra", "c": "Giridhari Homes", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "K Rameswararao", "c": "Aparna Constructions & Estates Pvt Ltd", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "G Phalgun", "c": "Yashoda Hospitals", "o": "Prateek Shendre", "s": "Won", "i": "Healthcare", "seg": "Discovery"},
+  {"n": "Ram Kannan", "c": "CARE Hospitals", "o": "Vara Tejesh", "s": "Won", "i": "Healthcare", "seg": "Discovery"},
+  {"n": "Madhav Kolli", "c": "GKC Projects", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Nagareddayya", "c": "Ramky Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Kuldeep Singh", "c": "Offshore Infrastructures Limited", "o": "Anushi Surya", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Sarada", "c": "Malaxmi Constructions", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Kamlesh Ganiga", "c": "Terucon India", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Indiresh", "c": "Candeur Constructions", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Praveen H Shettigar", "c": "HCC", "o": "Anushi Surya", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Surya", "c": "Anvita Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Vamsi", "c": "Standard Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Mohit Manchanda", "c": "The Infrasure", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Ravi Kiran", "c": "KMV Group", "o": "Arun", "s": "Won", "i": "Engineering & Consulting", "seg": "Discovery"},
+  {"n": "Shitanshu Jain", "c": "Aecohub", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery"},
+  {"n": "Kashyap", "c": "TCE", "o": "Anushi Surya", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery"},
+  {"n": "Devraj Parmar", "c": "Meindhardt Group", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery"},
+  {"n": "Muthu Kumar", "c": "Meindhardt Group", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery"},
+  {"n": "Manisha Das", "c": "ARK India", "o": "Akash Parmar - 235", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery"},
+  {"n": "Karan Sharma", "c": "Labotek", "o": "Akash Parmar - 235", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery"},
+  {"n": "Karunakar Dodla", "c": "E-infra", "o": "Arun", "s": "Won", "i": "Energy & Power", "seg": "Discovery"},
+  {"n": "Damodar Prabhu", "c": "Ocior Energy Private Limited", "o": "Anushi Surya", "s": "Won", "i": "Energy & Power", "seg": "Discovery"},
+  {"n": "Yaswanth", "c": "Wabag", "o": "Anushi Surya", "s": "Won", "i": "Energy & Power", "seg": "Discovery"},
+  {"n": "Atikur Rahman Pradhani", "c": "Jindal Renewables", "o": "Prateek Shendre", "s": "Won", "i": "Energy & Power", "seg": "Discovery"},
+  {"n": "Manjeet Negi", "c": "Arvind Techno", "o": "Anushi Surya", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "Dattaram Parsekar", "c": "Reliance Industries", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "Sachin Joy", "c": "KPMG", "o": "Anushi Surya", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "Dipak Prajapati", "c": "Zetwerk", "o": "Akash Parmar - 235", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "Rajasekhar Reddy", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery"},
+  {"n": "Gayathri Kalidindi", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery"},
+  {"n": "Kotesh Garnipudi", "c": "", "o": "Arun", "s": "Lost", "i": "Unclassified", "seg": "Discovery"},
+  {"n": "Sowmya Reddy Bobbala", "c": "", "o": "Prateek Shendre", "s": "Lost", "i": "Unclassified", "seg": "Discovery"},
+  {"n": "Ashiyana", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery"},
+  {"n": "Ahmad Firoozi", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery"},
+  {"n": "Pakki Rao", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery"},
+  {"n": "Pravindra Kumar", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery"},
+  {"n": "S R Venkadesh", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery"},
+  {"n": "A", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery"},
+  {"n": "Sandesh Amin", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery"},
+  {"n": "Renee Callahan", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery"},
+  {"n": "Jindal Renewables", "c": "Jindal Renewables", "o": "Prateek Shendre", "s": "Unspecified", "i": "Energy & Power", "seg": "Nurturing"},
+  {"n": "Standard Group", "c": "Standard Group", "o": "Akash Parmar - 235", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing"},
+  {"n": "Aakriti Constructions and Builders", "c": "Aakriti Constructions and Builders", "o": "Akash Parmar - 235", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "Nest Makers", "c": "Nest Makers", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "Anvita Group", "c": "Anvita Group", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing"},
+  {"n": "Terucon India", "c": "Terucon India", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing"},
+  {"n": "Sumadhura Group", "c": "Sumadhura Group", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "Vasavi Group", "c": "Vasavi Group", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing"},
+  {"n": "Ananda Homes", "c": "Ananda Homes", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "Wabag", "c": "Wabag", "o": "Akash Parmar - 235", "s": "Lost", "i": "Energy & Power", "seg": "Nurturing"},
+  {"n": "Malaxmi Constructions", "c": "Malaxmi Constructions", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing"},
+  {"n": "Sarus Infrastructure", "c": "Sarus Infrastructure", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing"},
+  {"n": "Ocior Energy Private Limited", "c": "Ocior Energy Private Limited", "o": "Prateek Shendre", "s": "Won", "i": "Energy & Power", "seg": "Nurturing"},
+  {"n": "Offshore Infrastructures Limited", "c": "Offshore Infrastructures Limited", "o": "Anushi Surya", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing"},
+  {"n": "Ashoka Real Estate - Institutional", "c": "Ashoka Real Estate - Institutional", "o": "Akash Parmar - 235", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "Cypark", "c": "Cypark", "o": "Chandra", "s": "Lost", "i": "Energy & Power", "seg": "Nurturing"},
+  {"n": "Keerthi Estates", "c": "Keerthi Estates", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "Hubtown", "c": "Hubtown", "o": "Anushi Surya", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "Yashoda Hospitals", "c": "Yashoda Hospitals", "o": "Prateek Shendre", "s": "Won", "i": "Healthcare", "seg": "Nurturing"},
+  {"n": "Rohan Builders", "c": "Rohan Builders", "o": "Prateek Shendre", "s": "Won", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "KMV Group", "c": "KMV Group", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Nurturing"},
+  {"n": "Purvankara", "c": "Purvankara", "o": "Anushi Surya", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "Sree Chaitanya Constructions", "c": "Sree Chaitanya Constructions", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Nurturing"},
+  {"n": "Speed Housing LLP", "c": "Speed Housing LLP", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "Maia Estates", "c": "Maia Estates", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "E-infra", "c": "E-infra", "o": "Arun", "s": "Won", "i": "Energy & Power", "seg": "Nurturing"},
+  {"n": "Bhartiya Urban", "c": "Bhartiya Urban", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "Ramky Group", "c": "Ramky Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Nurturing"},
+  {"n": "Dowlath Pasha", "c": "", "o": "Akash Parmar - 235", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery"},
+  {"n": "Swapnil Kadam", "c": "", "o": "Akash Parmar - 235", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery"},
+  {"n": "Krupa J", "c": "DRB infrastructures pvt ltd", "o": "Prateek Shendre", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "S Madan Kumar", "c": "L&T Mindtree", "o": "Abhinav Bommisetty - 041", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "Rajendra Singh", "c": "Bauer India", "o": "Prateek Shendre", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Pravindra", "c": "K-RIDE Bengaluru", "o": "Abhinav Bommisetty - 041", "s": "Prospects", "i": "Government & Other", "seg": "Discovery"},
+  {"n": "Satish", "c": "Jakson", "o": "Prateek Shendre", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery"},
+  {"n": "Gaurav (HDFC Capital)", "c": "HDFC Capital", "o": "Vara Tejesh", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "Avinash Kotla", "c": "Reliance Industries Limited", "o": "Vara Tejesh", "s": "Contacted", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "Sandesh S Kamblee", "c": "Painterior", "o": "Vara Tejesh", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
+  {"n": "C", "c": "Duracool", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "Vaibhav", "c": "Livingstone Infra", "o": "Lasya Ganapathi", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Gaurav (CEM India)", "c": "CEM India", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "saravanan", "c": "Gulfspic", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "Narendra Verma", "c": "Powerica Ltd", "o": "Vara Tejesh", "s": "Prospects", "i": "Energy & Power", "seg": "Discovery"},
+  {"n": "Saptarshi Basu", "c": "Welspun Enterprises", "o": "Vara Tejesh", "s": "Prospects", "i": "Energy & Power", "seg": "Discovery"},
+  {"n": "Amit Deshmukh", "c": "Toyo Engineering India Private Limited", "o": "Vara Tejesh", "s": "Prospects", "i": "Engineering & Consulting", "seg": "Discovery"},
+  {"n": "Mayur Somani", "c": "Vibe Realty", "o": "Vara Tejesh", "s": "Prospects", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Vishwajit Kate", "c": "Nxtra by Airtel", "o": "Vara Tejesh", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "Mrs. Vishaka Waghmare", "c": "PSP Projects", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Brij", "c": "Wind World India L.T.D", "o": "Vara Tejesh", "s": "Lost", "i": "Energy & Power", "seg": "Discovery"},
+  {"n": "Bhaskar K", "c": "DA Realty", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Aditya", "c": "Lenskart", "o": "Akash Parmar - 235", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Anant Salunkhe", "c": "CtrlS", "o": "Vara Tejesh", "s": "Prospects", "i": "Engineering & Consulting", "seg": "Discovery"},
+  {"n": "Harsh Desai", "c": "Shapoorji Pallonji Real Estate", "o": "Vara Tejesh", "s": "Disqualified", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Suhotra Banerjee", "c": "Dosti Realty", "o": "Vara Tejesh", "s": "Prospects", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Paras", "c": "GAR Infobahn", "o": "Prateek Shendre", "s": "SalesQualifiedLead", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "Shahanshah Alam", "c": "TNA READYMIX INDIA PRIVATE LIMITED", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Likhitha", "c": "Hilti India", "o": "Vara Tejesh", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "RAJU", "c": "QURM STONE DEVELOPMENT LLC", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Smruthi Ranjan", "c": "Adani Group", "o": "Vara Tejesh", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery"},
+  {"n": "Vishwas", "c": "WSP", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery"},
+  {"n": "Vishal Mudda", "c": "NCCCL", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Soumik Paul", "c": "Cemindia Projects Limited", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "S V Koteswara Rao", "c": "Athaang Infrastructure", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Panchu", "c": "Isprava", "o": "Vara Tejesh", "s": "Prospects", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Lead (GHB)", "c": "GHB", "o": "Chandra", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery"},
+  {"n": "BABUL GOMASTA", "c": "DP Jain & Co. Infrastructure Pvt. Ltd", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Abhinav Agarwal", "c": "Godrej Enterprises", "o": "Vara Tejesh", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "NHAI", "c": "NHAI", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery"},
+  {"n": "Prateek Mudia", "c": "Max Healthcare", "o": "Vara Tejesh", "s": "Lost", "i": "Healthcare", "seg": "Discovery"},
+  {"n": "Rahul Negi", "c": "Brahmaputra infrastructure limited", "o": "Akash Parmar - 235", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Atul Shirke", "c": "Turner Project Management India Pvt. Ltd.", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery"},
+  {"n": "Vishal", "c": "L&T Realty, Mumbai", "o": "Prateek Shendre", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery"},
+  {"n": "Sesha Sai", "c": "Amazon", "o": "Arun", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery"},
+  {"n": "Santosh Sahu,Ameya", "c": "BPCL", "o": "Prateek Shendre", "s": "Demo", "i": "Energy & Power", "seg": "Discovery"},
+  {"n": "Prerna K", "c": "NHEV", "o": "Prateek Shendre", "s": "Demo", "i": "Government & Other", "seg": "Discovery"},
+  {"n": "Masood Khan", "c": "Amara Raja Infra", "o": "Arun", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Vinodh", "c": "NSL Infratech Pvt.Ltd", "o": "Arun", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery"},
+  {"n": "Birdi Systems Inc", "c": "Birdi Systems Inc", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing"},
+  {"n": "CARE Hospitals", "c": "CARE Hospitals", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Healthcare", "seg": "Nurturing"},
+  {"n": "Mangalmurty Realty", "c": "Mangalmurty Realty", "o": "Vara Tejesh", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "Ankura Homes", "c": "Ankura Homes", "o": "Prateek Shendre", "s": "Proposal", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "Sri Avantika Contractor ltd", "c": "Sri Avantika Contractor ltd", "o": "Prateek Shendre", "s": "Proposal", "i": "Infrastructure & Construction", "seg": "Nurturing"},
+  {"n": "Linesight", "c": "Linesight", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Engineering & Consulting", "seg": "Nurturing"},
+  {"n": "G R Infraprojects Limited", "c": "G R Infraprojects Limited", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing"},
+  {"n": "Bi RIDE", "c": "Bi RIDE", "o": "Abhinav Bommisetty - 041", "s": "Proposal", "i": "Government & Other", "seg": "Nurturing"},
+  {"n": "TTD", "c": "TTD", "o": "Abhinav Bommisetty - 041", "s": "Proposal", "i": "Government & Other", "seg": "Nurturing"},
+  {"n": "MEIL (Megha Engineering & Infrastructures Ltd.)", "c": "MEIL (Megha Engineering & Infrastructures Ltd.)", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Infrastructure & Construction", "seg": "Nurturing"},
+  {"n": "NTPC Limited (formerly National Thermal Power Corporation)", "c": "NTPC Limited (formerly National Thermal Power Corporation)", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing"},
+  {"n": "Vedant Group", "c": "Vedant Group", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "Almaviva Saudi Arabia", "c": "Almaviva Saudi Arabia", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing"},
+  {"n": "Inorbit Malls (India) Private Limited", "c": "Inorbit Malls (India) Private Limited", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "HCC", "c": "HCC", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Infrastructure & Construction", "seg": "Nurturing"},
+  {"n": "GMR Group", "c": "GMR Group", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Government & Other", "seg": "Nurturing"},
+  {"n": "Arvind Techno", "c": "Arvind Techno", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Corporate & Technology", "seg": "Nurturing"},
+  {"n": "Honer Homes", "c": "Honer Homes", "o": "Akash Parmar - 235", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing"},
+];
+
+function stageLabel(meta, s) { return meta[s]?.label || s; }
+function industryLabel(i) { return i === "Unclassified" ? "Unclassified / No company" : i; }
+
+let activeSegment = 'All';
+let activeIndustry = 'All';
+let printActiveOnly = false;
+const ARCHIVED_STAGE_NAMES = ['Won', 'Lost', 'Disqualified'];
+
+function stripArchivedStages(stageDict) {
+  if (!printActiveOnly) return stageDict;
+  const out = {};
+  Object.entries(stageDict).forEach(([stage, count]) => {
+    if (!ARCHIVED_STAGE_NAMES.includes(stage)) out[stage] = count;
+  });
+  return out;
+}
+
+function currentByStage() {
+  if (activeSegment === 'All') return stripArchivedStages(sumDicts(byStageBySegment.Discovery, byStageBySegment.Nurturing));
+  return stripArchivedStages(byStageBySegment[activeSegment]);
+}
+function currentByOwner() {
+  if (activeSegment === 'All') return byOwnerAll;
+  return byOwnerBySegment[activeSegment];
+}
+function currentByIndustry() {
+  if (activeSegment === 'All') return byIndustryAll;
+  return byIndustryBySegment[activeSegment];
+}
+function currentStageMeta() {
+  if (activeSegment === 'Nurturing') return NURTURING_STAGE_META;
+  if (activeSegment === 'Discovery') return DISCOVERY_STAGE_META;
+  return stageMetaCombined();
+}
+
+const segStackBar = document.getElementById('segStackBar');
+const segStackLegend = document.getElementById('segStackLegend');
+function renderSegmentSplit() {
+  segStackBar.innerHTML = '';
+  segStackLegend.innerHTML = '';
+  const totals = { Discovery: 137, Nurturing: 46 };
+  const total = totals.Discovery + totals.Nurturing;
+  ['Discovery','Nurturing'].forEach(seg => {
+    const count = totals[seg];
+    const pct = (count/total*100);
+    const segEl = document.createElement('div');
+    segEl.className = 'stack-seg';
+    segEl.style.width = pct + '%';
+    segEl.style.background = SEGMENT_META[seg].color;
+    segEl.title = `${seg}: ${count} (${pct.toFixed(1)}%)`;
+    segStackBar.appendChild(segEl);
+
+    const legendItem = document.createElement('div');
+    legendItem.className = 'stack-legend-item';
+    legendItem.innerHTML = `<span class="swatch" style="background:${SEGMENT_META[seg].color}"></span>${seg} <b>${count}</b>`;
+    segStackLegend.appendChild(legendItem);
+  });
+}
+
+const stackBar = document.getElementById('stackBar');
+const stackLegend = document.getElementById('stackLegend');
+const stageCardTitle = document.getElementById('stageCardTitle');
+const stageCardCount = document.getElementById('stageCardCount');
+
+function renderStackBar() {
+  stackBar.innerHTML = '';
+  stackLegend.innerHTML = '';
+  const meta = currentStageMeta();
+  const byStage = currentByStage();
+  const total = Object.values(byStage).reduce((a,b)=>a+b,0);
+  const orderedStages = Object.keys(meta).sort((a,b)=>meta[a].order-meta[b].order);
+
+  stageCardTitle.textContent = activeSegment === 'All' ? 'Leads by Stage' : `${activeSegment} by Stage`;
+  stageCardCount.textContent = `${total} total`;
+
+  orderedStages.forEach(stage => {
+    const count = byStage[stage] || 0;
+    if (count === 0) return;
+    const pct = (count/total*100);
+    const seg = document.createElement('div');
+    seg.className = 'stack-seg';
+    seg.style.width = pct + '%';
+    seg.style.background = meta[stage].color;
+    seg.title = `${stageLabel(meta, stage)}: ${count} (${pct.toFixed(1)}%)`;
+    stackBar.appendChild(seg);
+
+    const legendItem = document.createElement('div');
+    legendItem.className = 'stack-legend-item';
+    legendItem.innerHTML = `<span class="swatch" style="background:${meta[stage].color}"></span>${stageLabel(meta, stage)} <b>${count}</b>`;
+    stackLegend.appendChild(legendItem);
+  });
+}
+
+const stageBars = document.getElementById('stageBars');
+const stageBreakdownNote = document.getElementById('stageBreakdownNote');
+
+function renderStageBars() {
+  stageBars.innerHTML = '';
+  const meta = currentStageMeta();
+  const byStage = currentByStage();
+  const orderedStages = Object.keys(meta).sort((a,b)=>meta[a].order-meta[b].order);
+  const maxStage = Math.max(...Object.values(byStage).filter(v=>v>0), 1);
+
+  stageBreakdownNote.textContent = activeSegment === 'All' ? 'Discovery + Nurturing stages' : activeSegment;
+
+  orderedStages.forEach(stage => {
+    const count = byStage[stage] || 0;
+    if (count === 0) return;
+    const pct = (count/maxStage*100);
+    const row = document.createElement('div');
+    row.className = 'stage-bar-row';
+    row.innerHTML = `
+      <div class="stage-bar-label"><span class="swatch" style="background:${meta[stage].color}"></span>${stageLabel(meta, stage)}</div>
+      <div class="stage-bar-track"><div class="stage-bar-fill" style="width:${pct}%; background:${meta[stage].color}"></div></div>
+      <div class="stage-bar-count">${count}</div>
+    `;
+    stageBars.appendChild(row);
+  });
+}
+
+const ownerRows = document.getElementById('ownerRows');
+const ownerCountTag = document.getElementById('ownerCountTag');
+
+const INACTIVE_OWNERS = new Set(['Arun', 'Anushi Surya']);
+
+function renderOwnerWorkload() {
+  ownerRows.innerHTML = '';
+  const byOwner = currentByOwner();
+  const maxOwner = Math.max(...Object.values(byOwner), 1);
+  const activeOwners = Object.entries(byOwner).filter(([name]) => !INACTIVE_OWNERS.has(name)).sort((a,b)=>b[1]-a[1]);
+  const inactiveOwners = Object.entries(byOwner).filter(([name]) => INACTIVE_OWNERS.has(name)).sort((a,b)=>b[1]-a[1]);
+  const sortedOwners = [...activeOwners, ...inactiveOwners];
+  ownerCountTag.textContent = `${sortedOwners.length} reps`;
+
+  sortedOwners.forEach(([name, count]) => {
+    const isInactive = INACTIVE_OWNERS.has(name);
+    const initials = name.split(' ').filter(w=>w[0]===w[0].toUpperCase()).slice(0,2).map(w=>w[0]).join('') || name.slice(0,2).toUpperCase();
+    const pct = (count/maxOwner*100);
+    const row = document.createElement('div');
+    row.className = 'owner-row' + (isInactive ? ' owner-row-inactive' : '');
+    row.innerHTML = `
+      <div class="owner-name-row">
+        <div class="owner-avatar">${initials}</div>
+        <span class="owner-name">${name.replace(/ - \d+$/,'')}${isInactive ? ' <span class=\"owner-tag-exited\">No longer with company</span>' : ''}</span>
+      </div>
+      <span class="owner-count-badge">${count}</span>
+      <div class="owner-track"><div class="owner-fill" style="width:${pct}%"></div></div>
+    `;
+    ownerRows.appendChild(row);
+  });
+}
+
+const chipBar = document.getElementById('industryChips');
+
+function renderChips() {
+  chipBar.innerHTML = '';
+  const byIndustry = currentByIndustry();
+  const totalLeadsForChips = Object.values(byIndustry).reduce((a,b)=>a+b,0);
+
+  const allChip = document.createElement('button');
+  allChip.className = 'chip' + (activeIndustry === 'All' ? ' is-active' : '');
+  allChip.setAttribute('role','tab');
+  allChip.setAttribute('aria-selected', activeIndustry === 'All');
+  allChip.innerHTML = `All <span class="chip-count">${totalLeadsForChips}</span>`;
+  allChip.addEventListener('click', () => { activeIndustry = 'All'; renderChips(); renderTable(); });
+  chipBar.appendChild(allChip);
+
+  INDUSTRY_ORDER.forEach(ind => {
+    const count = byIndustry[ind] || 0;
+    if (!count) return;
+    const chip = document.createElement('button');
+    chip.className = 'chip' + (activeIndustry === ind ? ' is-active' : '');
+    chip.setAttribute('role','tab');
+    chip.setAttribute('aria-selected', activeIndustry === ind);
+    chip.innerHTML = `${industryLabel(ind)} <span class="chip-count">${count}</span>`;
+    chip.addEventListener('click', () => { activeIndustry = ind; renderChips(); renderTable(); });
+    chipBar.appendChild(chip);
+  });
+}
+
+const leadsBody = document.getElementById('leadsBody');
+const tableNote = document.getElementById('tableNote');
+const tableCount = document.getElementById('tableCount');
+
+const ARCHIVED_STAGES = new Set(['Won', 'Lost', 'Disqualified']);
+
+function makeLeadRow(l, stage, meta) {
+  const stMeta = meta[stage] || DISCOVERY_STAGE_META[stage] || NURTURING_STAGE_META[stage];
+  const tr = document.createElement('tr');
+  const ownerShort = l.o.replace(/ - \d+$/,'');
+  const segBadgeColor = SEGMENT_META[l.seg].color;
+  const taskInfo = TASK_NOTES[l.n];
+  if (taskInfo && taskInfo.isNew) tr.classList.add('row-new-task');
+  const actionCell = taskInfo
+    ? `<div class="task-note">${taskInfo.note}${taskInfo.isNew ? '<span class="new-badge"><span class="dot"></span>New</span>' : ''}<br><span style="color:var(--text-muted)">Status: ${taskInfo.status}</span></div>`
+    : `<span class="task-empty">Not logged</span>`;
+  const cost = LEAD_COSTS[l.n];
+  const arrCell = cost ? formatINR(cost.arr) : '<span class="task-empty">—</span>';
+  tr.innerHTML = `
+    <td class="lead-name">${l.n}</td>
+    <td class="lead-company">${l.c || '—'}</td>
+    <td>${ownerShort}</td>
+    <td><span class="stage-chip" style="background:transparent; color:${segBadgeColor}; border:1px solid ${segBadgeColor}"><span class="dot" style="background:${segBadgeColor}"></span>${l.seg}</span></td>
+    <td><span class="stage-chip" style="background:${stMeta.bg}; color:${stMeta.color}"><span class="dot" style="background:${stMeta.color}"></span>${stageLabel(meta, stage)}</span></td>
+    <td>${arrCell}</td>
+    <td>${actionCell}</td>
+  `;
+  return tr;
+}
+
+function renderTable() {
+  leadsBody.innerHTML = '';
+  let filtered = sampleLeads;
+  if (activeSegment !== 'All') filtered = filtered.filter(l => l.seg === activeSegment);
+  if (activeIndustry !== 'All') filtered = filtered.filter(l => l.i === activeIndustry);
+
+  const meta = currentStageMeta();
+  const orderedStages = Object.keys(meta).sort((a,b)=>meta[a].order-meta[b].order);
+  const grouped = {};
+  filtered.forEach(l => { (grouped[l.s] = grouped[l.s] || []).push(l); });
+
+  const activeStages = orderedStages.filter(s => !ARCHIVED_STAGES.has(s));
+  const archivedStages = orderedStages.filter(s => ARCHIVED_STAGES.has(s));
+
+  activeStages.forEach(stage => {
+    const leads = grouped[stage];
+    if (!leads || !leads.length) return;
+    const stMeta = meta[stage] || DISCOVERY_STAGE_META[stage] || NURTURING_STAGE_META[stage];
+
+    const divider = document.createElement('tr');
+    divider.className = 'group-divider';
+    divider.innerHTML = `<td colspan="7"><div class="group-divider-inner"><span class="swatch" style="background:${stMeta.color}"></span>${stageLabel(meta, stage)} &middot; ${leads.length} shown<div class="line"></div></div></td>`;
+    leadsBody.appendChild(divider);
+
+    leads.forEach(l => leadsBody.appendChild(makeLeadRow(l, stage, meta)));
+  });
+
+  let archivedCount = 0;
+  const archivedRowEls = [];
+  archivedStages.forEach(stage => {
+    const leads = grouped[stage];
+    if (!leads || !leads.length) return;
+    archivedCount += leads.length;
+    leads.forEach(l => {
+      const tr = makeLeadRow(l, stage, meta);
+      tr.classList.add('archived-row');
+      archivedRowEls.push(tr);
+    });
+  });
+
+  if (archivedCount > 0) {
+    const toggleRow = document.createElement('tr');
+    toggleRow.className = 'archive-toggle-row';
+    const toggleTd = document.createElement('td');
+    toggleTd.colSpan = 7;
+    const btn = document.createElement('button');
+    btn.className = 'archive-toggle';
+    btn.innerHTML = `<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>Won / Lost / Disqualified <span class="count-tag">${archivedCount} hidden</span>`;
+    btn.addEventListener('click', () => {
+      const open = btn.classList.toggle('is-open');
+      archivedRowEls.forEach(r => r.classList.toggle('is-visible', open));
+    });
+    toggleTd.appendChild(btn);
+    toggleRow.appendChild(toggleTd);
+    leadsBody.appendChild(toggleRow);
+    archivedRowEls.forEach(r => leadsBody.appendChild(r));
+  }
+
+  const segLabel = activeSegment === 'All' ? 'both segments' : activeSegment;
+  tableCount.textContent = activeIndustry === 'All' ? segLabel : `${industryLabel(activeIndustry)} · ${segLabel}`;
+  tableNote.textContent = `Showing ${filtered.length} sampled leads (${segLabel}${activeIndustry !== 'All' ? ', ' + industryLabel(activeIndustry) : ''}) — full list lives in Togile → Discovery / Nurturing.`;
+}
+
+const segmentToggle = document.getElementById('segmentToggle');
+const statTotal = document.getElementById('statTotal');
+const statTotalSub = document.getElementById('statTotalSub');
+const statOpen = document.getElementById('statOpen');
+const statOpenSub = document.getElementById('statOpenSub');
+const statWon = document.getElementById('statWon');
+const statWonSub = document.getElementById('statWonSub');
+const statLost = document.getElementById('statLost');
+const statLostSub = document.getElementById('statLostSub');
+const statArr = document.getElementById('statArr');
+const statArrSub = document.getElementById('statArrSub');
+const segmentSplitCard = document.getElementById('segmentSplitCard');
+
+const OPEN_STAGES = {
+  Discovery: ["Prospects","Contacted","SalesQualifiedLead","Demo"],
+  Nurturing: ["Proposal","Value Demonstration/POC"]
+};
+
+function formatINR(amount) {
+  if (amount >= 10000000) return `₹${(amount/10000000).toFixed(2)} Cr`;
+  if (amount >= 100000) return `₹${(amount/100000).toFixed(1)} L`;
+  return `₹${amount.toLocaleString('en-IN')}`;
+}
+
+function computeOpenArr() {
+  const segments = activeSegment === 'All' ? ['Discovery','Nurturing'] : [activeSegment];
+  let totalArr = 0, withCost = 0, missing = 0;
+  sampleLeads.forEach(l => {
+    if (!segments.includes(l.seg)) return;
+    if (!OPEN_STAGES[l.seg].includes(l.s)) return;
+    const cost = LEAD_COSTS[l.n];
+    if (cost) { totalArr += cost.arr; withCost++; }
+    else { missing++; }
+  });
+  return { totalArr, withCost, missing };
+}
+
+function computeStats() {
+  const segments = activeSegment === 'All' ? ['Discovery','Nurturing'] : [activeSegment];
+  let total = 0, open = 0, won = 0, lost = 0;
+  segments.forEach(seg => {
+    const stages = stripArchivedStages(byStageBySegment[seg]);
+    Object.entries(stages).forEach(([stage, count]) => {
+      total += count;
+      if (OPEN_STAGES[seg].includes(stage)) open += count;
+      if (stage === 'Won') won += count;
+      if (stage === 'Lost') lost += count;
+    });
+  });
+  return { total, open, won, lost };
+}
+
+function renderStats() {
+  const { total, open, won, lost } = computeStats();
+  statTotal.textContent = total;
+  statOpen.textContent = open;
+  statWon.textContent = won;
+  statLost.textContent = lost;
+  statWonSub.textContent = total ? `${(won/total*100).toFixed(1)}% of total` : '—';
+  statLostSub.textContent = total ? `${(lost/total*100).toFixed(1)}% of total` : '—';
+  statOpenSub.textContent = 'active, not yet won/lost';
+
+  const { totalArr, withCost, missing } = computeOpenArr();
+  statArr.textContent = formatINR(totalArr);
+  statArrSub.textContent = missing ? `${withCost} of ${open} leads costed` : 'across open pipeline';
+
+  if (activeSegment === 'All') {
+    statTotalSub.textContent = '137 Discovery · 46 Nurturing';
+    segmentSplitCard.style.display = '';
+  } else {
+    statTotalSub.textContent = `in ${activeSegment}`;
+    segmentSplitCard.style.display = 'none';
+  }
+}
+
+const taskFeed = document.getElementById('taskFeed');
+const taskFeedCount = document.getElementById('taskFeedCount');
+const leadOwnerByName = Object.fromEntries(sampleLeads.map(l => [l.n, l]));
+
+function renderTaskFeed() {
+  taskFeed.innerHTML = '';
+  const entries = Object.entries(TASK_NOTES);
+  taskFeedCount.textContent = `${entries.length} update${entries.length === 1 ? '' : 's'}`;
+
+  if (!entries.length) {
+    taskFeed.innerHTML = `<div class="task-feed-empty">No task updates logged yet.</div>`;
+    return;
+  }
+
+  entries.forEach(([leadName, info]) => {
+    const lead = leadOwnerByName[leadName];
+    const ownerShort = (lead?.o || '?').replace(/ - \d+$/,'');
+    const initials = ownerShort.split(' ').filter(w=>w.length && w[0]===w[0].toUpperCase()).slice(0,2).map(w=>w[0]).join('') || ownerShort.slice(0,2).toUpperCase();
+    const item = document.createElement('div');
+    item.className = 'task-feed-item';
+    item.innerHTML = `
+      <div class="task-feed-avatar">${initials}</div>
+      <div class="task-feed-body">
+        <div class="task-feed-top">
+          <span class="task-feed-name">${ownerShort}</span>
+          <span class="task-feed-lead">&middot; ${leadName}</span>
+          ${info.isNew ? '<span class="new-badge"><span class="dot"></span>New</span>' : ''}
+        </div>
+        <div class="task-feed-note">${info.note}</div>
+        <div class="task-feed-meta"><span class="task-feed-status">${info.status}</span></div>
+      </div>
+    `;
+    taskFeed.appendChild(item);
+  });
+}
+
+function renderAll() {
+  renderStats();
+  renderSegmentSplit();
+  renderStackBar();
+  renderStageBars();
+  renderOwnerWorkload();
+  renderChips();
+  renderTable();
+}
+
+renderTaskFeed();
+
+Array.from(segmentToggle.querySelectorAll('.seg-btn')).forEach(btn => {
+  btn.addEventListener('click', () => {
+    activeSegment = btn.dataset.seg;
+    activeIndustry = 'All';
+    Array.from(segmentToggle.querySelectorAll('.seg-btn')).forEach(b => {
+      b.classList.toggle('is-active', b === btn);
+      b.setAttribute('aria-selected', b === btn);
+    });
+    renderAll();
+  });
+});
+
+renderAll();
+
+const themeToggle = document.getElementById('themeToggle');
+const root = document.documentElement;
+themeToggle.addEventListener('click', () => {
+  const current = root.getAttribute('data-theme') || 'light';
+  root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+});
+
+</script>
