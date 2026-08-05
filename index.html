@@ -520,6 +520,27 @@
     white-space: nowrap;
   }
 
+  .source-arr-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .source-arr-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-subtle);
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    padding: 5px 10px;
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
+  }
+  .source-arr-chip b { color: var(--text-normal); font-weight: 600; }
+  .source-arr-chip .val { color: var(--brand-dark); font-weight: 700; }
+
   /* ---------- Industry chip bar ---------- */
   .chip-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 
@@ -758,7 +779,7 @@
       </div>
     </div>
     <div class="meta-row">
-      <span class="asof-pill"><span class="dot"></span>Data as of 04 Aug 2026, 1:25 PM IST &middot; Source: Togile</span>
+      <span class="asof-pill"><span class="dot"></span>Data as of 05 Aug 2026, 2:13 PM IST &middot; Source: Togile</span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
         <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
       </button>
@@ -793,6 +814,8 @@
       <div class="value-row"><span class="value" id="statLost">61</span><span class="sub" id="statLostSub">33.3% of total</span></div>
     </div>
   </div>
+
+  <div class="source-arr-row" id="sourceArrRow"></div>
 
   <div class="main-grid">
 
@@ -843,7 +866,7 @@
       <div class="card">
         <div class="callout callout-info">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-          <div><b>Task data pulled via Togile's API.</b> Every one of the 56 open leads/deals was checked directly through Togile's official Tasks API, across all owners — 44 have a logged task (some with no note text, shown as "Task logged" with the task name), and 40 are from the last 14 days, highlighted <span class="new-dot"></span> New. 1 new lead (Avtar · Zepto) was added; 2 advanced to Contacted; 1 moved to Lost.</div>
+          <div><b>Potential ARR now comes directly from Togile's Estimated Value field</b> (Nurturing only — Discovery leads don't carry a value in Togile yet, per how the pipeline works). Task data pulled via Togile's API — 57 open leads/deals checked, 45 have a logged task, 41 from the last 14 days, highlighted <span class="new-dot"></span> New. 1 new lead (Muhammed Musa · Livspace) added; 7 stage changes applied.</div>
         </div>
       </div>
 
@@ -870,6 +893,7 @@
                 <th>Owner</th>
                 <th>Segment</th>
                 <th>Stage</th>
+                <th>Source</th>
                 <th>Potential ARR</th>
                 <th>Next action</th>
               </tr>
@@ -916,7 +940,7 @@ function stageMetaCombined() {
 }
 
 const byStageBySegment = {
-  Discovery: {"Won":39,"Lost":53,"Contacted":9,"Demo":7,"SalesQualifiedLead":9,"Prospects":11,"Unspecified":6,"Disqualified":4},
+  Discovery: {"Won":39,"Lost":53,"Contacted":10,"Demo":6,"SalesQualifiedLead":9,"Prospects":12,"Disqualified":10},
   Nurturing: {"Proposal":8,"Value Demonstration/POC":10,"Upsell Proposal":2,"Lost":24,"Won":6}
 };
 
@@ -947,29 +971,30 @@ const SEGMENT_META = {
 };
 
 const TASK_NOTES = {
+  "Swapnil Kadam": { note: "Follow-up call to reschedule the missed demo.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:55:25.948Z" },
+  "Satish": { note: "Connected with Mr. Satish, yet to get his time for the demo call. ", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:49:19.969Z" },
+  "Dowlath Pasha": { note: "Follow-up call to reschedule the missed demo.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:56:04.836Z" },
+  "Avinash Kotla": { note: "Platform Demo Outreach (Dashboard–Field Gap) Problem statement identified: Gap between dashboards and field data capturing Currently in the process of reaching out to the client Next step: Schedule and showcase platform demo addressing this gap", status: "In Progress", isNew: true, updatedAt: "2026-08-03T08:14:10.156Z" },
+  "Mrs. Vishaka Waghmare": { note: "- Already contacted: Cluster Planning Head, based in Ahmedabad - Context: Subsidiary funded by Adani Group - Status: Ongoing follow-up Action plan: 1. Call to identify their requirement and check if any existing systems are in use 2. Create a value document/video tailored to their projects and share it", status: "Open", isNew: true, updatedAt: "2026-08-03T13:04:38.539Z" },
   "Mayur Somani": { note: "- Status: Already contacted; awaiting response - Action plan: Continue follow-up to schedule a platform demo — virtual or in-person", status: "Open", isNew: true, updatedAt: "2026-08-03T12:57:48.055Z" },
+  "Amit Deshmukh": { note: "- Current contact level: Planning Manager - Goal: Reach a decision-maker — Digital/PMO Head level - Action plan: Follow up to identify and connect with the right senior contact, then arrange a demo", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:51:44.357Z" },
+  "Bhaskar K": { note: "- Status: Genuine requirement exists, but decision process is slow - Estimated timeline to close: At least one quarter - Action plan: Stay in touch, share relevant assets showcasing real estate/realty monitoring use cases", status: "Open", isNew: true, updatedAt: "2026-08-03T12:49:38.626Z" },
+  "Saptarshi Basu": { note: "- Details already shared with the concerned person - Contact confirmed he'll forward documents to the internal digital team - Status: Awaiting response-  in follow-up - Client currently implementing 4D & 5D models and progress monitoring in-house - Gap identified: Lacking Field Management and BIM assistance- potential entry point for Inncircles", status: "In Progress", isNew: true, updatedAt: "2026-08-03T09:02:07.036Z" },
+  "Aditya": { note: "Task logged: Not responding to calls. (no note added)", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:01:13.278Z" },
   "Narendra Verma": { note: "- Objective: Showcase use cases for power transmission, solar projects, and substations - Action: Secure an appointment — either in-person or via Teams call", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:54:39.140Z" },
   "Anant Salunkhe": { note: "- Connected with MEP Vice President (Navi Mumbai office) - Planning to connect with the right Digitalization/PMO Head at the Hyderabad office - Action plan: Follow up to identify and reach the correct contact", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:33:48.127Z" },
-  "S V Koteswara Rao": { note: "Action: Follow up and align a demo showcasing value for their current infrastructure investments Focus: Demonstrate how the platform monitors construction projects relevant to their portfolio Next step: Schedule the demo", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:30:51.760Z" },
-  "Dowlath Pasha": { note: "Follow-up call to reschedule the missed demo.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:56:04.836Z" },
-  "Swapnil Kadam": { note: "Follow-up call to reschedule the missed demo.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:55:25.948Z" },
-  "Krupa J": { note: "MD is in travel to UK, will resume the discussion after he comes back to India on 18th Aug.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:53:49.655Z" },
+  "Harsh Desai": { note: "- Current point of contact is below management/decision-making level - Action: Identify and reach the right senior/leadership contact to pitch to - Goal: Move the conversation up to a decision-maker level", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:22:23.018Z" },
+  "Suhotra Banerjee": { note: "- Current state: Client generates 3D models for project visualizations — somewhat digitalized on the modeling side - Gap identified: No field management application in place - Action plan: Continue following up; assess their actual need - Target: Identify and reach the right contact within the next 2 weeks", status: "In Progress", isNew: true, updatedAt: "2026-08-03T13:00:56.261Z" },
   "S Madan Kumar": { note: "Task logged: Follow-up for Demo for the entire Team (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T05:07:40.916Z" },
   "Pravindra": { note: "Task logged: Follow-up Call (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T10:43:26.458Z" },
-  "Satish": { note: "Connected with Mr. Satish, yet to get his time for the demo call. ", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:49:19.969Z" },
-  "Avinash Kotla": { note: "Platform Demo Outreach (Dashboard–Field Gap) Problem statement identified: Gap between dashboards and field data capturing Currently in the process of reaching out to the client Next step: Schedule and showcase platform demo addressing this gap", status: "In Progress", isNew: true, updatedAt: "2026-08-03T08:14:10.156Z" },
-  "Saptarshi Basu": { note: "- Details already shared with the concerned person - Contact confirmed he'll forward documents to the internal digital team - Status: Awaiting response-  in follow-up - Client currently implementing 4D & 5D models and progress monitoring in-house - Gap identified: Lacking Field Management and BIM assistance- potential entry point for Inncircles", status: "In Progress", isNew: true, updatedAt: "2026-08-03T09:02:07.036Z" },
-  "Amit Deshmukh": { note: "- Current contact level: Planning Manager - Goal: Reach a decision-maker — Digital/PMO Head level - Action plan: Follow up to identify and connect with the right senior contact, then arrange a demo", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:51:44.357Z" },
-  "Mrs. Vishaka Waghmare": { note: "- Already contacted: Cluster Planning Head, based in Ahmedabad - Context: Subsidiary funded by Adani Group - Status: Ongoing follow-up Action plan: 1. Call to identify their requirement and check if any existing systems are in use 2. Create a value document/video tailored to their projects and share it", status: "Open", isNew: true, updatedAt: "2026-08-03T13:04:38.539Z" },
-  "Bhaskar K": { note: "- Status: Genuine requirement exists, but decision process is slow - Estimated timeline to close: At least one quarter - Action plan: Stay in touch, share relevant assets showcasing real estate/realty monitoring use cases", status: "Open", isNew: true, updatedAt: "2026-08-03T12:49:38.626Z" },
-  "Aditya": { note: "Task logged: Not responding to calls. (no note added)", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:01:13.278Z" },
-  "Suhotra Banerjee": { note: "- Current state: Client generates 3D models for project visualizations — somewhat digitalized on the modeling side - Gap identified: No field management application in place - Action plan: Continue following up; assess their actual need - Target: Identify and reach the right contact within the next 2 weeks", status: "In Progress", isNew: true, updatedAt: "2026-08-03T13:00:56.261Z" },
-  "Smruthi Ranjan": { note: "Adani Road Projects  Pursuit — Next Steps - Detailed presentation already shared with the client's representative (in addition to the road project materials) - Security documentation for the Inncircles application also shared - Next step: VAPT (Vulnerability Assessment and Penetration Testing) - POC planned for one project in Bangalore Priority: High", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:19:43.620Z" },
   "Vishal Mudda": { note: "- Approach channel: LinkedIn (client showed interest via LinkedIn campaign) - Current status: Unable to reach the contact so far - Action plan: Continue attempting to connect via LinkedIn for up to 1 week If no response within that window: Close the pursuit", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:44:33.906Z" },
-  "BABUL GOMASTA": { note: "- Requirement: Automate DPRs (Daily Progress Reports) and project progress reporting for management dashboards - Action plan: Find the right connect to reach top management - Location: Nagpur", status: "In Progress", isNew: true, updatedAt: "2026-08-03T13:06:37.771Z" },
-  "Abhinav Agarwal": { note: "- Client has existing systems in place - Goal: Show how Inncircles can effectively complement/add value to their current setup, rather than replace it Next action: Align a call to showcase a demo", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:35:33.864Z" },
+  "Smruthi Ranjan": { note: "Adani Road Projects  Pursuit — Next Steps - Detailed presentation already shared with the client's representative (in addition to the road project materials) - Security documentation for the Inncircles application also shared - Next step: VAPT (Vulnerability Assessment and Penetration Testing) - POC planned for one project in Bangalore Priority: High", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:19:43.620Z" },
+  "S V Koteswara Rao": { note: "Action: Follow up and align a demo showcasing value for their current infrastructure investments Focus: Demonstrate how the platform monitors construction projects relevant to their portfolio Next step: Schedule the demo", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:30:51.760Z" },
   "NHAI": { note: "Task logged: Submission of Bid along with NKI (no note added)", status: "In Progress", isNew: true, updatedAt: "2026-08-03T10:44:12.207Z" },
+  "Abhinav Agarwal": { note: "- Client has existing systems in place - Goal: Show how Inncircles can effectively complement/add value to their current setup, rather than replace it Next action: Align a call to showcase a demo", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:35:33.864Z" },
+  "BABUL GOMASTA": { note: "- Requirement: Automate DPRs (Daily Progress Reports) and project progress reporting for management dashboards - Action plan: Find the right connect to reach top management - Location: Nagpur", status: "In Progress", isNew: true, updatedAt: "2026-08-03T13:06:37.771Z" },
   "Atul Shirke": { note: "- Action: Follow up with Turner's Country Head to schedule a demo - Goal: Understand their current systems to identify how Inncircles can create value - Action plan: Follow up via WhatsApp and email over the next 7–10 days", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:47:10.111Z" },
+  "Krupa J": { note: "MD is in travel to UK, will resume the discussion after he comes back to India on 18th Aug.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:53:49.655Z" },
   "Santosh Sahu,Ameya": { note: "Got a call from Santosh, DGM–Projects at BPCL, through Siga Srinivas Rao, Chief GM at BPCL, who shared my contact with him. I spoke with Santosh, and he mentioned that they are currently using only Primavera P6 and MS Project and are not using any project monitoring system.", status: "Completed", isNew: false, updatedAt: "2026-04-10T07:02:57.931Z" },
   "Masood Khan": { note: "Tried reaching him for a demo but call not answered.", status: "Completed", isNew: false, updatedAt: "2026-03-18T14:02:38.923Z" },
   "Vinodh": { note: "A follow-up email has been sent to him asking for a 30 min discovery call", status: "Completed", isNew: false, updatedAt: "2026-02-11T13:56:13.134Z" },
@@ -994,240 +1019,219 @@ const TASK_NOTES = {
 };
 
 const LEAD_COSTS = {
-  "SRR": { arr: 4800000, cv: 16800000 },
-  "Gulfspic": { arr: 2000000, cv: 7000000 },
-  "Avcon Technics Pvt. Ltd.": { arr: 1600000, cv: 5600000 },
-  "Ramky Estates & Farms Limited": { arr: 300000, cv: 1050000 },
-  "Dowlath Pasha": { arr: 2000000, cv: 7000000 },
-  "Swapnil Kadam": { arr: 2000000, cv: 7000000 },
-  "Krupa J": { arr: 2500000, cv: 8750000 },
-  "S Madan Kumar": { arr: 2500000, cv: 8750000 },
-  "Rajendra Singh": { arr: 2500000, cv: 8750000 },
-  "Pravindra": { arr: 0, cv: 0 },
-  "Satish": { arr: 5000000, cv: 17500000 },
-  "Avinash Kotla": { arr: 2500000, cv: 8750000 },
-  "Sandesh S Kamblee": { arr: 2000000, cv: 7000000 },
-  "C": { arr: 2500000, cv: 8750000 },
-  "Vaibhav": { arr: 2000000, cv: 7000000 },
-  "saravanan": { arr: 0, cv: 0 },
-  "Narendra Verma": { arr: 2000000, cv: 7000000 },
-  "Saptarshi Basu": { arr: 2000000, cv: 7000000 },
-  "Amit Deshmukh": { arr: 2500000, cv: 8750000 },
-  "Mayur Somani": { arr: 2000000, cv: 7000000 },
-  "Vishwajit Kate": { arr: 2000000, cv: 7000000 },
-  "Mrs. Vishaka Waghmare": { arr: 2000000, cv: 7000000 },
-  "Brij": { arr: 2500000, cv: 8750000 },
-  "Bhaskar K": { arr: 2500000, cv: 8750000 },
-  "Aditya (Lenskart)": { arr: 2500000, cv: 8750000 },
-  "Anant Salunkhe": { arr: 2500000, cv: 8750000 },
-  "Harsh Desai": { arr: 2000000, cv: 7000000 },
-  "Suhotra Banerjee": { arr: 2000000, cv: 7000000 },
-  "Paras": { arr: 2000000, cv: 7000000 },
-  "Shahanshah Alam": { arr: 2000000, cv: 7000000 },
-  "Likhitha": { arr: 2000000, cv: 7000000 },
-  "RAJU": { arr: 2000000, cv: 7000000 },
-  "Smruthi Ranjan": { arr: 5000000, cv: 17500000 },
-  "Vishwas": { arr: 2000000, cv: 7000000 },
-  "Vishal Mudda": { arr: 25000000, cv: 87500000 },
-  "Soumik Paul": { arr: 2000000, cv: 7000000 },
-  "S V Koteswara Rao": { arr: 2000000, cv: 7000000 },
-  "Panchu": { arr: 2000000, cv: 7000000 },
-  "Lead (GHB)": { arr: 25000000, cv: 87500000 },
-  "BABUL GOMASTA": { arr: 2500000, cv: 8750000 },
-  "Abhinav Agarwal": { arr: 2500000, cv: 8750000 },
-  "NHAI": { arr: 25600000, cv: 30000000 },
-  "Prateek Mudia": { arr: 2500000, cv: 8750000 },
-  "Rahul Negi": { arr: 2000000, cv: 7000000 },
-  "Atul Shirke": { arr: 2000000, cv: 7000000 },
-  "Vishal": { arr: 2500000, cv: 8750000 },
-  "Sesha Sai": { arr: 0, cv: 0 },
-  "Santosh Sahu,Ameya": { arr: 2000000, cv: 7000000 },
-  "Prerna K": { arr: 0, cv: 0 },
-  "Masood Khan": { arr: 2500000, cv: 8750000 },
-  "Vinodh": { arr: 2000000, cv: 7000000 },
-  "Birdi Systems Inc": { arr: 1000000, cv: 3500000 },
-  "CARE Hospitals": { arr: 2000000, cv: 7000000 },
-  "Mangalmurty Realty": { arr: 2000000, cv: 7000000 },
-  "Ankura Homes": { arr: 2000000, cv: 7000000 },
-  "Sri Avantika Contractor ltd": { arr: 1000000, cv: 3500000 },
-  "Linesight": { arr: 1000000, cv: 3500000 },
-  "G R Infraprojects Limited": { arr: 2000000, cv: 7000000 },
-  "Bi RIDE": { arr: 15000000, cv: 52500000 },
-  "TTD": { arr: 30000000, cv: 105000000 },
-  "MEIL (Megha Engineering & Infrastructures Ltd.)": { arr: 2500000, cv: 8750000 },
-  "NTPC Limited (formerly National Thermal Power Corporation)": { arr: 2500000, cv: 8750000 },
-  "Vedant Group": { arr: 2500000, cv: 8750000 },
-  "Almaviva Saudi Arabia": { arr: 5000000, cv: 17500000 },
-  "Inorbit Malls (India) Private Limited": { arr: 2000000, cv: 7000000 },
-  "HCC": { arr: 2500000, cv: 8750000 },
-  "GMR Group": { arr: 2500000, cv: 8750000 },
-  "Arvind Techno": { arr: 1500000, cv: 5250000 },
-  "Honer Homes": { arr: 1000000, cv: 3500000 },
-  "Gaurav (CEM India)": { arr: 2000000, cv: 7000000 },
-  "Gaurav (HDFC Capital)": { arr: 0, cv: 0 }
+  "Aakriti Constructions and Builders": { arr: 340000 },
+  "Almaviva Saudi Arabia": { arr: 15000000 },
+  "Ananda Homes": { arr: 0 },
+  "Ankura Homes": { arr: 250000 },
+  "Anvita Group": { arr: 65000 },
+  "Arvind Techno": { arr: 300000 },
+  "Ashoka Real Estate - Institutional": { arr: 300000 },
+  "Avcon Technics Pvt. Ltd.": { arr: 1600000 },
+  "Bhartiya Urban": { arr: 2650000 },
+  "Bi RIDE": { arr: 84000000 },
+  "Birdi Systems Inc": { arr: 65000 },
+  "CARE Hospitals": { arr: 65000 },
+  "E-infra": { arr: 1090000 },
+  "G R Infraprojects Limited": { arr: 65000 },
+  "GMR Group": { arr: 2500000 },
+  "Gulfspic": { arr: 2000000 },
+  "HCC": { arr: 2500000 },
+  "Honer Homes": { arr: 150000 },
+  "Hubtown": { arr: 200000 },
+  "Inorbit Malls (India) Private Limited": { arr: 2000000 },
+  "Jindal Renewables": { arr: 65000 },
+  "KMV Group": { arr: 0 },
+  "Keerthi Estates": { arr: 8650000 },
+  "Linesight": { arr: 1000000 },
+  "MEIL (Megha Engineering & Infrastructures Ltd.)": { arr: 2500000 },
+  "Maia Estates": { arr: 1195000 },
+  "Malaxmi Constructions": { arr: 3500000 },
+  "Mangalmurty Realty": { arr: 210000 },
+  "NTPC Limited (formerly National Thermal Power Corporation)": { arr: 7500000 },
+  "Nest Makers": { arr: 1740000 },
+  "Ocior Energy Private Limited": { arr: 9560000 },
+  "Offshore Infrastructures Limited": { arr: 250000 },
+  "Purvankara": { arr: 525000 },
+  "Ramky Estates & Farms Limited": { arr: 300000 },
+  "Ramky Group": { arr: 0 },
+  "Rohan Builders": { arr: 2780000 },
+  "SRR": { arr: 4800000 },
+  "Sarus Infrastructure": { arr: 5700000 },
+  "Speed Housing LLP": { arr: 125000 },
+  "Sree Chaitanya Constructions": { arr: 900000 },
+  "Sri Avantika Contractor ltd": { arr: 210000 },
+  "Standard Group": { arr: 750000 },
+  "Sumadhura Group": { arr: 65000 },
+  "TTD": { arr: 150000000 },
+  "Terucon India": { arr: 0 },
+  "Vasavi Group": { arr: 0 },
+  "Vedant Group": { arr: 2500000 },
+  "Wabag": { arr: 250000 },
+  "Yashoda Hospitals": { arr: 2850000 }
 };
 
 const sampleLeads = [
-  {"n": "SRR", "c": "SRR", "o": "Prateek Shendre", "s": "Upsell Proposal", "i": "Infrastructure & Construction", "seg": "Nurturing"},
-  {"n": "Avtar", "c": "Zepto", "o": "Prateek Shendre", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "Gulfspic", "c": "Gulfspic", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing"},
-  {"n": "Avcon Technics Pvt. Ltd.", "c": "Avcon Technics Pvt. Ltd.", "o": "Vara Tejesh", "s": "Proposal", "i": "Engineering & Consulting", "seg": "Nurturing"},
-  {"n": "Ramky Estates & Farms Limited", "c": "Ramky Estates & Farms Limited", "o": "Prateek Shendre", "s": "Upsell Proposal", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "Chaitanya Chinnam", "c": "Sree Chaitanya Constructions", "o": "Anushi Surya", "s": "Won", "i": "Government & Other", "seg": "Discovery"},
-  {"n": "Bhaskar", "c": "Govt Project", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
-  {"n": "Vijay", "c": "Keyura Infra", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
-  {"n": "Jayant Ganiga", "c": "GMR Group", "o": "Anushi Surya", "s": "Won", "i": "Government & Other", "seg": "Discovery"},
-  {"n": "Harish Gagwani", "c": "R D Brothers realty", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
-  {"n": "Mohammad Shoaib", "c": "Mohammad Shoaib", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
-  {"n": "Capt. Zahid Shaikh", "c": "Marimex Global", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
-  {"n": "Mohit R Mehta", "c": "R Mehta Registered Valuer", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
-  {"n": "Krishna", "c": "IBS", "o": "Abhinav Bommisetty - 041", "s": "Won", "i": "Government & Other", "seg": "Discovery"},
-  {"n": "Sandip Patil", "c": "Purvankara", "o": "Anushi Surya", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Aniket Apte", "c": "Rohan Builders", "o": "Anushi Surya", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Krishna Chaitanya", "c": "Honer Homes", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Aditya", "c": "Speed Housing LLP", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Ravi", "c": "Bhartiya Urban", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Mridul Naidu", "c": "Maia Estates", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Sriram Reddy Kumbam", "c": "Keerthi Estates", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Harsh Thakkar", "c": "Ashoka Real Estate - Institutional", "o": "Anushi Surya", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Amruth", "c": "Ananda Homes", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Gupta Boda", "c": "Sumadhura Group", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Rajendra", "c": "Giridhari Homes", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "K Rameswararao", "c": "Aparna Constructions & Estates Pvt Ltd", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "G Phalgun", "c": "Yashoda Hospitals", "o": "Prateek Shendre", "s": "Won", "i": "Healthcare", "seg": "Discovery"},
-  {"n": "Ram Kannan", "c": "CARE Hospitals", "o": "Vara Tejesh", "s": "Won", "i": "Healthcare", "seg": "Discovery"},
-  {"n": "Madhav Kolli", "c": "GKC Projects", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Nagareddayya", "c": "Ramky Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Kuldeep Singh", "c": "Offshore Infrastructures Limited", "o": "Anushi Surya", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Sarada", "c": "Malaxmi Constructions", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Kamlesh Ganiga", "c": "Terucon India", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Indiresh", "c": "Candeur Constructions", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Praveen H Shettigar", "c": "HCC", "o": "Anushi Surya", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Surya", "c": "Anvita Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Vamsi", "c": "Standard Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Mohit Manchanda", "c": "The Infrasure", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Ravi Kiran", "c": "KMV Group", "o": "Arun", "s": "Won", "i": "Engineering & Consulting", "seg": "Discovery"},
-  {"n": "Shitanshu Jain", "c": "Aecohub", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery"},
-  {"n": "Kashyap", "c": "TCE", "o": "Anushi Surya", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery"},
-  {"n": "Devraj Parmar", "c": "Meindhardt Group", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery"},
-  {"n": "Muthu Kumar", "c": "Meindhardt Group", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery"},
-  {"n": "Manisha Das", "c": "ARK India", "o": "Akash Parmar - 235", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery"},
-  {"n": "Karan Sharma", "c": "Labotek", "o": "Akash Parmar - 235", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery"},
-  {"n": "Karunakar Dodla", "c": "E-infra", "o": "Arun", "s": "Won", "i": "Energy & Power", "seg": "Discovery"},
-  {"n": "Damodar Prabhu", "c": "Ocior Energy Private Limited", "o": "Anushi Surya", "s": "Won", "i": "Energy & Power", "seg": "Discovery"},
-  {"n": "Yaswanth", "c": "Wabag", "o": "Anushi Surya", "s": "Won", "i": "Energy & Power", "seg": "Discovery"},
-  {"n": "Atikur Rahman Pradhani", "c": "Jindal Renewables", "o": "Prateek Shendre", "s": "Won", "i": "Energy & Power", "seg": "Discovery"},
-  {"n": "Manjeet Negi", "c": "Arvind Techno", "o": "Anushi Surya", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "Dattaram Parsekar", "c": "Reliance Industries", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "Sachin Joy", "c": "KPMG", "o": "Anushi Surya", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "Dipak Prajapati", "c": "Zetwerk", "o": "Akash Parmar - 235", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "Rajasekhar Reddy", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery"},
-  {"n": "Gayathri Kalidindi", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery"},
-  {"n": "Kotesh Garnipudi", "c": "", "o": "Arun", "s": "Lost", "i": "Unclassified", "seg": "Discovery"},
-  {"n": "Sowmya Reddy Bobbala", "c": "", "o": "Prateek Shendre", "s": "Lost", "i": "Unclassified", "seg": "Discovery"},
-  {"n": "Ashiyana", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery"},
-  {"n": "Ahmad Firoozi", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery"},
-  {"n": "Pakki Rao", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery"},
-  {"n": "Pravindra Kumar", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery"},
-  {"n": "S R Venkadesh", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery"},
-  {"n": "A", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery"},
-  {"n": "Sandesh Amin", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery"},
-  {"n": "Renee Callahan", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery"},
-  {"n": "Jindal Renewables", "c": "Jindal Renewables", "o": "Prateek Shendre", "s": "Unspecified", "i": "Energy & Power", "seg": "Nurturing"},
-  {"n": "Standard Group", "c": "Standard Group", "o": "Akash Parmar - 235", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing"},
-  {"n": "Aakriti Constructions and Builders", "c": "Aakriti Constructions and Builders", "o": "Akash Parmar - 235", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "Nest Makers", "c": "Nest Makers", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "Anvita Group", "c": "Anvita Group", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing"},
-  {"n": "Terucon India", "c": "Terucon India", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing"},
-  {"n": "Sumadhura Group", "c": "Sumadhura Group", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "Vasavi Group", "c": "Vasavi Group", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing"},
-  {"n": "Ananda Homes", "c": "Ananda Homes", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "Wabag", "c": "Wabag", "o": "Akash Parmar - 235", "s": "Lost", "i": "Energy & Power", "seg": "Nurturing"},
-  {"n": "Malaxmi Constructions", "c": "Malaxmi Constructions", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing"},
-  {"n": "Sarus Infrastructure", "c": "Sarus Infrastructure", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing"},
-  {"n": "Ocior Energy Private Limited", "c": "Ocior Energy Private Limited", "o": "Prateek Shendre", "s": "Won", "i": "Energy & Power", "seg": "Nurturing"},
-  {"n": "Offshore Infrastructures Limited", "c": "Offshore Infrastructures Limited", "o": "Anushi Surya", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing"},
-  {"n": "Ashoka Real Estate - Institutional", "c": "Ashoka Real Estate - Institutional", "o": "Akash Parmar - 235", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "Cypark", "c": "Cypark", "o": "Chandra", "s": "Lost", "i": "Energy & Power", "seg": "Nurturing"},
-  {"n": "Keerthi Estates", "c": "Keerthi Estates", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "Hubtown", "c": "Hubtown", "o": "Anushi Surya", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "Yashoda Hospitals", "c": "Yashoda Hospitals", "o": "Prateek Shendre", "s": "Won", "i": "Healthcare", "seg": "Nurturing"},
-  {"n": "Rohan Builders", "c": "Rohan Builders", "o": "Prateek Shendre", "s": "Won", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "KMV Group", "c": "KMV Group", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Nurturing"},
-  {"n": "Purvankara", "c": "Purvankara", "o": "Anushi Surya", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "Sree Chaitanya Constructions", "c": "Sree Chaitanya Constructions", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Nurturing"},
-  {"n": "Speed Housing LLP", "c": "Speed Housing LLP", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "Maia Estates", "c": "Maia Estates", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "E-infra", "c": "E-infra", "o": "Arun", "s": "Won", "i": "Energy & Power", "seg": "Nurturing"},
-  {"n": "Bhartiya Urban", "c": "Bhartiya Urban", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "Ramky Group", "c": "Ramky Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Nurturing"},
-  {"n": "Dowlath Pasha", "c": "", "o": "Akash Parmar - 235", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery"},
-  {"n": "Swapnil Kadam", "c": "", "o": "Akash Parmar - 235", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery"},
-  {"n": "Krupa J", "c": "DRB infrastructures pvt ltd", "o": "Prateek Shendre", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "S Madan Kumar", "c": "L&T Mindtree", "o": "Abhinav Bommisetty - 041", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "Rajendra Singh", "c": "Bauer India", "o": "Prateek Shendre", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Pravindra", "c": "K-RIDE Bengaluru", "o": "Abhinav Bommisetty - 041", "s": "Prospects", "i": "Government & Other", "seg": "Discovery"},
-  {"n": "Satish", "c": "Jakson", "o": "Prateek Shendre", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery"},
-  {"n": "Gaurav (HDFC Capital)", "c": "HDFC Capital", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "Avinash Kotla", "c": "Reliance Industries Limited", "o": "Vara Tejesh", "s": "Contacted", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "Sandesh S Kamblee", "c": "Painterior", "o": "Vara Tejesh", "s": "Lost", "i": "Government & Other", "seg": "Discovery"},
-  {"n": "C", "c": "Duracool", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "Vaibhav", "c": "Livingstone Infra", "o": "Lasya Ganapathi", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Gaurav (CEM India)", "c": "CEM India", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "saravanan", "c": "Gulfspic", "o": "Vara Tejesh", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "Narendra Verma", "c": "Powerica Ltd", "o": "Vara Tejesh", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery"},
-  {"n": "Saptarshi Basu", "c": "Welspun Enterprises", "o": "Vara Tejesh", "s": "Prospects", "i": "Energy & Power", "seg": "Discovery"},
-  {"n": "Amit Deshmukh", "c": "Toyo Engineering India Private Limited", "o": "Vara Tejesh", "s": "Prospects", "i": "Engineering & Consulting", "seg": "Discovery"},
-  {"n": "Mayur Somani", "c": "Vibe Realty", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Vishwajit Kate", "c": "Nxtra by Airtel", "o": "Vara Tejesh", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "Mrs. Vishaka Waghmare", "c": "PSP Projects", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Brij", "c": "Wind World India L.T.D", "o": "Vara Tejesh", "s": "Lost", "i": "Energy & Power", "seg": "Discovery"},
-  {"n": "Bhaskar K", "c": "DA Realty", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Aditya (Lenskart)", "c": "Lenskart", "o": "Akash Parmar - 235", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "Anant Salunkhe", "c": "CtrlS", "o": "Vara Tejesh", "s": "Prospects", "i": "Engineering & Consulting", "seg": "Discovery"},
-  {"n": "Harsh Desai", "c": "Shapoorji Pallonji Real Estate", "o": "Vara Tejesh", "s": "Disqualified", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Suhotra Banerjee", "c": "Dosti Realty", "o": "Vara Tejesh", "s": "Prospects", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Paras", "c": "GAR Infobahn", "o": "Prateek Shendre", "s": "SalesQualifiedLead", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "Shahanshah Alam", "c": "TNA READYMIX INDIA PRIVATE LIMITED", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Likhitha", "c": "Hilti India", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "RAJU", "c": "QURM STONE DEVELOPMENT LLC", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Smruthi Ranjan", "c": "Adani Group", "o": "Vara Tejesh", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery"},
-  {"n": "Vishwas", "c": "WSP", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery"},
-  {"n": "Vishal Mudda", "c": "NCCCL", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Soumik Paul", "c": "Cemindia Projects Limited", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "S V Koteswara Rao", "c": "Athaang Infrastructure", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Panchu", "c": "Isprava", "o": "Vara Tejesh", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Lead (GHB)", "c": "GHB", "o": "Chandra", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery"},
-  {"n": "BABUL GOMASTA", "c": "DP Jain & Co. Infrastructure Pvt. Ltd", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Abhinav Agarwal", "c": "Godrej Enterprises", "o": "Vara Tejesh", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "NHAI", "c": "NHAI", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery"},
-  {"n": "Prateek Mudia", "c": "Max Healthcare", "o": "Vara Tejesh", "s": "Lost", "i": "Healthcare", "seg": "Discovery"},
-  {"n": "Rahul Negi", "c": "Brahmaputra infrastructure limited", "o": "Akash Parmar - 235", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Atul Shirke", "c": "Turner Project Management India Pvt. Ltd.", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery"},
-  {"n": "Vishal", "c": "L&T Realty, Mumbai", "o": "Prateek Shendre", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery"},
-  {"n": "Sesha Sai", "c": "Amazon", "o": "Arun", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery"},
-  {"n": "Santosh Sahu,Ameya", "c": "BPCL", "o": "Prateek Shendre", "s": "Demo", "i": "Energy & Power", "seg": "Discovery"},
-  {"n": "Prerna K", "c": "NHEV", "o": "Prateek Shendre", "s": "Demo", "i": "Government & Other", "seg": "Discovery"},
-  {"n": "Masood Khan", "c": "Amara Raja Infra", "o": "Arun", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Vinodh", "c": "NSL Infratech Pvt.Ltd", "o": "Arun", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery"},
-  {"n": "Birdi Systems Inc", "c": "Birdi Systems Inc", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing"},
-  {"n": "CARE Hospitals", "c": "CARE Hospitals", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Healthcare", "seg": "Nurturing"},
-  {"n": "Mangalmurty Realty", "c": "Mangalmurty Realty", "o": "Vara Tejesh", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "Ankura Homes", "c": "Ankura Homes", "o": "Prateek Shendre", "s": "Proposal", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "Sri Avantika Contractor ltd", "c": "Sri Avantika Contractor ltd", "o": "Prateek Shendre", "s": "Proposal", "i": "Infrastructure & Construction", "seg": "Nurturing"},
-  {"n": "Linesight", "c": "Linesight", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Engineering & Consulting", "seg": "Nurturing"},
-  {"n": "G R Infraprojects Limited", "c": "G R Infraprojects Limited", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing"},
-  {"n": "Bi RIDE", "c": "Bi RIDE", "o": "Abhinav Bommisetty - 041", "s": "Proposal", "i": "Government & Other", "seg": "Nurturing"},
-  {"n": "TTD", "c": "TTD", "o": "Abhinav Bommisetty - 041", "s": "Proposal", "i": "Government & Other", "seg": "Nurturing"},
-  {"n": "MEIL (Megha Engineering & Infrastructures Ltd.)", "c": "MEIL (Megha Engineering & Infrastructures Ltd.)", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Infrastructure & Construction", "seg": "Nurturing"},
-  {"n": "NTPC Limited (formerly National Thermal Power Corporation)", "c": "NTPC Limited (formerly National Thermal Power Corporation)", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing"},
-  {"n": "Vedant Group", "c": "Vedant Group", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "Almaviva Saudi Arabia", "c": "Almaviva Saudi Arabia", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing"},
-  {"n": "Inorbit Malls (India) Private Limited", "c": "Inorbit Malls (India) Private Limited", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing"},
-  {"n": "HCC", "c": "HCC", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Infrastructure & Construction", "seg": "Nurturing"},
-  {"n": "GMR Group", "c": "GMR Group", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Government & Other", "seg": "Nurturing"},
-  {"n": "Arvind Techno", "c": "Arvind Techno", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Nurturing"},
-  {"n": "Honer Homes", "c": "Honer Homes", "o": "Akash Parmar - 235", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing"},
+  {"n": "SRR", "c": "SRR", "o": "Prateek Shendre", "s": "Upsell Proposal", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Avtar", "c": "Zepto", "o": "Prateek Shendre", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "Muhammed Musa", "c": "Livspace", "o": "Shivaraj Padala", "s": "Prospects", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "Gulfspic", "c": "Gulfspic", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing", "src": "Linkedin"},
+  {"n": "Avcon Technics Pvt. Ltd.", "c": "Avcon Technics Pvt. Ltd.", "o": "Vara Tejesh", "s": "Proposal", "i": "Engineering & Consulting", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Ramky Estates & Farms Limited", "c": "Ramky Estates & Farms Limited", "o": "Prateek Shendre", "s": "Upsell Proposal", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Chaitanya Chinnam", "c": "Sree Chaitanya Constructions", "o": "Anushi Surya", "s": "Won", "i": "Government & Other", "seg": "Discovery", "src": ""},
+  {"n": "Bhaskar", "c": "Govt Project", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": ""},
+  {"n": "Vijay", "c": "Keyura Infra", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": ""},
+  {"n": "Jayant Ganiga", "c": "GMR Group", "o": "Anushi Surya", "s": "Won", "i": "Government & Other", "seg": "Discovery", "src": "Direct Call"},
+  {"n": "Harish Gagwani", "c": "R D Brothers realty", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": ""},
+  {"n": "Mohammad Shoaib", "c": "Mohammad Shoaib", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": ""},
+  {"n": "Capt. Zahid Shaikh", "c": "Marimex Global", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": ""},
+  {"n": "Mohit R Mehta", "c": "R Mehta Registered Valuer", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": ""},
+  {"n": "Krishna", "c": "IBS", "o": "Abhinav Bommisetty - 041", "s": "Won", "i": "Government & Other", "seg": "Discovery", "src": ""},
+  {"n": "Sandip Patil", "c": "Purvankara", "o": "Anushi Surya", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "Aniket Apte", "c": "Rohan Builders", "o": "Anushi Surya", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Direct Call"},
+  {"n": "Krishna Chaitanya", "c": "Honer Homes", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "Aditya", "c": "Speed Housing LLP", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Website"},
+  {"n": "Ravi", "c": "Bhartiya Urban", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "Mridul Naidu", "c": "Maia Estates", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "Sriram Reddy Kumbam", "c": "Keerthi Estates", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Website"},
+  {"n": "Harsh Thakkar", "c": "Ashoka Real Estate - Institutional", "o": "Anushi Surya", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Website"},
+  {"n": "Amruth", "c": "Ananda Homes", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "Gupta Boda", "c": "Sumadhura Group", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "Rajendra", "c": "Giridhari Homes", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "K Rameswararao", "c": "Aparna Constructions & Estates Pvt Ltd", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "G Phalgun", "c": "Yashoda Hospitals", "o": "Prateek Shendre", "s": "Won", "i": "Healthcare", "seg": "Discovery", "src": "Direct Call"},
+  {"n": "Ram Kannan", "c": "CARE Hospitals", "o": "Vara Tejesh", "s": "Won", "i": "Healthcare", "seg": "Discovery", "src": ""},
+  {"n": "Madhav Kolli", "c": "GKC Projects", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Nagareddayya", "c": "Ramky Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Direct Call"},
+  {"n": "Kuldeep Singh", "c": "Offshore Infrastructures Limited", "o": "Anushi Surya", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Sarada", "c": "Malaxmi Constructions", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Direct Call"},
+  {"n": "Kamlesh Ganiga", "c": "Terucon India", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Indiresh", "c": "Candeur Constructions", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Praveen H Shettigar", "c": "HCC", "o": "Anushi Surya", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Direct Call"},
+  {"n": "Surya", "c": "Anvita Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Vamsi", "c": "Standard Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "Mohit Manchanda", "c": "The Infrasure", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Ravi Kiran", "c": "KMV Group", "o": "Arun", "s": "Won", "i": "Engineering & Consulting", "seg": "Discovery", "src": "Direct Call"},
+  {"n": "Shitanshu Jain", "c": "Aecohub", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
+  {"n": "Kashyap", "c": "TCE", "o": "Anushi Surya", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
+  {"n": "Devraj Parmar", "c": "Meindhardt Group", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
+  {"n": "Muthu Kumar", "c": "Meindhardt Group", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
+  {"n": "Manisha Das", "c": "ARK India", "o": "Akash Parmar - 235", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
+  {"n": "Karan Sharma", "c": "Labotek", "o": "Akash Parmar - 235", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
+  {"n": "Karunakar Dodla", "c": "E-infra", "o": "Arun", "s": "Won", "i": "Energy & Power", "seg": "Discovery", "src": "Direct Call"},
+  {"n": "Damodar Prabhu", "c": "Ocior Energy Private Limited", "o": "Anushi Surya", "s": "Won", "i": "Energy & Power", "seg": "Discovery", "src": "Direct Call"},
+  {"n": "Yaswanth", "c": "Wabag", "o": "Anushi Surya", "s": "Won", "i": "Energy & Power", "seg": "Discovery", "src": "Direct Call"},
+  {"n": "Atikur Rahman Pradhani", "c": "Jindal Renewables", "o": "Prateek Shendre", "s": "Won", "i": "Energy & Power", "seg": "Discovery", "src": "Website"},
+  {"n": "Manjeet Negi", "c": "Arvind Techno", "o": "Anushi Surya", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery", "src": "Direct Call"},
+  {"n": "Dattaram Parsekar", "c": "Reliance Industries", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
+  {"n": "Sachin Joy", "c": "KPMG", "o": "Anushi Surya", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
+  {"n": "Dipak Prajapati", "c": "Zetwerk", "o": "Akash Parmar - 235", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
+  {"n": "Rajasekhar Reddy", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Gayathri Kalidindi", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Kotesh Garnipudi", "c": "", "o": "Arun", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Sowmya Reddy Bobbala", "c": "", "o": "Prateek Shendre", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Ashiyana", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Ahmad Firoozi", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
+  {"n": "Pakki Rao", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Pravindra Kumar", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
+  {"n": "S R Venkadesh", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
+  {"n": "A", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
+  {"n": "Sandesh Amin", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Renee Callahan", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
+  {"n": "Jindal Renewables", "c": "Jindal Renewables", "o": "Prateek Shendre", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": ""},
+  {"n": "Standard Group", "c": "Standard Group", "o": "Akash Parmar - 235", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Linkedin"},
+  {"n": "Aakriti Constructions and Builders", "c": "Aakriti Constructions and Builders", "o": "Akash Parmar - 235", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Website"},
+  {"n": "Nest Makers", "c": "Nest Makers", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Anvita Group", "c": "Anvita Group", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": ""},
+  {"n": "Terucon India", "c": "Terucon India", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": ""},
+  {"n": "Sumadhura Group", "c": "Sumadhura Group", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
+  {"n": "Vasavi Group", "c": "Vasavi Group", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": ""},
+  {"n": "Ananda Homes", "c": "Ananda Homes", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
+  {"n": "Wabag", "c": "Wabag", "o": "Akash Parmar - 235", "s": "Lost", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Malaxmi Constructions", "c": "Malaxmi Constructions", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Sarus Infrastructure", "c": "Sarus Infrastructure", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Ocior Energy Private Limited", "c": "Ocior Energy Private Limited", "o": "Prateek Shendre", "s": "Won", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Offshore Infrastructures Limited", "c": "Offshore Infrastructures Limited", "o": "Anushi Surya", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": ""},
+  {"n": "Ashoka Real Estate - Institutional", "c": "Ashoka Real Estate - Institutional", "o": "Akash Parmar - 235", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Website"},
+  {"n": "Cypark", "c": "Cypark", "o": "Chandra", "s": "Lost", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Keerthi Estates", "c": "Keerthi Estates", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Website"},
+  {"n": "Hubtown", "c": "Hubtown", "o": "Anushi Surya", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
+  {"n": "Yashoda Hospitals", "c": "Yashoda Hospitals", "o": "Prateek Shendre", "s": "Won", "i": "Healthcare", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Rohan Builders", "c": "Rohan Builders", "o": "Prateek Shendre", "s": "Won", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "KMV Group", "c": "KMV Group", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Purvankara", "c": "Purvankara", "o": "Anushi Surya", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
+  {"n": "Sree Chaitanya Constructions", "c": "Sree Chaitanya Constructions", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Nurturing", "src": ""},
+  {"n": "Speed Housing LLP", "c": "Speed Housing LLP", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
+  {"n": "Maia Estates", "c": "Maia Estates", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
+  {"n": "E-infra", "c": "E-infra", "o": "Arun", "s": "Won", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Bhartiya Urban", "c": "Bhartiya Urban", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
+  {"n": "Ramky Group", "c": "Ramky Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Dowlath Pasha", "c": "", "o": "Akash Parmar - 235", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Swapnil Kadam", "c": "", "o": "Akash Parmar - 235", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
+  {"n": "Krupa J", "c": "DRB infrastructures pvt ltd", "o": "Prateek Shendre", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "S Madan Kumar", "c": "L&T Mindtree", "o": "Abhinav Bommisetty - 041", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "Rajendra Singh", "c": "Bauer India", "o": "Prateek Shendre", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "Pravindra", "c": "K-RIDE Bengaluru", "o": "Abhinav Bommisetty - 041", "s": "Prospects", "i": "Government & Other", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "Satish", "c": "Jakson", "o": "Prateek Shendre", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "Gaurav (HDFC Capital)", "c": "HDFC Capital", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
+  {"n": "Avinash Kotla", "c": "Reliance Industries Limited", "o": "Vara Tejesh", "s": "Contacted", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
+  {"n": "Sandesh S Kamblee", "c": "Painterior", "o": "Vara Tejesh", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": "Website"},
+  {"n": "C", "c": "Duracool", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "Vaibhav", "c": "Livingstone Infra", "o": "Lasya Ganapathi", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "Gaurav (CEM India)", "c": "CEM India", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "saravanan", "c": "Gulfspic", "o": "Vara Tejesh", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery", "src": "Website"},
+  {"n": "Narendra Verma", "c": "Powerica Ltd", "o": "Vara Tejesh", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery", "src": ""},
+  {"n": "Saptarshi Basu", "c": "Welspun Enterprises", "o": "Vara Tejesh", "s": "Prospects", "i": "Energy & Power", "seg": "Discovery", "src": ""},
+  {"n": "Amit Deshmukh", "c": "Toyo Engineering India Private Limited", "o": "Vara Tejesh", "s": "Prospects", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
+  {"n": "Mayur Somani", "c": "Vibe Realty", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "Vishwajit Kate", "c": "Nxtra by Airtel", "o": "Vara Tejesh", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
+  {"n": "Mrs. Vishaka Waghmare", "c": "PSP Projects", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Brij", "c": "Wind World India L.T.D", "o": "Vara Tejesh", "s": "Lost", "i": "Energy & Power", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "Bhaskar K", "c": "DA Realty", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "Aditya (Lenskart)", "c": "Lenskart", "o": "Akash Parmar - 235", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
+  {"n": "Anant Salunkhe", "c": "CtrlS", "o": "Vara Tejesh", "s": "Prospects", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
+  {"n": "Harsh Desai", "c": "Shapoorji Pallonji Real Estate", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Website"},
+  {"n": "Suhotra Banerjee", "c": "Dosti Realty", "o": "Vara Tejesh", "s": "Prospects", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "Paras", "c": "GAR Infobahn", "o": "Prateek Shendre", "s": "SalesQualifiedLead", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "Shahanshah Alam", "c": "TNA READYMIX INDIA PRIVATE LIMITED", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "Likhitha", "c": "Hilti India", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "RAJU", "c": "QURM STONE DEVELOPMENT LLC", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "Smruthi Ranjan", "c": "Adani Group", "o": "Vara Tejesh", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery", "src": ""},
+  {"n": "Vishwas", "c": "WSP", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "Vishal Mudda", "c": "NCCCL", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Soumik Paul", "c": "Cemindia Projects Limited", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "S V Koteswara Rao", "c": "Athaang Infrastructure", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Panchu", "c": "Isprava", "o": "Vara Tejesh", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "Lead (GHB)", "c": "GHB", "o": "Chandra", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": ""},
+  {"n": "BABUL GOMASTA", "c": "DP Jain & Co. Infrastructure Pvt. Ltd", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Abhinav Agarwal", "c": "Godrej Enterprises", "o": "Vara Tejesh", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
+  {"n": "NHAI", "c": "NHAI", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": ""},
+  {"n": "Prateek Mudia", "c": "Max Healthcare", "o": "Vara Tejesh", "s": "Lost", "i": "Healthcare", "seg": "Discovery", "src": ""},
+  {"n": "Rahul Negi", "c": "Brahmaputra infrastructure limited", "o": "Akash Parmar - 235", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Atul Shirke", "c": "Turner Project Management India Pvt. Ltd.", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
+  {"n": "Vishal", "c": "L&T Realty, Mumbai", "o": "Prateek Shendre", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "Sesha Sai", "c": "Amazon", "o": "Arun", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
+  {"n": "Santosh Sahu,Ameya", "c": "BPCL", "o": "Prateek Shendre", "s": "Demo", "i": "Energy & Power", "seg": "Discovery", "src": ""},
+  {"n": "Prerna K", "c": "NHEV", "o": "Prateek Shendre", "s": "Demo", "i": "Government & Other", "seg": "Discovery", "src": ""},
+  {"n": "Masood Khan", "c": "Amara Raja Infra", "o": "Arun", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Vinodh", "c": "NSL Infratech Pvt.Ltd", "o": "Arun", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Birdi Systems Inc", "c": "Birdi Systems Inc", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "CARE Hospitals", "c": "CARE Hospitals", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Healthcare", "seg": "Nurturing", "src": ""},
+  {"n": "Mangalmurty Realty", "c": "Mangalmurty Realty", "o": "Vara Tejesh", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
+  {"n": "Ankura Homes", "c": "Ankura Homes", "o": "Prateek Shendre", "s": "Proposal", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
+  {"n": "Sri Avantika Contractor ltd", "c": "Sri Avantika Contractor ltd", "o": "Prateek Shendre", "s": "Proposal", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": ""},
+  {"n": "Linesight", "c": "Linesight", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Engineering & Consulting", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "G R Infraprojects Limited", "c": "G R Infraprojects Limited", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": ""},
+  {"n": "Bi RIDE", "c": "Bi RIDE", "o": "Abhinav Bommisetty - 041", "s": "Proposal", "i": "Government & Other", "seg": "Nurturing", "src": ""},
+  {"n": "TTD", "c": "TTD", "o": "Abhinav Bommisetty - 041", "s": "Proposal", "i": "Government & Other", "seg": "Nurturing", "src": ""},
+  {"n": "MEIL (Megha Engineering & Infrastructures Ltd.)", "c": "MEIL (Megha Engineering & Infrastructures Ltd.)", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "NTPC Limited (formerly National Thermal Power Corporation)", "c": "NTPC Limited (formerly National Thermal Power Corporation)", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Vedant Group", "c": "Vedant Group", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Almaviva Saudi Arabia", "c": "Almaviva Saudi Arabia", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Inorbit Malls (India) Private Limited", "c": "Inorbit Malls (India) Private Limited", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "HCC", "c": "HCC", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "GMR Group", "c": "GMR Group", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Government & Other", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Arvind Techno", "c": "Arvind Techno", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Honer Homes", "c": "Honer Homes", "o": "Akash Parmar - 235", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call"}
 ];
 
 function stageLabel(meta, s) { return meta[s]?.label || s; }
@@ -1462,12 +1466,14 @@ function makeLeadRow(l, stage, meta) {
     : `<span class="task-empty">Not logged</span>`;
   const cost = LEAD_COSTS[l.n];
   const arrCell = cost ? formatINR(cost.arr) : '<span class="task-empty">—</span>';
+  const sourceCell = l.src ? l.src : '<span class="task-empty">—</span>';
   tr.innerHTML = `
     <td class="lead-name">${l.n}</td>
     <td class="lead-company">${l.c || '—'}</td>
     <td>${ownerShort}</td>
     <td><span class="stage-chip" style="background:transparent; color:${segBadgeColor}; border:1px solid ${segBadgeColor}"><span class="dot" style="background:${segBadgeColor}"></span>${l.seg}</span></td>
     <td><span class="stage-chip" style="background:${stMeta.bg}; color:${stMeta.color}"><span class="dot" style="background:${stMeta.color}"></span>${stageLabel(meta, stage)}</span></td>
+    <td>${sourceCell}</td>
     <td>${arrCell}</td>
     <td>${actionCell}</td>
   `;
@@ -1496,7 +1502,7 @@ function renderTable() {
 
     const divider = document.createElement('tr');
     divider.className = 'group-divider';
-    divider.innerHTML = `<td colspan="7"><div class="group-divider-inner"><span class="swatch" style="background:${stMeta.color}"></span>${stageLabel(meta, stage)} &middot; ${leads.length} shown<div class="line"></div></div></td>`;
+    divider.innerHTML = `<td colspan="8"><div class="group-divider-inner"><span class="swatch" style="background:${stMeta.color}"></span>${stageLabel(meta, stage)} &middot; ${leads.length} shown<div class="line"></div></div></td>`;
     leadsBody.appendChild(divider);
 
     leads.forEach(l => leadsBody.appendChild(makeLeadRow(l, stage, meta)));
@@ -1519,7 +1525,7 @@ function renderTable() {
     const toggleRow = document.createElement('tr');
     toggleRow.className = 'archive-toggle-row';
     const toggleTd = document.createElement('td');
-    toggleTd.colSpan = 7;
+    toggleTd.colSpan = 8;
     const btn = document.createElement('button');
     btn.className = 'archive-toggle';
     btn.innerHTML = `<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>Won / Lost / Disqualified <span class="count-tag">${archivedCount} hidden</span>`;
@@ -1624,6 +1630,26 @@ function renderOwnerArrBadge() {
   ownerArrBadge.textContent = `${formatINR(totalArr)} potential ARR · ${count} open`;
 }
 
+const sourceArrRow = document.getElementById('sourceArrRow');
+
+function renderSourceArr() {
+  const segments = activeSegment === 'All' ? ['Discovery','Nurturing'] : [activeSegment];
+  const bySource = {};
+  sampleLeads.forEach(l => {
+    if (!segments.includes(l.seg)) return;
+    if (!OPEN_STAGES[l.seg].includes(l.s)) return;
+    const cost = LEAD_COSTS[l.n];
+    if (!cost) return;
+    const src = l.src || 'Unspecified';
+    bySource[src] = (bySource[src] || 0) + cost.arr;
+  });
+  const sorted = Object.entries(bySource).sort((a,b) => b[1]-a[1]);
+  if (!sorted.length) { sourceArrRow.innerHTML = ''; return; }
+  sourceArrRow.innerHTML = sorted.map(([src, arr]) =>
+    `<span class="source-arr-chip"><b>${src}</b><span class="val">${formatINR(arr)}</span></span>`
+  ).join('');
+}
+
 function computeStats() {
   const segments = activeSegment === 'All' ? ['Discovery','Nurturing'] : [activeSegment];
   let total = 0, open = 0, won = 0, lost = 0;
@@ -1654,7 +1680,7 @@ function renderStats() {
   statArrSub.textContent = missing ? `${withCost} of ${open} leads costed` : 'across open pipeline';
 
   if (activeSegment === 'All') {
-    statTotalSub.textContent = '138 Discovery · 50 Nurturing';
+    statTotalSub.textContent = '139 Discovery · 50 Nurturing';
     segmentSplitCard.style.display = '';
     wonTile.style.display = 'none';
     lostTile.style.display = 'none';
@@ -1714,6 +1740,7 @@ function renderAll() {
   renderOwnerWorkload();
   renderOwnerFilter();
   renderOwnerArrBadge();
+  renderSourceArr();
   renderChips();
   renderTable();
 }
