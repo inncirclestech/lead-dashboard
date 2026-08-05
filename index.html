@@ -779,7 +779,7 @@
       </div>
     </div>
     <div class="meta-row">
-      <span class="asof-pill"><span class="dot"></span>Data as of 05 Aug 2026, 2:13 PM IST &middot; Source: Togile</span>
+      <span class="asof-pill"><span class="dot"></span>Data as of 05 Aug 2026, 2:28 PM IST &middot; Source: Togile</span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
         <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
       </button>
@@ -1638,10 +1638,10 @@ function renderSourceArr() {
   sampleLeads.forEach(l => {
     if (!segments.includes(l.seg)) return;
     if (!OPEN_STAGES[l.seg].includes(l.s)) return;
-    const cost = LEAD_COSTS[l.n];
-    if (!cost) return;
     const src = l.src || 'Unspecified';
-    bySource[src] = (bySource[src] || 0) + cost.arr;
+    if (!(src in bySource)) bySource[src] = 0;
+    const cost = LEAD_COSTS[l.n];
+    if (cost) bySource[src] += cost.arr;
   });
   const sorted = Object.entries(bySource).sort((a,b) => b[1]-a[1]);
   if (!sorted.length) { sourceArrRow.innerHTML = ''; return; }
