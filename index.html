@@ -270,6 +270,15 @@
   .card-head h2 { font-size: 15px; font-weight: 600; margin: 0; color: var(--text-normal); }
   .card-head .count-tag { font-size: 12px; color: var(--text-muted); font-weight: 500; }
 
+  .card.collapsible .card-head { cursor: pointer; user-select: none; margin-bottom: 14px; }
+  .card.collapsible .card-head:hover h2 { color: var(--brand); }
+  .card.collapsible .card-head .chev { transition: transform 0.15s ease; flex-shrink: 0; color: var(--text-muted); margin-right: 6px; }
+  .card.collapsible.is-collapsed .card-head { margin-bottom: 0; }
+  .card.collapsible.is-collapsed .card-head .chev { transform: rotate(-90deg); }
+  .card.collapsible .card-body { overflow: hidden; }
+  .card.collapsible.is-collapsed .card-body { display: none; }
+  .card-head-title { display: flex; align-items: center; }
+
   /* ---------- Stage bar chart ---------- */
   .stage-bars { display: flex; flex-direction: column; gap: 10px; }
   .stage-bar-row { display: grid; grid-template-columns: 108px 1fr 34px; align-items: center; gap: 10px; }
@@ -787,9 +796,9 @@
   </div>
 
   <div class="segment-toggle" id="segmentToggle" role="tablist" aria-label="Filter by segment">
-    <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">183</span></button>
-    <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">137</span></button>
-    <button class="seg-btn" data-seg="Nurturing" role="tab" aria-selected="false">Nurturing <span class="seg-count">46</span></button>
+    <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">165</span></button>
+    <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">114</span></button>
+    <button class="seg-btn" data-seg="Nurturing" role="tab" aria-selected="false">Nurturing <span class="seg-count">51</span></button>
   </div>
 
   <div class="stat-strip">
@@ -799,7 +808,7 @@
     </div>
     <div class="stat-tile accent-open">
       <span class="label">Open Pipeline</span>
-      <div class="value-row"><span class="value" id="statOpen">67</span><span class="sub" id="statOpenSub">active, not yet won/lost</span></div>
+      <div class="value-row"><span class="value" id="statOpen">55</span><span class="sub" id="statOpenSub">active, not yet won/lost</span></div>
     </div>
     <div class="stat-tile accent-value">
       <span class="label">Potential ARR (Open)</span>
@@ -829,30 +838,36 @@
         <div class="task-feed" id="taskFeed"></div>
       </div>
 
-      <div class="card" id="segmentSplitCard">
-        <div class="card-head">
-          <h2>Discovery vs Nurturing</h2>
-          <span class="count-tag">183 total</span>
+      <div class="card collapsible is-collapsed" id="segmentSplitCard">
+        <div class="card-head" data-collapse-toggle>
+          <span class="card-head-title"><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg><h2>Discovery vs Nurturing</h2></span>
+          <span class="count-tag" id="segSplitCount">total</span>
         </div>
-        <div class="stack-bar" id="segStackBar"></div>
-        <div class="stack-legend" id="segStackLegend"></div>
+        <div class="card-body">
+          <div class="stack-bar" id="segStackBar"></div>
+          <div class="stack-legend" id="segStackLegend"></div>
+        </div>
       </div>
 
-      <div class="card">
-        <div class="card-head">
-          <h2 id="stageCardTitle">Leads by Stage</h2>
+      <div class="card collapsible is-collapsed">
+        <div class="card-head" data-collapse-toggle>
+          <span class="card-head-title"><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg><h2 id="stageCardTitle">Leads by Stage</h2></span>
           <span class="count-tag" id="stageCardCount">183 total</span>
         </div>
-        <div class="stack-bar" id="stackBar"></div>
-        <div class="stack-legend" id="stackLegend"></div>
+        <div class="card-body">
+          <div class="stack-bar" id="stackBar"></div>
+          <div class="stack-legend" id="stackLegend"></div>
+        </div>
       </div>
 
-      <div class="card">
-        <div class="card-head">
-          <h2>Stage Breakdown</h2>
+      <div class="card collapsible is-collapsed">
+        <div class="card-head" data-collapse-toggle>
+          <span class="card-head-title"><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg><h2>Stage Breakdown</h2></span>
           <span class="count-tag" id="stageBreakdownNote"></span>
         </div>
-        <div class="stage-bars" id="stageBars"></div>
+        <div class="card-body">
+          <div class="stage-bars" id="stageBars"></div>
+        </div>
       </div>
 
       <div class="card">
@@ -866,7 +881,7 @@
       <div class="card">
         <div class="callout callout-info">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-          <div><b>Potential ARR comes directly from Togile's Estimated Value field</b> (Nurturing only — Discovery leads don't carry a value until they convert). Task data pulled via Togile's API — 54 open leads/deals checked, 45 have a logged task, 41 from the last 14 days, highlighted <span class="new-dot"></span> New. 4 new leads/deals added (incl. Powerica Ltd converting to Nurturing); 3 stage moves to Won/Lost applied.</div>
+          <div><b>Potential ARR comes directly from Togile's Estimated Value field</b> (Nurturing only — Discovery leads don't carry a value until they convert). Task data pulled via Togile's API against the current 55 open leads/deals; rows with a task logged in the last 14 days are highlighted <span class="new-dot"></span> and labelled with when they were last updated.</div>
         </div>
       </div>
 
@@ -938,30 +953,6 @@ const NURTURING_STAGE_META = {
 function stageMetaCombined() {
   return { ...DISCOVERY_STAGE_META, "Proposal": NURTURING_STAGE_META["Proposal"], "Value Demonstration/POC": { ...NURTURING_STAGE_META["Value Demonstration/POC"], order: 8 }, "Upsell Proposal": { ...NURTURING_STAGE_META["Upsell Proposal"], order: 9 } };
 }
-
-const byStageBySegment = {
-  Discovery: {"Won":40,"Lost":54,"Contacted":9,"Demo":6,"SalesQualifiedLead":8,"Prospects":12,"Disqualified":10,"Unspecified":3},
-  Nurturing: {"Proposal":7,"Value Demonstration/POC":11,"Upsell Proposal":1,"Lost":24,"Won":7}
-};
-
-const byOwnerBySegment = {
-  Discovery: {"Anushi Surya":18,"Prateek Shendre":12,"Arun":42,"Lasya Ganapathi":11,"Vara Tejesh":37,"Akash Parmar - 235":12,"Abhinav Bommisetty - 041":4,"Chandra":1},
-  Nurturing: {"Prateek Shendre":6,"Vara Tejesh":13,"Abhinav Bommisetty - 041":2,"Akash Parmar - 235":5,"Arun":16,"Anushi Surya":3,"Chandra":1}
-};
-
-const byIndustryBySegment = {
-  Discovery: {"Government & Other":14,"Residential & Real Estate":28,"Healthcare":3,"Infrastructure & Construction":43,"Engineering & Consulting":14,"Energy & Power":8,"Corporate & Technology":10,"Unclassified":17},
-  Nurturing: {"Energy & Power":6,"Corporate & Technology":3,"Healthcare":2,"Residential & Real Estate":17,"Infrastructure & Construction":12,"Engineering & Consulting":2,"Government & Other":4}
-};
-
-function sumDicts(...dicts) {
-  const out = {};
-  dicts.forEach(d => Object.entries(d).forEach(([k,v]) => { out[k] = (out[k]||0) + v; }));
-  return out;
-}
-
-const byOwnerAll = sumDicts(byOwnerBySegment.Discovery, byOwnerBySegment.Nurturing);
-const byIndustryAll = sumDicts(byIndustryBySegment.Discovery, byIndustryBySegment.Nurturing);
 
 const INDUSTRY_ORDER = ["Infrastructure & Construction","Residential & Real Estate","Engineering & Consulting","Government & Other","Corporate & Technology","Energy & Power","Healthcare","Unclassified"];
 
@@ -1239,6 +1230,36 @@ const sampleLeads = [
   {"n": "Honer Homes", "c": "Honer Homes", "o": "Akash Parmar - 235", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call"}
 ];
 
+function groupCountBy(leads, keyFn) {
+  const out = {};
+  leads.forEach(l => { const k = keyFn(l); out[k] = (out[k] || 0) + 1; });
+  return out;
+}
+
+const byStageBySegment = {
+  Discovery: groupCountBy(sampleLeads.filter(l => l.seg === 'Discovery'), l => l.s),
+  Nurturing: groupCountBy(sampleLeads.filter(l => l.seg === 'Nurturing'), l => l.s)
+};
+
+const byOwnerBySegment = {
+  Discovery: groupCountBy(sampleLeads.filter(l => l.seg === 'Discovery'), l => l.o),
+  Nurturing: groupCountBy(sampleLeads.filter(l => l.seg === 'Nurturing'), l => l.o)
+};
+
+const byIndustryBySegment = {
+  Discovery: groupCountBy(sampleLeads.filter(l => l.seg === 'Discovery'), l => l.i),
+  Nurturing: groupCountBy(sampleLeads.filter(l => l.seg === 'Nurturing'), l => l.i)
+};
+
+function sumDicts(...dicts) {
+  const out = {};
+  dicts.forEach(d => Object.entries(d).forEach(([k,v]) => { out[k] = (out[k]||0) + v; }));
+  return out;
+}
+
+const byOwnerAll = sumDicts(byOwnerBySegment.Discovery, byOwnerBySegment.Nurturing);
+const byIndustryAll = sumDicts(byIndustryBySegment.Discovery, byIndustryBySegment.Nurturing);
+
 function stageLabel(meta, s) { return meta[s]?.label || s; }
 function industryLabel(i) { return i === "Unclassified" ? "Unclassified / No company" : i; }
 
@@ -1277,11 +1298,16 @@ function currentStageMeta() {
 
 const segStackBar = document.getElementById('segStackBar');
 const segStackLegend = document.getElementById('segStackLegend');
+const segSplitCount = document.getElementById('segSplitCount');
 function renderSegmentSplit() {
   segStackBar.innerHTML = '';
   segStackLegend.innerHTML = '';
-  const totals = { Discovery: 137, Nurturing: 46 };
+  const totals = {
+    Discovery: sampleLeads.filter(l => l.seg === 'Discovery').length,
+    Nurturing: sampleLeads.filter(l => l.seg === 'Nurturing').length
+  };
   const total = totals.Discovery + totals.Nurturing;
+  segSplitCount.textContent = `${total} total`;
   ['Discovery','Nurturing'].forEach(seg => {
     const count = totals[seg];
     const pct = (count/total*100);
@@ -1467,7 +1493,7 @@ function makeLeadRow(l, stage, meta) {
   const taskInfo = TASK_NOTES[l.n];
   if (taskInfo && taskInfo.isNew) tr.classList.add('row-new-task');
   const actionCell = taskInfo
-    ? `<div class="task-note">${taskInfo.note}${taskInfo.isNew ? '<span class="new-badge"><span class="dot"></span>New</span>' : ''}<br><span style="color:var(--text-muted)">Status: ${taskInfo.status}</span></div>`
+    ? `<div class="task-note">${taskInfo.note}${taskInfo.isNew ? `<span class="new-badge"><span class="dot"></span>${formatUpdatedBadge(taskInfo.updatedAt)}</span>` : ''}<br><span style="color:var(--text-muted)">Status: ${taskInfo.status}</span></div>`
     : `<span class="task-empty">Not logged</span>`;
   const cost = LEAD_COSTS[l.n];
   const arrCell = cost ? formatINR(cost.arr) : '<span class="task-empty">—</span>';
@@ -1576,6 +1602,20 @@ function formatINR(amount) {
   return `₹${amount.toLocaleString('en-IN')}`;
 }
 
+function formatUpdatedBadge(isoString) {
+  if (!isoString) return 'Updated';
+  const then = new Date(isoString);
+  const now = new Date();
+  const diffDay = Math.floor((now - then) / 86400000);
+  const isToday = then.toDateString() === now.toDateString();
+  const yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
+  const isYesterday = then.toDateString() === yesterday.toDateString();
+  if (isToday) return 'Updated today';
+  if (isYesterday) return 'Updated yesterday';
+  if (diffDay < 7) return `Updated ${diffDay}d ago`;
+  return `Updated ${then.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}`;
+}
+
 function formatRelativeTime(isoString) {
   if (!isoString) return '';
   const then = new Date(isoString);
@@ -1644,15 +1684,18 @@ function renderSourceArr() {
     if (!segments.includes(l.seg)) return;
     if (!OPEN_STAGES[l.seg].includes(l.s)) return;
     const src = l.src || 'Unspecified';
-    if (!(src in bySource)) bySource[src] = 0;
+    if (!(src in bySource)) bySource[src] = { arr: 0, count: 0, Discovery: 0, Nurturing: 0 };
     const cost = LEAD_COSTS[l.n];
-    if (cost) bySource[src] += cost.arr;
+    if (cost) bySource[src].arr += cost.arr;
+    bySource[src].count += 1;
+    bySource[src][l.seg] += 1;
   });
-  const sorted = Object.entries(bySource).sort((a,b) => b[1]-a[1]);
+  const sorted = Object.entries(bySource).sort((a,b) => b[1].arr-a[1].arr);
   if (!sorted.length) { sourceArrRow.innerHTML = ''; return; }
-  sourceArrRow.innerHTML = sorted.map(([src, arr]) =>
-    `<span class="source-arr-chip"><b>${src}</b><span class="val">${formatINR(arr)}</span></span>`
-  ).join('');
+  sourceArrRow.innerHTML = sorted.map(([src, info]) => {
+    const tooltip = `${info.Discovery} Discovery · ${info.Nurturing} Nurturing`;
+    return `<span class="source-arr-chip" title="${tooltip}"><b>${src}</b><span class="val">${formatINR(info.arr)} (${info.count})</span></span>`;
+  }).join('');
 }
 
 function computeStats() {
@@ -1685,7 +1728,9 @@ function renderStats() {
   statArrSub.textContent = missing ? `${withCost} of ${open} leads costed` : 'across open pipeline';
 
   if (activeSegment === 'All') {
-    statTotalSub.textContent = '142 Discovery · 50 Nurturing';
+    const discCount = sampleLeads.filter(l => l.seg === 'Discovery').length;
+    const nurtCount = sampleLeads.filter(l => l.seg === 'Nurturing').length;
+    statTotalSub.textContent = `${discCount} Discovery · ${nurtCount} Nurturing`;
     segmentSplitCard.style.display = '';
     wonTile.style.display = 'none';
     lostTile.style.display = 'none';
@@ -1765,6 +1810,12 @@ Array.from(segmentToggle.querySelectorAll('.seg-btn')).forEach(btn => {
 });
 
 renderAll();
+
+document.querySelectorAll('.card.collapsible [data-collapse-toggle]').forEach(head => {
+  head.addEventListener('click', () => {
+    head.closest('.card.collapsible').classList.toggle('is-collapsed');
+  });
+});
 
 const themeToggle = document.getElementById('themeToggle');
 const root = document.documentElement;
