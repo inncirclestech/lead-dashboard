@@ -788,7 +788,7 @@
       </div>
     </div>
     <div class="meta-row">
-      <span class="asof-pill"><span class="dot"></span>Data as of 06 Aug 2026, 3:13 PM IST &middot; Source: Togile</span>
+      <span class="asof-pill"><span class="dot"></span>Data as of 07 Aug 2026 &middot; Source: Togile</span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
         <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
       </button>
@@ -796,8 +796,8 @@
   </div>
 
   <div class="segment-toggle" id="segmentToggle" role="tablist" aria-label="Filter by segment">
-    <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">165</span></button>
-    <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">114</span></button>
+    <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">166</span></button>
+    <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">115</span></button>
     <button class="seg-btn" data-seg="Nurturing" role="tab" aria-selected="false">Nurturing <span class="seg-count">51</span></button>
   </div>
 
@@ -808,7 +808,7 @@
     </div>
     <div class="stat-tile accent-open">
       <span class="label">Open Pipeline</span>
-      <div class="value-row"><span class="value" id="statOpen">55</span><span class="sub" id="statOpenSub">active, not yet won/lost</span></div>
+      <div class="value-row"><span class="value" id="statOpen">54</span><span class="sub" id="statOpenSub">active, not yet won/lost</span></div>
     </div>
     <div class="stat-tile accent-value">
       <span class="label">Potential ARR (Open)</span>
@@ -881,7 +881,7 @@
       <div class="card">
         <div class="callout callout-info">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-          <div><b>Potential ARR comes directly from Togile's Estimated Value field</b> (Nurturing only — Discovery leads don't carry a value until they convert). Task data pulled via Togile's API against the current 55 open leads/deals; rows with a task logged in the last 14 days are highlighted <span class="new-dot"></span> and labelled with when they were last updated.</div>
+          <div><b>Potential ARR comes directly from Togile's Estimated Value field</b> (Nurturing only — Discovery leads don't carry a value until they convert). Task data pulled via Togile's API against the current 54 open leads/deals; rows with a task logged in the last 14 days are highlighted <span class="new-dot"></span> and labelled with when they were last updated.</div>
         </div>
       </div>
 
@@ -1121,17 +1121,18 @@ const sampleLeads = [
   {"n": "Dattaram Parsekar", "c": "Reliance Industries", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
   {"n": "Sachin Joy", "c": "KPMG", "o": "Anushi Surya", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
   {"n": "Dipak Prajapati", "c": "Zetwerk", "o": "Akash Parmar - 235", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
-  {"n": "Rajasekhar Reddy", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Gayathri Kalidindi", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Rajasekhar Reddy", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Gayathri Kalidindi", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": ""},
   {"n": "Kotesh Garnipudi", "c": "", "o": "Arun", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
   {"n": "Sowmya Reddy Bobbala", "c": "", "o": "Prateek Shendre", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Ashiyana", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Ashiyana", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Nikhil", "c": "Dineshchandra R Agrawal Infracon Pvt. Ltd", "o": "Vara Tejesh", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
   {"n": "Ahmad Firoozi", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
-  {"n": "Pakki Rao", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Pakki Rao", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
   {"n": "Pravindra Kumar", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
   {"n": "S R Venkadesh", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
   {"n": "A", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
-  {"n": "Sandesh Amin", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Sandesh Amin", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": ""},
   {"n": "Renee Callahan", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
   {"n": "Jindal Renewables", "c": "Jindal Renewables", "o": "Prateek Shendre", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": ""},
   {"n": "Standard Group", "c": "Standard Group", "o": "Akash Parmar - 235", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Linkedin"},
@@ -1207,7 +1208,7 @@ const sampleLeads = [
   {"n": "Vishal", "c": "L&T Realty, Mumbai", "o": "Prateek Shendre", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
   {"n": "Sesha Sai", "c": "Amazon", "o": "Arun", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
   {"n": "Santosh Sahu,Ameya", "c": "BPCL", "o": "Prateek Shendre", "s": "Demo", "i": "Energy & Power", "seg": "Discovery", "src": ""},
-  {"n": "Prerna K", "c": "NHEV", "o": "Prateek Shendre", "s": "Demo", "i": "Government & Other", "seg": "Discovery", "src": ""},
+  {"n": "Prerna K", "c": "NHEV", "o": "Prateek Shendre", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": ""},
   {"n": "Masood Khan", "c": "Amara Raja Infra", "o": "Arun", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
   {"n": "Vinodh", "c": "NSL Infratech Pvt.Ltd", "o": "Arun", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
   {"n": "Birdi Systems Inc", "c": "Birdi Systems Inc", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing", "src": "Direct Call"},
