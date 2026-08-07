@@ -788,7 +788,7 @@
       </div>
     </div>
     <div class="meta-row">
-      <span class="asof-pill"><span class="dot"></span>Data as of 07 Aug 2026, 1:57 PM IST &middot; Source: Togile</span>
+      <span class="asof-pill"><span class="dot"></span>Data as of 07 Aug 2026, 2:35 PM IST &middot; Source: Togile</span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
         <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
       </button>
@@ -796,19 +796,19 @@
   </div>
 
   <div class="segment-toggle" id="segmentToggle" role="tablist" aria-label="Filter by segment">
-    <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">166</span></button>
-    <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">115</span></button>
-    <button class="seg-btn" data-seg="Nurturing" role="tab" aria-selected="false">Nurturing <span class="seg-count">51</span></button>
+    <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">196</span></button>
+    <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">144</span></button>
+    <button class="seg-btn" data-seg="Nurturing" role="tab" aria-selected="false">Nurturing <span class="seg-count">52</span></button>
   </div>
 
   <div class="stat-strip">
     <div class="stat-tile">
       <span class="label">Total Leads</span>
-      <div class="value-row"><span class="value" id="statTotal">183</span><span class="sub" id="statTotalSub">137 Discovery &middot; 46 Nurturing</span></div>
+      <div class="value-row"><span class="value" id="statTotal">196</span><span class="sub" id="statTotalSub">144 Discovery &middot; 52 Nurturing</span></div>
     </div>
     <div class="stat-tile accent-open">
       <span class="label">Open Pipeline</span>
-      <div class="value-row"><span class="value" id="statOpen">54</span><span class="sub" id="statOpenSub">active, not yet won/lost</span></div>
+      <div class="value-row"><span class="value" id="statOpen">56</span><span class="sub" id="statOpenSub">active, not yet won/lost</span></div>
     </div>
     <div class="stat-tile accent-value">
       <span class="label">Potential ARR (Open)</span>
@@ -881,7 +881,7 @@
       <div class="card">
         <div class="callout callout-info">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-          <div><b>Potential ARR comes directly from Togile's Estimated Value field</b> (Nurturing only — Discovery leads don't carry a value until they convert). Task data pulled via Togile's API against the current 54 open leads/deals; rows with a task logged in the last 14 days are highlighted <span class="new-dot"></span> and labelled with when they were last updated.</div>
+          <div><b>Potential ARR comes directly from Togile's Estimated Value field</b> (Nurturing only — Discovery leads don't carry a value until they convert). Task data pulled via Togile's API against the current 56 open leads/deals; rows with a task logged in the last 14 days are highlighted <span class="new-dot"></span> and labelled with when they were last updated.</div>
         </div>
       </div>
 
@@ -1059,7 +1059,8 @@ const LEAD_COSTS = {
   "Vasavi Group": { arr: 0 },
   "Vedant Group": { arr: 2500000 },
   "Wabag": { arr: 250000 },
-  "Yashoda Hospitals": { arr: 2850000 }
+  "Yashoda Hospitals": { arr: 2850000 },
+  "Yashoda Hospitals (Upsell)": { arr: 3000000 }
 };
 
 const sampleLeads = [
@@ -1068,9 +1069,9 @@ const sampleLeads = [
   {"n": "Muhammed Musa (Livspace)", "c": "Livspace", "o": "Prateek Shendre", "s": "Prospects", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
   {"n": "Gulfspic", "c": "Gulfspic", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing", "src": "Linkedin"},
   {"n": "Powerica Ltd", "c": "Powerica Ltd", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": ""},
-  {"n": "Serbjit Singh", "c": "", "o": "Akash Parmar - 235", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
+  {"n": "Serbjit Singh", "c": "", "o": "Akash Parmar - 235", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
   {"n": "Karthik Y", "c": "", "o": "Akash Parmar - 235", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
-  {"n": "Balasaheb", "c": "Maitri Interior projects", "o": "Vara Tejesh", "s": "Unspecified", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Linkedin"},
+  {"n": "Balasaheb", "c": "Maitri Interior projects", "o": "Shubham Shinde", "s": "Unspecified", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Linkedin"},
   {"n": "Avcon Technics Pvt. Ltd.", "c": "Avcon Technics Pvt. Ltd.", "o": "Vara Tejesh", "s": "Proposal", "i": "Engineering & Consulting", "seg": "Nurturing", "src": "Direct Call"},
   {"n": "Ramky Estates & Farms Limited", "c": "Ramky Estates & Farms Limited", "o": "Prateek Shendre", "s": "Won", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call"},
   {"n": "Chaitanya Chinnam", "c": "Sree Chaitanya Constructions", "o": "Anushi Surya", "s": "Won", "i": "Government & Other", "seg": "Discovery", "src": ""},
@@ -1087,6 +1088,7 @@ const sampleLeads = [
   {"n": "Krishna Chaitanya", "c": "Honer Homes", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Linkedin"},
   {"n": "Aditya", "c": "Speed Housing LLP", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Website"},
   {"n": "Ravi", "c": "Bhartiya Urban", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "Ravindranath Chowdary Mukkella", "c": "Sri Avantika Contractor ltd", "o": "Prateek Shendre", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
   {"n": "Mridul Naidu", "c": "Maia Estates", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
   {"n": "Sriram Reddy Kumbam", "c": "Keerthi Estates", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Website"},
   {"n": "Harsh Thakkar", "c": "Ashoka Real Estate - Institutional", "o": "Anushi Surya", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Website"},
@@ -1106,6 +1108,7 @@ const sampleLeads = [
   {"n": "Surya", "c": "Anvita Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
   {"n": "Vamsi", "c": "Standard Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin"},
   {"n": "Mohit Manchanda", "c": "The Infrasure", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Vamsi Krishna Gummadi", "c": "Vajra Infra", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
   {"n": "Ravi Kiran", "c": "KMV Group", "o": "Arun", "s": "Won", "i": "Engineering & Consulting", "seg": "Discovery", "src": "Direct Call"},
   {"n": "Shitanshu Jain", "c": "Aecohub", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
   {"n": "Kashyap", "c": "TCE", "o": "Anushi Surya", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
@@ -1120,6 +1123,7 @@ const sampleLeads = [
   {"n": "Manjeet Negi", "c": "Arvind Techno", "o": "Anushi Surya", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery", "src": "Direct Call"},
   {"n": "Dattaram Parsekar", "c": "Reliance Industries", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
   {"n": "Sachin Joy", "c": "KPMG", "o": "Anushi Surya", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
+  {"n": "Sachin (GR Infra)", "c": "G R Infraprojects Limited", "o": "Vara Tejesh", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
   {"n": "Dipak Prajapati", "c": "Zetwerk", "o": "Akash Parmar - 235", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
   {"n": "Rajasekhar Reddy", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": ""},
   {"n": "Gayathri Kalidindi", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": ""},
@@ -1127,6 +1131,32 @@ const sampleLeads = [
   {"n": "Sowmya Reddy Bobbala", "c": "", "o": "Prateek Shendre", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
   {"n": "Ashiyana", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": ""},
   {"n": "Nikhil", "c": "Dineshchandra R Agrawal Infracon Pvt. Ltd", "o": "Vara Tejesh", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Nitish Pandey", "c": "Awfis", "o": "Prateek Shendre", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Adarsh Singh", "c": "", "o": "Akash Parmar - 235", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "C Salvi", "c": "Duracool", "o": "Vara Tejesh", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Sahil Bhat", "c": "", "o": "Akash Parmar - 235", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Malhar S Bhosale", "c": "", "o": "Akash Parmar - 235", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Shakti Saxena", "c": "SRSD Infrastructure Venture LLP", "o": "Akash Parmar - 235", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Dinesh Misra", "c": "Megha Engineering and Infrastructures Ltd", "o": "Vara Tejesh", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Bhushan", "c": "Ankura Homes", "o": "Prateek Shendre", "s": "Won", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Harshavardhan Gawade", "c": "Mangalmurty Realty", "o": "Vara Tejesh", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Adesh Shaha", "c": "Today Group", "o": "Vara Tejesh", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Prasad Valluri", "c": "Simplify Homes", "o": "Arun", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Syed Ishtiyaq", "c": "Raftaar", "o": "Arun", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Arvind Vishwakarma", "c": "Aapti project solutions private limited", "o": "Arun", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Amitech Projects India", "c": "Amitech Projects India", "o": "Arun", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Srinivas", "c": "Aakriti Constructions and Builders", "o": "Arun", "s": "Won", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Kalyan Ram", "c": "Nest Makers", "o": "Arun", "s": "Won", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Goutham Kumar", "c": "Sri Tirumala Constructions", "o": "Arun", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Amit Chandane", "c": "Naman Group", "o": "Anushi Surya", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Devesh Wadhwa", "c": "Shree Naman Developers", "o": "Anushi Surya", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
+  {"n": "Kamal Guha", "c": "Cemindia", "o": "Anushi Surya", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Parijat Dey", "c": "Mahindra Lifespaces", "o": "Anushi Surya", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "Sameer Khanna", "c": "Raymond Realty", "o": "Anushi Surya", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "Suresh Poojary", "c": "Capacite", "o": "Anushi Surya", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Anagh Agarwal", "c": "Afcons Infra", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "Nagamohan", "c": "Divyasree", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
+  {"n": "Ashutosh Pathak", "c": "KEC International", "o": "Akash Parmar - 235", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
   {"n": "Ahmad Firoozi", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
   {"n": "Pakki Rao", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
   {"n": "Pravindra Kumar", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
@@ -1153,6 +1183,7 @@ const sampleLeads = [
   {"n": "Keerthi Estates", "c": "Keerthi Estates", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Website"},
   {"n": "Hubtown", "c": "Hubtown", "o": "Anushi Surya", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
   {"n": "Yashoda Hospitals", "c": "Yashoda Hospitals", "o": "Prateek Shendre", "s": "Won", "i": "Healthcare", "seg": "Nurturing", "src": "Direct Call"},
+  {"n": "Yashoda Hospitals (Upsell)", "c": "Yashoda Hospitals", "o": "Prateek Shendre", "s": "Upsell Proposal", "i": "Healthcare", "seg": "Nurturing", "src": "Direct Call"},
   {"n": "Rohan Builders", "c": "Rohan Builders", "o": "Prateek Shendre", "s": "Won", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call"},
   {"n": "KMV Group", "c": "KMV Group", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Nurturing", "src": "Direct Call"},
   {"n": "Purvankara", "c": "Purvankara", "o": "Anushi Surya", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
@@ -1209,7 +1240,7 @@ const sampleLeads = [
   {"n": "Sesha Sai", "c": "Amazon", "o": "Arun", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
   {"n": "Santosh Sahu,Ameya", "c": "BPCL", "o": "Prateek Shendre", "s": "Demo", "i": "Energy & Power", "seg": "Discovery", "src": ""},
   {"n": "Prerna K", "c": "NHEV", "o": "Prateek Shendre", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": ""},
-  {"n": "Masood Khan", "c": "Amara Raja Infra", "o": "Arun", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
+  {"n": "Masood Khan", "c": "Amara Raja Infra", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
   {"n": "Vinodh", "c": "NSL Infratech Pvt.Ltd", "o": "Prateek Shendre", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
   {"n": "Birdi Systems Inc", "c": "Birdi Systems Inc", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing", "src": "Direct Call"},
   {"n": "CARE Hospitals", "c": "CARE Hospitals", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Healthcare", "seg": "Nurturing", "src": ""},
@@ -1523,6 +1554,14 @@ function renderTable() {
   const orderedStages = Object.keys(meta).sort((a,b)=>meta[a].order-meta[b].order);
   const grouped = {};
   filtered.forEach(l => { (grouped[l.s] = grouped[l.s] || []).push(l); });
+
+  function lastUpdatedTime(l) {
+    const info = TASK_NOTES[l.n];
+    return info && info.updatedAt ? new Date(info.updatedAt).getTime() : -Infinity;
+  }
+  Object.values(grouped).forEach(leads => {
+    leads.sort((a, b) => lastUpdatedTime(b) - lastUpdatedTime(a));
+  });
 
   const activeStages = orderedStages.filter(s => !ARCHIVED_STAGES.has(s));
   const archivedStages = orderedStages.filter(s => ARCHIVED_STAGES.has(s));
