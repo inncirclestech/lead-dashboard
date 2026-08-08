@@ -243,10 +243,12 @@
   /* ---------- Layout grid ---------- */
   .main-grid {
     display: grid;
-    grid-template-columns: 380px 1fr;
+    grid-template-columns: 380px minmax(0, 1fr);
     gap: 16px;
     align-items: start;
   }
+
+  .right-col { min-width: 0; }
 
   .card {
     background: var(--surface);
@@ -612,7 +614,19 @@
   .chip.is-active .chip-count { background: var(--brand); color: #ffffff; }
 
   /* ---------- Table ---------- */
+  .table-scroll-wrap { position: relative; }
   .table-scroll { overflow-x: auto; }
+  .table-scroll-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 28px;
+    pointer-events: none;
+    background: linear-gradient(to right, transparent, var(--surface));
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .table-scroll-wrap.has-overflow::after { opacity: 1; }
 
   table.leads-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 
@@ -798,6 +812,7 @@
     table { page-break-inside: auto; border-collapse: collapse; }
     thead { display: table-header-group; }
     .table-scroll { overflow: visible !important; max-height: none !important; }
+    .table-scroll-wrap::after { display: none !important; }
     .task-note { font-size: 10.5px; max-width: 220px; }
 
     footer.page-footer { break-inside: avoid; margin-top: 14px; padding-top: 10px; font-size: 9.5px; }
@@ -930,22 +945,24 @@
           <span class="owner-arr-badge" id="ownerArrBadge" style="display:none;"></span>
         </div>
         <div class="chip-bar" id="industryChips" role="tablist" aria-label="Filter by industry"></div>
-        <div class="table-scroll">
-          <table class="leads-table">
-            <thead>
-              <tr>
-                <th>Lead</th>
-                <th>Company</th>
-                <th>Owner</th>
-                <th>Segment</th>
-                <th>Stage</th>
-                <th>Source</th>
-                <th>Potential ARR</th>
-                <th>Next action</th>
-              </tr>
-            </thead>
-            <tbody id="leadsBody"></tbody>
-          </table>
+        <div class="table-scroll-wrap" id="tableScrollWrap">
+          <div class="table-scroll" id="tableScroll">
+            <table class="leads-table">
+              <thead>
+                <tr>
+                  <th>Lead</th>
+                  <th>Company</th>
+                  <th>Owner</th>
+                  <th>Segment</th>
+                  <th>Stage</th>
+                  <th>Source</th>
+                  <th>Potential ARR</th>
+                  <th>Next action</th>
+                </tr>
+              </thead>
+              <tbody id="leadsBody"></tbody>
+            </table>
+          </div>
         </div>
         <p class="table-note" id="tableNote">Showing sampled leads — full list lives in Togile → Discovery / Nurturing.</p>
       </div>
@@ -1884,6 +1901,18 @@ Array.from(segmentToggle.querySelectorAll('.seg-btn')).forEach(btn => {
 });
 
 renderAll();
+
+const tableScrollWrap = document.getElementById('tableScrollWrap');
+const tableScroll = document.getElementById('tableScroll');
+function updateTableOverflowFade() {
+  const atEnd = tableScroll.scrollLeft + tableScroll.clientWidth >= tableScroll.scrollWidth - 1;
+  const hasOverflow = tableScroll.scrollWidth > tableScroll.clientWidth;
+  tableScrollWrap.classList.toggle('has-overflow', hasOverflow && !atEnd);
+}
+tableScroll.addEventListener('scroll', updateTableOverflowFade);
+window.addEventListener('resize', updateTableOverflowFade);
+new ResizeObserver(updateTableOverflowFade).observe(tableScroll);
+updateTableOverflowFade();
 
 document.querySelectorAll('.card.collapsible [data-collapse-toggle]').forEach(head => {
   const toggle = () => {
