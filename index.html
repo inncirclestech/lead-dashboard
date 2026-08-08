@@ -93,9 +93,8 @@
   }
 
   .page {
-    max-width: 1360px;
     margin: 0 auto;
-    padding: 28px clamp(20px, 4vw, 48px) 64px;
+    padding: 28px 120px 64px;
   }
 
   .topbar {
@@ -259,12 +258,30 @@
 
   .card + .card { margin-top: 16px; }
 
-  /* Lower-traffic summary cards: same info, quieter presentation */
-  .card-compact { padding: 12px 16px; box-shadow: none; }
-  .card-compact .card-head { margin-bottom: 10px; }
-  .card-compact .card-head h2 { font-size: 13px; font-weight: 600; }
+  /* Lower-traffic summary cards: same info, visibly lighter-weight presentation */
+  .card-compact {
+    padding: 10px 14px;
+    box-shadow: none;
+    border-style: dashed;
+    background: var(--surface-2);
+  }
+  .card-compact .card-head { margin-bottom: 8px; }
+  .card-compact .card-head h2 { font-size: 12px; font-weight: 600; color: var(--text-subtle); }
+  .card-compact .card-head .count-tag { font-size: 11px; }
   .card-compact.collapsible.is-collapsed .card-head { margin-bottom: 0; }
-  .card-compact .owner-rows { gap: 8px; }
+  .card-compact .owner-rows { gap: 6px; }
+  .card-compact .owner-row { grid-template-columns: 1fr auto; gap: 6px; }
+  .card-compact .owner-avatar { width: 18px; height: 18px; font-size: 9px; }
+  .card-compact .owner-name { font-size: 12px; }
+  .card-compact .owner-count-badge { font-size: 11px; padding: 1px 6px; min-width: 22px; }
+  .card-compact .owner-track { height: 4px; }
+  .card-compact .stack-bar { height: 18px; }
+  .card-compact .stack-legend { margin-top: 8px; gap: 6px 12px; }
+  .card-compact .stack-legend-item { font-size: 11px; }
+  .card-compact .stage-bars { gap: 6px; }
+  .card-compact .stage-bar-track { height: 12px; }
+  .card-compact .stage-bar-label { font-size: 11px; }
+  .card-compact .stage-bar-count { font-size: 11.5px; }
 
   .card-head {
     display: flex;
@@ -695,6 +712,11 @@
   @media (max-width: 900px) {
     .stat-strip { grid-template-columns: repeat(2, 1fr); }
     .main-grid { grid-template-columns: 1fr; }
+    .page { padding-left: 20px; padding-right: 20px; }
+  }
+
+  @media (min-width: 901px) and (max-width: 1439px) {
+    .page { padding-left: clamp(24px, 6vw, 120px); padding-right: clamp(24px, 6vw, 120px); }
   }
 
   @media print {
