@@ -517,8 +517,9 @@
   .filter-row {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    margin-bottom: 16px;
   }
   .owner-filter-label {
     font-size: 12.5px;
@@ -685,31 +686,6 @@
 
   .table-note { margin-top: 12px; font-size: 12px; color: var(--text-muted); }
 
-  .archive-toggle-row td { padding: 0; border-bottom: none; }
-  .archive-toggle {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 10px;
-    margin-top: 6px;
-    background: var(--surface-subtle);
-    border: 1px dashed var(--border-subtle);
-    border-radius: var(--radius-md);
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    cursor: pointer;
-    text-align: left;
-  }
-  .archive-toggle:hover { color: var(--text-normal); border-color: var(--border-normal); }
-  .archive-toggle:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
-  .archive-toggle .chev { transition: transform 0.15s ease; flex-shrink: 0; }
-  .archive-toggle.is-open .chev { transform: rotate(90deg); }
-  .archive-toggle .count-tag { margin-left: auto; }
-  tr.archived-row { display: none; }
-  tr.archived-row.is-visible { display: table-row; }
-
   footer.page-footer {
     margin-top: 28px;
     padding-top: 16px;
@@ -842,31 +818,23 @@
   </div>
 
   <div class="segment-toggle" id="segmentToggle" role="tablist" aria-label="Filter by segment">
-    <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">199</span></button>
-    <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">147</span></button>
-    <button class="seg-btn" data-seg="Nurturing" role="tab" aria-selected="false">Nurturing <span class="seg-count">52</span></button>
+    <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">61</span></button>
+    <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">40</span></button>
+    <button class="seg-btn" data-seg="Nurturing" role="tab" aria-selected="false">Nurturing <span class="seg-count">21</span></button>
   </div>
 
-  <div class="stat-strip">
+  <div class="stat-strip stat-strip-3">
     <div class="stat-tile">
-      <span class="label">Total Leads</span>
-      <div class="value-row"><span class="value" id="statTotal">199</span><span class="sub" id="statTotalSub">147 Discovery &middot; 52 Nurturing</span></div>
-    </div>
-    <div class="stat-tile accent-open">
-      <span class="label">Open Pipeline</span>
-      <div class="value-row"><span class="value" id="statOpen">56</span><span class="sub" id="statOpenSub">active, not yet won/lost</span></div>
+      <span class="label">Active Leads</span>
+      <div class="value-row"><span class="value" id="statTotal">61</span><span class="sub" id="statTotalSub">40 Discovery &middot; 21 Nurturing</span></div>
     </div>
     <div class="stat-tile accent-value">
-      <span class="label">Potential ARR (Open)</span>
-      <div class="value-row"><span class="value" id="statArr">₹0</span><span class="sub" id="statArrSub">across open pipeline</span></div>
+      <span class="label">Potential ARR</span>
+      <div class="value-row"><span class="value" id="statArr">₹0</span><span class="sub" id="statArrSub">across active leads</span></div>
     </div>
-    <div class="stat-tile accent-won" id="wonTile">
-      <span class="label">Won</span>
-      <div class="value-row"><span class="value" id="statWon">45</span><span class="sub" id="statWonSub">24.6% of total</span></div>
-    </div>
-    <div class="stat-tile accent-lost" id="lostTile">
-      <span class="label">Lost</span>
-      <div class="value-row"><span class="value" id="statLost">61</span><span class="sub" id="statLostSub">33.3% of total</span></div>
+    <div class="stat-tile accent-open">
+      <span class="label">Total Contract Value</span>
+      <div class="value-row"><span class="value" id="statCv">₹0</span><span class="sub" id="statCvSub">across active leads</span></div>
     </div>
   </div>
 
@@ -927,7 +895,7 @@
       <div class="card">
         <div class="callout callout-info">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-          <div><b>Potential ARR comes directly from Togile's Estimated Value field</b> for both Discovery and Nurturing (not every lead has one yet). Task data pulled via Togile's API against the current 56 open leads/deals; rows with a task logged in the last 14 days are highlighted <span class="new-dot"></span> and labelled with when they were last updated.</div>
+          <div><b>ARR and Contract Value come directly from Togile's ARR(Subscription Value) and Contract Value fields</b> for both Discovery and Nurturing (not every lead has one yet). This dashboard only shows active leads — Won, Lost, and Disqualified are excluded everywhere. Rows with a task logged in the last 14 days are highlighted <span class="new-dot"></span> and labelled with when they were last updated.</div>
         </div>
       </div>
 
@@ -940,11 +908,20 @@
           <span class="count-tag" id="tableCount">both segments</span>
         </div>
         <div class="filter-row">
+          <label class="owner-filter-label" for="segmentFilter">Segment</label>
+          <select class="owner-filter-select" id="segmentFilter">
+            <option value="All">All Segments</option>
+            <option value="Discovery">Discovery</option>
+            <option value="Nurturing">Nurturing</option>
+          </select>
+          <label class="owner-filter-label" for="stageFilter">Stage</label>
+          <select class="owner-filter-select" id="stageFilter"></select>
+          <label class="owner-filter-label" for="industryFilter">Industry</label>
+          <select class="owner-filter-select" id="industryFilter"></select>
           <label class="owner-filter-label" for="ownerFilter">Owner</label>
           <select class="owner-filter-select" id="ownerFilter"></select>
           <span class="owner-arr-badge" id="ownerArrBadge" style="display:none;"></span>
         </div>
-        <div class="chip-bar" id="industryChips" role="tablist" aria-label="Filter by industry"></div>
         <div class="table-scroll-wrap" id="tableScrollWrap">
           <div class="table-scroll" id="tableScroll">
             <table class="leads-table">
@@ -956,7 +933,8 @@
                   <th>Segment</th>
                   <th>Stage</th>
                   <th>Source</th>
-                  <th>Potential ARR</th>
+                  <th>ARR</th>
+                  <th>Contract Value</th>
                   <th>Next action</th>
                 </tr>
               </thead>
@@ -1010,9 +988,9 @@ const SEGMENT_META = {
 };
 
 const TASK_NOTES = {
-  "Avtar": { note: "Spoke to their management and shared our brochure , they are yet to get back to us.", status: "In Progress", isNew: true, updatedAt: "2026-08-06T09:20:12.777Z" },
+  "Avtar Singh": { note: "Spoke to their management and shared our brochure , they are yet to get back to us.", status: "In Progress", isNew: true, updatedAt: "2026-08-06T09:20:12.777Z" },
   "Swapnil Kadam": { note: "Follow-up call to reschedule the missed demo.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:55:25.948Z" },
-  "Satish": { note: "Connected with Mr. Satish, yet to get his time for the demo call. ", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:49:19.969Z" },
+  "Satish Sinha": { note: "Connected with Mr. Satish, yet to get his time for the demo call. ", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:49:19.969Z" },
   "Dowlath Pasha": { note: "Follow-up call to reschedule the missed demo.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:56:04.836Z" },
   "Avinash Kotla": { note: "Platform Demo Outreach (Dashboard–Field Gap) Problem statement identified: Gap between dashboards and field data capturing Currently in the process of reaching out to the client Next step: Schedule and showcase platform demo addressing this gap", status: "In Progress", isNew: true, updatedAt: "2026-08-03T08:14:10.156Z" },
   "Mrs. Vishaka Waghmare": { note: "- Already contacted: Cluster Planning Head, based in Ahmedabad - Context: Subsidiary funded by Adani Group - Status: Ongoing follow-up Action plan: 1. Call to identify their requirement and check if any existing systems are in use 2. Create a value document/video tailored to their projects and share it", status: "Open", isNew: true, updatedAt: "2026-08-03T13:04:38.539Z" },
@@ -1020,12 +998,12 @@ const TASK_NOTES = {
   "Amit Deshmukh": { note: "- Current contact level: Planning Manager - Goal: Reach a decision-maker — Digital/PMO Head level - Action plan: Follow up to identify and connect with the right senior contact, then arrange a demo", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:51:44.357Z" },
   "Bhaskar K": { note: "- Status: Genuine requirement exists, but decision process is slow - Estimated timeline to close: At least one quarter - Action plan: Stay in touch, share relevant assets showcasing real estate/realty monitoring use cases", status: "Open", isNew: true, updatedAt: "2026-08-03T12:49:38.626Z" },
   "Saptarshi Basu": { note: "- Details already shared with the concerned person - Contact confirmed he'll forward documents to the internal digital team - Status: Awaiting response-  in follow-up - Client currently implementing 4D & 5D models and progress monitoring in-house - Gap identified: Lacking Field Management and BIM assistance- potential entry point for Inncircles", status: "In Progress", isNew: true, updatedAt: "2026-08-03T09:02:07.036Z" },
-  "Aditya": { note: "Task logged: Not responding to calls. (no note added)", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:01:13.278Z" },
+  "Aditya Kakkar": { note: "Task logged: Not responding to calls. (no note added)", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:01:13.278Z" },
   "Anant Salunkhe": { note: "- Connected with MEP Vice President (Navi Mumbai office) - Planning to connect with the right Digitalization/PMO Head at the Hyderabad office - Action plan: Follow up to identify and reach the correct contact", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:33:48.127Z" },
   "Harsh Desai": { note: "- Current point of contact is below management/decision-making level - Action: Identify and reach the right senior/leadership contact to pitch to - Goal: Move the conversation up to a decision-maker level", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:22:23.018Z" },
   "Suhotra Banerjee": { note: "In-person Demo aligned at Dosti Realty Head office on 12th March with Strategy team.", status: "In Progress", isNew: true, updatedAt: "2026-08-05T13:40:34.929Z" },
-  "S Madan Kumar": { note: "Task logged: Follow-up for Demo for the entire Team (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T05:07:40.916Z" },
-  "Pravindra": { note: "Task logged: Follow-up Call (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T10:43:26.458Z" },
+  "S Madan Kumar IGBC AP, ECBC, CE": { note: "Task logged: Follow-up for Demo for the entire Team (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T05:07:40.916Z" },
+  "Pravindra Kumar": { note: "Task logged: Follow-up Call (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T10:43:26.458Z" },
   "Vishal Mudda": { note: "- Approach channel: LinkedIn (client showed interest via LinkedIn campaign) - Current status: Unable to reach the contact so far - Action plan: Continue attempting to connect via LinkedIn for up to 1 week If no response within that window: Close the pursuit", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:44:33.906Z" },
   "Smruthi Ranjan": { note: "Adani Road Projects  Pursuit — Next Steps - Detailed presentation already shared with the client's representative (in addition to the road project materials) - Security documentation for the Inncircles application also shared - Next step: VAPT (Vulnerability Assessment and Penetration Testing) - POC planned for one project in Bangalore Priority: High", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:19:43.620Z" },
   "S V Koteswara Rao": { note: "Action: Follow up and align a demo showcasing value for their current infrastructure investments Focus: Demonstrate how the platform monitors construction projects relevant to their portfolio Next step: Schedule the demo", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:30:51.760Z" },
@@ -1057,282 +1035,68 @@ const TASK_NOTES = {
   "TTD": { note: "Task logged: Follow-up for new CE onboarding for a demo / meeting (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T05:06:18.452Z" }
 };
 
-const LEAD_COSTS = {
-  "Satish": { arr: 20000000 },
-  "Avinash Kotla": { arr: 2500000 },
-  "Gaurav Pande": { arr: 3000000 },
-  "Mrs. Vishaka Waghmare": { arr: 2000000 },
-  "Vishwajit Kate": { arr: 2000000 },
-  "Mayur Somani": { arr: 2000000 },
-  "Amit Deshmukh": { arr: 2500000 },
-  "Bhaskar K": { arr: 2000000 },
-  "Saptarshi Basu": { arr: 2000000 },
-  "Anant Salunkhe": { arr: 2500000 },
-  "Harsh Desai": { arr: 2000000 },
-  "Suhotra Banerjee": { arr: 2000000 },
-  "Vishwas": { arr: 2000000 },
-  "Smruthi Ranjan": { arr: 5000000 },
-  "Ram Kannan": { arr: 2000000 },
-  "S V Koteswara Rao": { arr: 2000000 },
-  "Abhinav Agarwal": { arr: 2500000 },
-  "BABUL GOMASTA": { arr: 2000000 },
-  "Atul Shirke": { arr: 2000000 },
-  "Vishal": { arr: 3000000 },
-  "Krupa J": { arr: 15000000 },
-  "Santosh Sahu,Ameya": { arr: 15000000 },
-  "Powerica Ltd": { arr: 2000000 },
-  "Aakriti Constructions and Builders": { arr: 340000 },
-  "Almaviva Saudi Arabia": { arr: 15000000 },
-  "Ananda Homes": { arr: 0 },
-  "Ankura Homes": { arr: 6500000 },
-  "Anvita Group": { arr: 65000 },
-  "Arvind Techno": { arr: 300000 },
-  "Ashoka Real Estate - Institutional": { arr: 300000 },
-  "Avcon Technics Pvt. Ltd.": { arr: 1600000 },
-  "Bhartiya Urban": { arr: 2650000 },
-  "Bi RIDE": { arr: 84000000 },
-  "Birdi Systems Inc": { arr: 65000 },
-  "CARE Hospitals": { arr: 65000 },
-  "E-infra": { arr: 1090000 },
-  "G R Infraprojects Limited": { arr: 65000 },
-  "GMR Group": { arr: 2500000 },
-  "Gulfspic": { arr: 2000000 },
-  "HCC": { arr: 2500000 },
-  "Honer Homes": { arr: 150000 },
-  "Hubtown": { arr: 200000 },
-  "Inorbit Malls (India) Private Limited": { arr: 2000000 },
-  "Jindal Renewables": { arr: 20000000 },
-  "KMV Group": { arr: 0 },
-  "Keerthi Estates": { arr: 8650000 },
-  "Linesight": { arr: 1000000 },
-  "MEIL (Megha Engineering & Infrastructures Ltd.)": { arr: 2500000 },
-  "Maia Estates": { arr: 1195000 },
-  "Malaxmi Constructions": { arr: 3500000 },
-  "Mangalmurty Realty": { arr: 210000 },
-  "NTPC Limited (formerly National Thermal Power Corporation)": { arr: 7500000 },
-  "Nest Makers": { arr: 1740000 },
-  "Ocior Energy Private Limited": { arr: 9560000 },
-  "Offshore Infrastructures Limited": { arr: 250000 },
-  "Purvankara": { arr: 525000 },
-  "Ramky Estates & Farms Limited": { arr: 300000 },
-  "Ramky Group": { arr: 0 },
-  "Rohan Builders": { arr: 2780000 },
-  "SRR": { arr: 4800000 },
-  "Sarus Infrastructure": { arr: 5700000 },
-  "Speed Housing LLP": { arr: 125000 },
-  "Sree Chaitanya Constructions": { arr: 900000 },
-  "Sri Avantika Contractor ltd": { arr: 210000 },
-  "Standard Group": { arr: 750000 },
-  "Sumadhura Group": { arr: 65000 },
-  "TTD": { arr: 150000000 },
-  "Terucon India": { arr: 0 },
-  "Vasavi Group": { arr: 0 },
-  "Vedant Group": { arr: 2500000 },
-  "Wabag": { arr: 250000 },
-  "Yashoda Hospitals": { arr: 2850000 },
-  "Yashoda Hospitals (Upsell)": { arr: 3000000 }
-};
-
 const sampleLeads = [
-  {"n": "SRR", "c": "SRR", "o": "Prateek Shendre", "s": "Upsell Proposal", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Avtar", "c": "Zepto", "o": "Prateek Shendre", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Muhammed Musa (Livspace)", "c": "Livspace", "o": "Prateek Shendre", "s": "Prospects", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "Gulfspic", "c": "Gulfspic", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing", "src": "Linkedin"},
-  {"n": "Powerica Ltd", "c": "Powerica Ltd", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": ""},
-  {"n": "Serbjit Singh", "c": "", "o": "Akash Parmar - 235", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
-  {"n": "Karthik Y", "c": "", "o": "Akash Parmar - 235", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
-  {"n": "Balasaheb", "c": "Maitri Interior projects", "o": "Shubham Shinde", "s": "Unspecified", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Avcon Technics Pvt. Ltd.", "c": "Avcon Technics Pvt. Ltd.", "o": "Vara Tejesh", "s": "Proposal", "i": "Engineering & Consulting", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Ramky Estates & Farms Limited", "c": "Ramky Estates & Farms Limited", "o": "Prateek Shendre", "s": "Won", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Chaitanya Chinnam", "c": "Sree Chaitanya Constructions", "o": "Anushi Surya", "s": "Won", "i": "Government & Other", "seg": "Discovery", "src": ""},
-  {"n": "Bhaskar", "c": "Govt Project", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": ""},
-  {"n": "Vijay", "c": "Keyura Infra", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": ""},
-  {"n": "Jayant Ganiga", "c": "GMR Group", "o": "Anushi Surya", "s": "Won", "i": "Government & Other", "seg": "Discovery", "src": "Direct Call"},
-  {"n": "Harish Gagwani", "c": "R D Brothers realty", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": ""},
-  {"n": "Mohammad Shoaib", "c": "Mohammad Shoaib", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": ""},
-  {"n": "Capt. Zahid Shaikh", "c": "Marimex Global", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": ""},
-  {"n": "Mohit R Mehta", "c": "R Mehta Registered Valuer", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": ""},
-  {"n": "Krishna", "c": "IBS", "o": "Abhinav Bommisetty - 041", "s": "Won", "i": "Government & Other", "seg": "Discovery", "src": ""},
-  {"n": "Sandip Patil", "c": "Purvankara", "o": "Anushi Surya", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "Aniket Apte", "c": "Rohan Builders", "o": "Anushi Surya", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Direct Call"},
-  {"n": "Krishna Chaitanya", "c": "Honer Homes", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Aditya", "c": "Speed Housing LLP", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Website"},
-  {"n": "Ravi", "c": "Bhartiya Urban", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "Ravindranath Chowdary Mukkella", "c": "Sri Avantika Contractor ltd", "o": "Prateek Shendre", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Mridul Naidu", "c": "Maia Estates", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "Sriram Reddy Kumbam", "c": "Keerthi Estates", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Website"},
-  {"n": "Harsh Thakkar", "c": "Ashoka Real Estate - Institutional", "o": "Anushi Surya", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Website"},
-  {"n": "Amruth", "c": "Ananda Homes", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "Gupta Boda", "c": "Sumadhura Group", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "Rajendra", "c": "Giridhari Homes", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "K Rameswararao", "c": "Aparna Constructions & Estates Pvt Ltd", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "G Phalgun", "c": "Yashoda Hospitals", "o": "Prateek Shendre", "s": "Won", "i": "Healthcare", "seg": "Discovery", "src": "Direct Call"},
-  {"n": "Ram Kannan", "c": "CARE Hospitals", "o": "Vara Tejesh", "s": "Won", "i": "Healthcare", "seg": "Discovery", "src": ""},
-  {"n": "Madhav Kolli", "c": "GKC Projects", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Nagareddayya", "c": "Ramky Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Direct Call"},
-  {"n": "Kuldeep Singh", "c": "Offshore Infrastructures Limited", "o": "Anushi Surya", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Sarada", "c": "Malaxmi Constructions", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Direct Call"},
-  {"n": "Kamlesh Ganiga", "c": "Terucon India", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Indiresh", "c": "Candeur Constructions", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Praveen H Shettigar", "c": "HCC", "o": "Anushi Surya", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Direct Call"},
-  {"n": "Surya", "c": "Anvita Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Vamsi", "c": "Standard Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Mohit Manchanda", "c": "The Infrasure", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Vamsi Krishna Gummadi", "c": "Vajra Infra", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Ravi Kiran", "c": "KMV Group", "o": "Arun", "s": "Won", "i": "Engineering & Consulting", "seg": "Discovery", "src": "Direct Call"},
-  {"n": "Shitanshu Jain", "c": "Aecohub", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
-  {"n": "Kashyap", "c": "TCE", "o": "Anushi Surya", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
-  {"n": "Devraj Parmar", "c": "Meindhardt Group", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
-  {"n": "Muthu Kumar", "c": "Meindhardt Group", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
-  {"n": "Manisha Das", "c": "ARK India", "o": "Akash Parmar - 235", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
-  {"n": "Karan Sharma", "c": "Labotek", "o": "Akash Parmar - 235", "s": "Lost", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
-  {"n": "Karunakar Dodla", "c": "E-infra", "o": "Arun", "s": "Won", "i": "Energy & Power", "seg": "Discovery", "src": "Direct Call"},
-  {"n": "Damodar Prabhu", "c": "Ocior Energy Private Limited", "o": "Anushi Surya", "s": "Won", "i": "Energy & Power", "seg": "Discovery", "src": "Direct Call"},
-  {"n": "Yaswanth", "c": "Wabag", "o": "Anushi Surya", "s": "Won", "i": "Energy & Power", "seg": "Discovery", "src": "Direct Call"},
-  {"n": "Atikur Rahman Pradhani", "c": "Jindal Renewables", "o": "Prateek Shendre", "s": "Won", "i": "Energy & Power", "seg": "Discovery", "src": "Website"},
-  {"n": "Manjeet Negi", "c": "Arvind Techno", "o": "Anushi Surya", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery", "src": "Direct Call"},
-  {"n": "Dattaram Parsekar", "c": "Reliance Industries", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
-  {"n": "Sachin Joy", "c": "KPMG", "o": "Anushi Surya", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
-  {"n": "Sachin (GR Infra)", "c": "G R Infraprojects Limited", "o": "Vara Tejesh", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Dipak Prajapati", "c": "Zetwerk", "o": "Akash Parmar - 235", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
-  {"n": "Rajasekhar Reddy", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Gayathri Kalidindi", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Kotesh Garnipudi", "c": "", "o": "Arun", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Sowmya Reddy Bobbala", "c": "", "o": "Prateek Shendre", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Ashiyana", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Nikhil", "c": "Dineshchandra R Agrawal Infracon Pvt. Ltd", "o": "Vara Tejesh", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Akshay", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
-  {"n": "Deep", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
-  {"n": "Karan Bohra", "c": "Emproy Realty", "o": "Shubham Shinde", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
-  {"n": "Nitish Pandey", "c": "Awfis", "o": "Prateek Shendre", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Adarsh Singh", "c": "", "o": "Akash Parmar - 235", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "C Salvi", "c": "Duracool", "o": "Vara Tejesh", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Sahil Bhat", "c": "", "o": "Akash Parmar - 235", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Malhar S Bhosale", "c": "", "o": "Akash Parmar - 235", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Shakti Saxena", "c": "SRSD Infrastructure Venture LLP", "o": "Akash Parmar - 235", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Dinesh Misra", "c": "Megha Engineering and Infrastructures Ltd", "o": "Vara Tejesh", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Bhushan", "c": "Ankura Homes", "o": "Prateek Shendre", "s": "Won", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Harshavardhan Gawade", "c": "Mangalmurty Realty", "o": "Vara Tejesh", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Adesh Shaha", "c": "Today Group", "o": "Vara Tejesh", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Prasad Valluri", "c": "Simplify Homes", "o": "Arun", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Syed Ishtiyaq", "c": "Raftaar", "o": "Arun", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Arvind Vishwakarma", "c": "Aapti project solutions private limited", "o": "Arun", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Amitech Projects India", "c": "Amitech Projects India", "o": "Arun", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Srinivas", "c": "Aakriti Constructions and Builders", "o": "Arun", "s": "Won", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Kalyan Ram", "c": "Nest Makers", "o": "Arun", "s": "Won", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Goutham Kumar", "c": "Sri Tirumala Constructions", "o": "Arun", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Amit Chandane", "c": "Naman Group", "o": "Anushi Surya", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Devesh Wadhwa", "c": "Shree Naman Developers", "o": "Anushi Surya", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Kamal Guha", "c": "Cemindia", "o": "Anushi Surya", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Parijat Dey", "c": "Mahindra Lifespaces", "o": "Anushi Surya", "s": "Won", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "Sameer Khanna", "c": "Raymond Realty", "o": "Anushi Surya", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "Suresh Poojary", "c": "Capacite", "o": "Anushi Surya", "s": "Won", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Anagh Agarwal", "c": "Afcons Infra", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "Nagamohan", "c": "Divyasree", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "Ashutosh Pathak", "c": "KEC International", "o": "Akash Parmar - 235", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "Ahmad Firoozi", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
-  {"n": "Pakki Rao", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Pravindra Kumar", "c": "", "o": "Lasya Ganapathi", "s": "Lost", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
-  {"n": "S R Venkadesh", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
-  {"n": "A", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
-  {"n": "Sandesh Amin", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Renee Callahan", "c": "", "o": "Lasya Ganapathi", "s": "Disqualified", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
-  {"n": "Jindal Renewables", "c": "Jindal Renewables", "o": "Prateek Shendre", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": ""},
-  {"n": "Standard Group", "c": "Standard Group", "o": "Akash Parmar - 235", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Linkedin"},
-  {"n": "Aakriti Constructions and Builders", "c": "Aakriti Constructions and Builders", "o": "Akash Parmar - 235", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Website"},
-  {"n": "Nest Makers", "c": "Nest Makers", "o": "Arun", "s": "Won", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Anvita Group", "c": "Anvita Group", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": ""},
-  {"n": "Terucon India", "c": "Terucon India", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": ""},
-  {"n": "Sumadhura Group", "c": "Sumadhura Group", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
-  {"n": "Vasavi Group", "c": "Vasavi Group", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": ""},
-  {"n": "Ananda Homes", "c": "Ananda Homes", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
-  {"n": "Wabag", "c": "Wabag", "o": "Akash Parmar - 235", "s": "Lost", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Malaxmi Constructions", "c": "Malaxmi Constructions", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Sarus Infrastructure", "c": "Sarus Infrastructure", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Ocior Energy Private Limited", "c": "Ocior Energy Private Limited", "o": "Prateek Shendre", "s": "Won", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Offshore Infrastructures Limited", "c": "Offshore Infrastructures Limited", "o": "Anushi Surya", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": ""},
-  {"n": "Ashoka Real Estate - Institutional", "c": "Ashoka Real Estate - Institutional", "o": "Akash Parmar - 235", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Website"},
-  {"n": "Cypark", "c": "Cypark", "o": "Chandra", "s": "Lost", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Keerthi Estates", "c": "Keerthi Estates", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Website"},
-  {"n": "Hubtown", "c": "Hubtown", "o": "Anushi Surya", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
-  {"n": "Yashoda Hospitals", "c": "Yashoda Hospitals", "o": "Prateek Shendre", "s": "Won", "i": "Healthcare", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Yashoda Hospitals (Upsell)", "c": "Yashoda Hospitals", "o": "Prateek Shendre", "s": "Upsell Proposal", "i": "Healthcare", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Rohan Builders", "c": "Rohan Builders", "o": "Prateek Shendre", "s": "Won", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "KMV Group", "c": "KMV Group", "o": "Arun", "s": "Lost", "i": "Engineering & Consulting", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Purvankara", "c": "Purvankara", "o": "Anushi Surya", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
-  {"n": "Sree Chaitanya Constructions", "c": "Sree Chaitanya Constructions", "o": "Arun", "s": "Lost", "i": "Government & Other", "seg": "Nurturing", "src": ""},
-  {"n": "Speed Housing LLP", "c": "Speed Housing LLP", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
-  {"n": "Maia Estates", "c": "Maia Estates", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
-  {"n": "E-infra", "c": "E-infra", "o": "Arun", "s": "Won", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Bhartiya Urban", "c": "Bhartiya Urban", "o": "Arun", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
-  {"n": "Ramky Group", "c": "Ramky Group", "o": "Arun", "s": "Won", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Dowlath Pasha", "c": "", "o": "Akash Parmar - 235", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": ""},
-  {"n": "Swapnil Kadam", "c": "", "o": "Akash Parmar - 235", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Website"},
-  {"n": "Krupa J", "c": "DRB infrastructures pvt ltd", "o": "Prateek Shendre", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "S Madan Kumar", "c": "L&T Mindtree", "o": "Abhinav Bommisetty - 041", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Rajendra Singh", "c": "Bauer India", "o": "Prateek Shendre", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Pravindra", "c": "K-RIDE Bengaluru", "o": "Abhinav Bommisetty - 041", "s": "Prospects", "i": "Government & Other", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Satish", "c": "Jakson", "o": "Prateek Shendre", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Gaurav (HDFC Capital)", "c": "HDFC Capital", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Avinash Kotla", "c": "Reliance Industries Limited", "o": "Vara Tejesh", "s": "Contacted", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
-  {"n": "Sandesh S Kamblee", "c": "Painterior", "o": "Vara Tejesh", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": "Website"},
-  {"n": "C", "c": "Duracool", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Vaibhav", "c": "Livingstone Infra", "o": "Lasya Ganapathi", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Gaurav (CEM India)", "c": "CEM India", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "saravanan", "c": "Gulfspic", "o": "Vara Tejesh", "s": "Won", "i": "Corporate & Technology", "seg": "Discovery", "src": "Website"},
-  {"n": "Narendra Verma", "c": "Powerica Ltd", "o": "Vara Tejesh", "s": "Won", "i": "Energy & Power", "seg": "Discovery", "src": ""},
-  {"n": "Saptarshi Basu", "c": "Welspun Enterprises", "o": "Vara Tejesh", "s": "Prospects", "i": "Energy & Power", "seg": "Discovery", "src": ""},
-  {"n": "Amit Deshmukh", "c": "Toyo Engineering India Private Limited", "o": "Vara Tejesh", "s": "Prospects", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
-  {"n": "Mayur Somani", "c": "Vibe Realty", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "Vishwajit Kate", "c": "Nxtra by Airtel", "o": "Vara Tejesh", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
-  {"n": "Mrs. Vishaka Waghmare", "c": "PSP Projects", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Brij", "c": "Wind World India L.T.D", "o": "Vara Tejesh", "s": "Lost", "i": "Energy & Power", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Bhaskar K", "c": "DA Realty", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "Aditya (Lenskart)", "c": "Lenskart", "o": "Akash Parmar - 235", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": "Website"},
-  {"n": "Anant Salunkhe", "c": "CtrlS", "o": "Vara Tejesh", "s": "Prospects", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
-  {"n": "Harsh Desai", "c": "Shapoorji Pallonji Real Estate", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Website"},
-  {"n": "Suhotra Banerjee", "c": "Dosti Realty", "o": "Vara Tejesh", "s": "Prospects", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "Paras", "c": "GAR Infobahn", "o": "Prateek Shendre", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Shahanshah Alam", "c": "TNA READYMIX INDIA PRIVATE LIMITED", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Likhitha", "c": "Hilti India", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "RAJU", "c": "QURM STONE DEVELOPMENT LLC", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Smruthi Ranjan", "c": "Adani Group", "o": "Vara Tejesh", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery", "src": ""},
-  {"n": "Vishwas", "c": "WSP", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Vishal Mudda", "c": "NCCCL", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Soumik Paul", "c": "Cemindia Projects Limited", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "S V Koteswara Rao", "c": "Athaang Infrastructure", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Panchu", "c": "Isprava", "o": "Vara Tejesh", "s": "Lost", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Linkedin"},
-  {"n": "Muhammed Musa (GHB)", "c": "GHB", "o": "Abhinav Bommisetty", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": ""},
-  {"n": "BABUL GOMASTA", "c": "DP Jain & Co. Infrastructure Pvt. Ltd", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Abhinav Agarwal", "c": "Godrej Enterprises", "o": "Vara Tejesh", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
-  {"n": "NHAI", "c": "NHAI", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": ""},
-  {"n": "Prateek Mudia", "c": "Max Healthcare", "o": "Vara Tejesh", "s": "Lost", "i": "Healthcare", "seg": "Discovery", "src": ""},
-  {"n": "Rahul Negi", "c": "Brahmaputra infrastructure limited", "o": "Akash Parmar - 235", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Atul Shirke", "c": "Turner Project Management India Pvt. Ltd.", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery", "src": ""},
-  {"n": "Vishal", "c": "L&T Realty, Mumbai", "o": "Prateek Shendre", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": ""},
-  {"n": "Sesha Sai", "c": "Amazon", "o": "Arun", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": ""},
-  {"n": "Santosh Sahu,Ameya", "c": "BPCL", "o": "Prateek Shendre", "s": "Demo", "i": "Energy & Power", "seg": "Discovery", "src": ""},
-  {"n": "Prerna K", "c": "NHEV", "o": "Prateek Shendre", "s": "Lost", "i": "Government & Other", "seg": "Discovery", "src": ""},
-  {"n": "Masood Khan", "c": "Amara Raja Infra", "o": "Arun", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Vinodh", "c": "NSL Infratech Pvt.Ltd", "o": "Prateek Shendre", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": ""},
-  {"n": "Birdi Systems Inc", "c": "Birdi Systems Inc", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "CARE Hospitals", "c": "CARE Hospitals", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Healthcare", "seg": "Nurturing", "src": ""},
-  {"n": "Mangalmurty Realty", "c": "Mangalmurty Realty", "o": "Vara Tejesh", "s": "Lost", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
-  {"n": "Ankura Homes", "c": "Ankura Homes", "o": "Prateek Shendre", "s": "Proposal", "i": "Residential & Real Estate", "seg": "Nurturing", "src": ""},
-  {"n": "Sri Avantika Contractor ltd", "c": "Sri Avantika Contractor ltd", "o": "Prateek Shendre", "s": "Proposal", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": ""},
-  {"n": "Linesight", "c": "Linesight", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Engineering & Consulting", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "G R Infraprojects Limited", "c": "G R Infraprojects Limited", "o": "Vara Tejesh", "s": "Lost", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": ""},
-  {"n": "Bi RIDE", "c": "Bi RIDE", "o": "Abhinav Bommisetty - 041", "s": "Proposal", "i": "Government & Other", "seg": "Nurturing", "src": ""},
-  {"n": "TTD", "c": "TTD", "o": "Abhinav Bommisetty - 041", "s": "Proposal", "i": "Government & Other", "seg": "Nurturing", "src": ""},
-  {"n": "MEIL (Megha Engineering & Infrastructures Ltd.)", "c": "MEIL (Megha Engineering & Infrastructures Ltd.)", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "NTPC Limited (formerly National Thermal Power Corporation)", "c": "NTPC Limited (formerly National Thermal Power Corporation)", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Vedant Group", "c": "Vedant Group", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Almaviva Saudi Arabia", "c": "Almaviva Saudi Arabia", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Inorbit Malls (India) Private Limited", "c": "Inorbit Malls (India) Private Limited", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "HCC", "c": "HCC", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "GMR Group", "c": "GMR Group", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Government & Other", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Arvind Techno", "c": "Arvind Techno", "o": "Vara Tejesh", "s": "Lost", "i": "Corporate & Technology", "seg": "Nurturing", "src": "Direct Call"},
-  {"n": "Honer Homes", "c": "Honer Homes", "o": "Akash Parmar - 235", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call"}
+  {"n": "Abhay Dattatraya Gharpure", "c": "Adani Navbharat", "o": "Vara Tejesh", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Direct Call", "arr": 7500000, "cv": 0},
+  {"n": "Akshay", "c": "", "o": "Prateek Shendre", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
+  {"n": "Deep", "c": "", "o": "Prateek Shendre", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
+  {"n": "Karan Bohra", "c": "Emproy Realty", "o": "Vara Tejesh", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
+  {"n": "Nitish Pandey", "c": "Awfis", "o": "Prateek Shendre", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
+  {"n": "Karthik Y", "c": "", "o": "Akash Parmar - 235", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
+  {"n": "Balasaheb Lokhande", "c": "Maitri Interior projects", "o": "Vara Tejesh", "s": "Unspecified", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
+  {"n": "Muhammed Musa (Livspace)", "c": "Livspace", "o": "Prateek Shendre", "s": "Prospects", "i": "Residential & Real Estate", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
+  {"n": "Avtar Singh", "c": "Zepto", "o": "Prateek Shendre", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
+  {"n": "Swapnil Kadam", "c": "Aqcorp", "o": "Akash Parmar - 235", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
+  {"n": "Satish Sinha", "c": "Jakson", "o": "Prateek Shendre", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery", "src": "Linkedin", "arr": 20000000, "cv": 0},
+  {"n": "Dowlath Pasha", "c": "", "o": "Akash Parmar - 235", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
+  {"n": "Avinash Kotla", "c": "Reliance Industries Limited", "o": "Vara Tejesh", "s": "Contacted", "i": "Corporate & Technology", "seg": "Discovery", "src": "", "arr": 2500000, "cv": 0},
+  {"n": "Gaurav Pande", "c": "CEM India", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin", "arr": 3000000, "cv": 0},
+  {"n": "Mrs. Vishaka Waghmare", "c": "PSP Projects", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "", "arr": 2000000, "cv": 0},
+  {"n": "Vishwajit Kate", "c": "Nxtra by Airtel", "o": "Vara Tejesh", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery", "src": "", "arr": 2000000, "cv": 0},
+  {"n": "Mayur Somani", "c": "Vibe Realty", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": "", "arr": 2000000, "cv": 0},
+  {"n": "Amit Deshmukh", "c": "Toyo Engineering India Private Limited", "o": "Vara Tejesh", "s": "Prospects", "i": "Engineering & Consulting", "seg": "Discovery", "src": "", "arr": 2500000, "cv": 0},
+  {"n": "Bhaskar K", "c": "DA Realty", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": "", "arr": 2000000, "cv": 0},
+  {"n": "Saptarshi Basu", "c": "Welspun Enterprises", "o": "Vara Tejesh", "s": "Prospects", "i": "Energy & Power", "seg": "Discovery", "src": "", "arr": 2000000, "cv": 0},
+  {"n": "Aditya Kakkar", "c": "Lenskart", "o": "Akash Parmar - 235", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
+  {"n": "Anant Salunkhe", "c": "CtrlS", "o": "Vara Tejesh", "s": "Prospects", "i": "Engineering & Consulting", "seg": "Discovery", "src": "", "arr": 2500000, "cv": 0},
+  {"n": "Harsh Desai", "c": "Shapoorji Pallonji Real Estate", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Website", "arr": 2000000, "cv": 0},
+  {"n": "Suhotra Banerjee", "c": "Dosti Realty", "o": "Vara Tejesh", "s": "Prospects", "i": "Residential & Real Estate", "seg": "Discovery", "src": "", "arr": 2000000, "cv": 0},
+  {"n": "S Madan Kumar IGBC AP, ECBC, CE", "c": "L&T Mindtree", "o": "Abhinav Bommisetty - 041", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
+  {"n": "Pravindra Kumar", "c": "K-RIDE Bengaluru", "o": "Abhinav Bommisetty - 041", "s": "Prospects", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
+  {"n": "Vishal Mudda", "c": "NCCCL", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "", "arr": 2500000, "cv": 0},
+  {"n": "Vishwas Chinchore", "c": "WSP", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery", "src": "Linkedin", "arr": 2000000, "cv": 0},
+  {"n": "Smruthi Ranjan", "c": "Adani Group", "o": "Vara Tejesh", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery", "src": "", "arr": 5000000, "cv": 0},
+  {"n": "S V Koteswara Rao", "c": "Athaang Infrastructure", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "", "arr": 2000000, "cv": 0},
+  {"n": "NHAI", "c": "NHAI", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
+  {"n": "Muhammed Musa (GHB)", "c": "GHB", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
+  {"n": "Abhinav Agarwal", "c": "Godrej Enterprises", "o": "Vara Tejesh", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery", "src": "", "arr": 2500000, "cv": 0},
+  {"n": "BABUL GOMASTA", "c": "DP Jain & Co. Infrastructure Pvt. Ltd", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "", "arr": 2000000, "cv": 0},
+  {"n": "Atul Shirke", "c": "Turner Project Management India Pvt. Ltd.", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery", "src": "", "arr": 2000000, "cv": 0},
+  {"n": "Vishal Shivhare", "c": "L&T Realty, Mumbai", "o": "Prateek Shendre", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": "", "arr": 3000000, "cv": 0},
+  {"n": "Sesha Sai", "c": "Amazon", "o": "Arun", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
+  {"n": "Krupa J", "c": "DRB infrastructures pvt ltd", "o": "Prateek Shendre", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin", "arr": 15000000, "cv": 0},
+  {"n": "Santosh Sahu,Ameya", "c": "BPCL", "o": "Prateek Shendre", "s": "Demo", "i": "Energy & Power", "seg": "Discovery", "src": "", "arr": 15000000, "cv": 0},
+  {"n": "Vinodh", "c": "NSL Infratech Pvt.Ltd", "o": "Prateek Shendre", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
+  {"n": "Yashoda Hospitals", "c": "Yashoda Hospitals", "o": "Prateek Shendre", "s": "Upsell Proposal", "i": "Healthcare", "seg": "Nurturing", "src": "Direct Call", "arr": 3000000, "cv": 3000000},
+  {"n": "Powerica Ltd", "c": "Powerica Ltd", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": "", "arr": 2000000, "cv": 2000000},
+  {"n": "Gulfspic", "c": "Gulfspic", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing", "src": "Linkedin", "arr": 2000000, "cv": 2000000},
+  {"n": "Avcon Technics Pvt. Ltd.", "c": "Avcon Technics Pvt. Ltd.", "o": "Vara Tejesh", "s": "Proposal", "i": "Engineering & Consulting", "seg": "Nurturing", "src": "Direct Call", "arr": 1600000, "cv": 1600000},
+  {"n": "SRR", "c": "SRR", "o": "Prateek Shendre", "s": "Upsell Proposal", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call", "arr": 4800000, "cv": 4800000},
+  {"n": "Jindal Renewables", "c": "Jindal Renewables", "o": "Prateek Shendre", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": "", "arr": 5000000, "cv": 65000},
+  {"n": "Birdi Systems Inc", "c": "Birdi Systems Inc", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing", "src": "Direct Call", "arr": 65000, "cv": 65000},
+  {"n": "CARE Hospitals", "c": "CARE Hospitals", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Healthcare", "seg": "Nurturing", "src": "", "arr": 2000000, "cv": 65000},
+  {"n": "Ankura Homes", "c": "Ankura Homes", "o": "Prateek Shendre", "s": "Proposal", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "", "arr": 6500000, "cv": 250000},
+  {"n": "Sri Avantika Contractor ltd", "c": "Sri Avantika Contractor ltd", "o": "Prateek Shendre", "s": "Proposal", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "", "arr": 2100000, "cv": 210000},
+  {"n": "Linesight", "c": "Linesight", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Engineering & Consulting", "seg": "Nurturing", "src": "Direct Call", "arr": 1000000, "cv": 1000000},
+  {"n": "Bi RIDE", "c": "Bi RIDE", "o": "Abhinav Bommisetty - 041", "s": "Proposal", "i": "Government & Other", "seg": "Nurturing", "src": "", "arr": 84000000, "cv": 0},
+  {"n": "TTD", "c": "TTD", "o": "Abhinav Bommisetty - 041", "s": "Proposal", "i": "Government & Other", "seg": "Nurturing", "src": "", "arr": 150000000, "cv": 0},
+  {"n": "MEIL (Megha Engineering & Infrastructures Ltd.)", "c": "MEIL (Megha Engineering & Infrastructures Ltd.)", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call", "arr": 2500000, "cv": 2500000},
+  {"n": "NTPC Limited (formerly National Thermal Power Corporation)", "c": "NTPC Limited (formerly National Thermal Power Corporation)", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call", "arr": 7500000, "cv": 7500000},
+  {"n": "Vedant Group", "c": "Vedant Group", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call", "arr": 2500000, "cv": 2500000},
+  {"n": "Almaviva Saudi Arabia", "c": "Almaviva Saudi Arabia", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing", "src": "Direct Call", "arr": 15000000, "cv": 15000000},
+  {"n": "Inorbit Malls (India) Private Limited", "c": "Inorbit Malls (India) Private Limited", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call", "arr": 2000000, "cv": 65000},
+  {"n": "HCC", "c": "HCC", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call", "arr": 2500000, "cv": 2500000},
+  {"n": "GMR Group", "c": "GMR Group", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Government & Other", "seg": "Nurturing", "src": "Direct Call", "arr": 2500000, "cv": 2500000},
+  {"n": "Honer Homes", "c": "Honer Homes", "o": "Prateek Shendre", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call", "arr": 1800000, "cv": 2100000}
 ];
 
 function groupCountBy(leads, keyFn) {
@@ -1371,6 +1135,7 @@ function industryLabel(i) { return i === "Unclassified" ? "Unclassified / No com
 let activeSegment = 'All';
 let activeIndustry = 'All';
 let activeOwner = 'All';
+let activeStage = 'All';
 let printActiveOnly = false;
 const ARCHIVED_STAGE_NAMES = ['Won', 'Lost', 'Disqualified'];
 
@@ -1556,39 +1321,69 @@ ownerFilterSelect.addEventListener('change', () => {
   renderTable();
 });
 
-const chipBar = document.getElementById('industryChips');
+const industryFilterSelect = document.getElementById('industryFilter');
+const stageFilterSelect = document.getElementById('stageFilter');
+const segmentFilterSelect = document.getElementById('segmentFilter');
 
-function renderChips() {
-  chipBar.innerHTML = '';
+function renderIndustryFilter() {
   const byIndustry = currentByIndustry();
-  const totalLeadsForChips = Object.values(byIndustry).reduce((a,b)=>a+b,0);
-
-  const allChip = document.createElement('button');
-  allChip.className = 'chip' + (activeIndustry === 'All' ? ' is-active' : '');
-  allChip.setAttribute('role','tab');
-  allChip.setAttribute('aria-selected', activeIndustry === 'All');
-  allChip.innerHTML = `All <span class="chip-count">${totalLeadsForChips}</span>`;
-  allChip.addEventListener('click', () => { activeIndustry = 'All'; renderChips(); renderTable(); });
-  chipBar.appendChild(allChip);
-
+  const totalLeads = Object.values(byIndustry).reduce((a,b)=>a+b,0);
+  const prevValue = activeIndustry;
+  industryFilterSelect.innerHTML = '';
+  const allOpt = document.createElement('option');
+  allOpt.value = 'All';
+  allOpt.textContent = `All Industries (${totalLeads})`;
+  industryFilterSelect.appendChild(allOpt);
   INDUSTRY_ORDER.forEach(ind => {
     const count = byIndustry[ind] || 0;
     if (!count) return;
-    const chip = document.createElement('button');
-    chip.className = 'chip' + (activeIndustry === ind ? ' is-active' : '');
-    chip.setAttribute('role','tab');
-    chip.setAttribute('aria-selected', activeIndustry === ind);
-    chip.innerHTML = `${industryLabel(ind)} <span class="chip-count">${count}</span>`;
-    chip.addEventListener('click', () => { activeIndustry = ind; renderChips(); renderTable(); });
-    chipBar.appendChild(chip);
+    const opt = document.createElement('option');
+    opt.value = ind;
+    opt.textContent = `${industryLabel(ind)} (${count})`;
+    industryFilterSelect.appendChild(opt);
   });
+  const values = Array.from(industryFilterSelect.options).map(o => o.value);
+  activeIndustry = values.includes(prevValue) ? prevValue : 'All';
+  industryFilterSelect.value = activeIndustry;
 }
+
+industryFilterSelect.addEventListener('change', () => {
+  activeIndustry = industryFilterSelect.value;
+  renderTable();
+});
+
+function renderStageFilter() {
+  const meta = currentStageMeta();
+  const orderedStages = Object.keys(meta).sort((a,b)=>meta[a].order-meta[b].order);
+  const byStage = currentByStage();
+  const prevValue = activeStage;
+  stageFilterSelect.innerHTML = '';
+  const allOpt = document.createElement('option');
+  allOpt.value = 'All';
+  allOpt.textContent = 'All Stages';
+  stageFilterSelect.appendChild(allOpt);
+  orderedStages.forEach(stage => {
+    const count = byStage[stage] || 0;
+    if (!count) return;
+    const opt = document.createElement('option');
+    opt.value = stage;
+    opt.textContent = `${stageLabel(meta, stage)} (${count})`;
+    stageFilterSelect.appendChild(opt);
+  });
+  const values = Array.from(stageFilterSelect.options).map(o => o.value);
+  activeStage = values.includes(prevValue) ? prevValue : 'All';
+  stageFilterSelect.value = activeStage;
+}
+
+stageFilterSelect.addEventListener('change', () => {
+  activeStage = stageFilterSelect.value;
+  renderTable();
+});
+
 
 const leadsBody = document.getElementById('leadsBody');
 const tableNote = document.getElementById('tableNote');
 const tableCount = document.getElementById('tableCount');
-
-const ARCHIVED_STAGES = new Set(['Won', 'Lost', 'Disqualified']);
 
 function makeLeadRow(l, stage, meta) {
   const stMeta = meta[stage] || DISCOVERY_STAGE_META[stage] || NURTURING_STAGE_META[stage];
@@ -1600,8 +1395,8 @@ function makeLeadRow(l, stage, meta) {
   const actionCell = taskInfo
     ? `<div class="task-note">${taskInfo.note}${taskInfo.isNew ? `<span class="new-badge"><span class="dot"></span>${formatUpdatedBadge(taskInfo.updatedAt)}</span>` : ''}<br><span style="color:var(--text-muted)">Status: ${taskInfo.status}</span></div>`
     : `<span class="task-empty">Not logged</span>`;
-  const cost = LEAD_COSTS[l.n];
-  const arrCell = cost ? formatINR(cost.arr) : '<span class="task-empty">—</span>';
+  const arrCell = l.arr ? formatINR(l.arr) : '<span class="task-empty">—</span>';
+  const cvCell = l.cv ? formatINR(l.cv) : '<span class="task-empty">—</span>';
   const sourceCell = l.src ? l.src : '<span class="task-empty">—</span>';
   tr.innerHTML = `
     <td class="lead-name">${l.n}</td>
@@ -1611,6 +1406,7 @@ function makeLeadRow(l, stage, meta) {
     <td><span class="stage-chip" style="background:${stMeta.bg}; color:${stMeta.color}"><span class="dot" style="background:${stMeta.color}"></span>${stageLabel(meta, stage)}</span></td>
     <td>${sourceCell}</td>
     <td>${arrCell}</td>
+    <td>${cvCell}</td>
     <td>${actionCell}</td>
   `;
   return tr;
@@ -1622,6 +1418,7 @@ function renderTable() {
   if (activeSegment !== 'All') filtered = filtered.filter(l => l.seg === activeSegment);
   if (activeIndustry !== 'All') filtered = filtered.filter(l => l.i === activeIndustry);
   if (activeOwner !== 'All') filtered = filtered.filter(l => ownerShortName(l.o) === activeOwner);
+  if (activeStage !== 'All') filtered = filtered.filter(l => l.s === activeStage);
 
   const meta = currentStageMeta();
   const orderedStages = Object.keys(meta).sort((a,b)=>meta[a].order-meta[b].order);
@@ -1636,78 +1433,32 @@ function renderTable() {
     leads.sort((a, b) => lastUpdatedTime(b) - lastUpdatedTime(a));
   });
 
-  const activeStages = orderedStages.filter(s => !ARCHIVED_STAGES.has(s));
-  const archivedStages = orderedStages.filter(s => ARCHIVED_STAGES.has(s));
-
-  activeStages.forEach(stage => {
+  orderedStages.forEach(stage => {
     const leads = grouped[stage];
     if (!leads || !leads.length) return;
     const stMeta = meta[stage] || DISCOVERY_STAGE_META[stage] || NURTURING_STAGE_META[stage];
 
     const divider = document.createElement('tr');
     divider.className = 'group-divider';
-    divider.innerHTML = `<td colspan="8"><div class="group-divider-inner"><span class="swatch" style="background:${stMeta.color}"></span>${stageLabel(meta, stage)} &middot; ${leads.length} shown<div class="line"></div></div></td>`;
+    divider.innerHTML = `<td colspan="9"><div class="group-divider-inner"><span class="swatch" style="background:${stMeta.color}"></span>${stageLabel(meta, stage)} &middot; ${leads.length} shown<div class="line"></div></div></td>`;
     leadsBody.appendChild(divider);
 
     leads.forEach(l => leadsBody.appendChild(makeLeadRow(l, stage, meta)));
   });
 
-  let archivedCount = 0;
-  const archivedRowEls = [];
-  archivedStages.forEach(stage => {
-    const leads = grouped[stage];
-    if (!leads || !leads.length) return;
-    archivedCount += leads.length;
-    leads.forEach(l => {
-      const tr = makeLeadRow(l, stage, meta);
-      tr.classList.add('archived-row');
-      archivedRowEls.push(tr);
-    });
-  });
-
-  if (archivedCount > 0) {
-    const toggleRow = document.createElement('tr');
-    toggleRow.className = 'archive-toggle-row';
-    const toggleTd = document.createElement('td');
-    toggleTd.colSpan = 8;
-    const btn = document.createElement('button');
-    btn.className = 'archive-toggle';
-    btn.innerHTML = `<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>Won / Lost / Disqualified <span class="count-tag">${archivedCount} hidden</span>`;
-    btn.addEventListener('click', () => {
-      const open = btn.classList.toggle('is-open');
-      archivedRowEls.forEach(r => r.classList.toggle('is-visible', open));
-    });
-    toggleTd.appendChild(btn);
-    toggleRow.appendChild(toggleTd);
-    leadsBody.appendChild(toggleRow);
-    archivedRowEls.forEach(r => leadsBody.appendChild(r));
-  }
-
   const segLabel = activeSegment === 'All' ? 'both segments' : activeSegment;
   tableCount.textContent = activeIndustry === 'All' ? segLabel : `${industryLabel(activeIndustry)} · ${segLabel}`;
-  tableNote.textContent = `Showing ${filtered.length} sampled leads (${segLabel}${activeIndustry !== 'All' ? ', ' + industryLabel(activeIndustry) : ''}) — full list lives in Togile → Discovery / Nurturing.`;
+  tableNote.textContent = `Showing ${filtered.length} active leads (${segLabel}${activeIndustry !== 'All' ? ', ' + industryLabel(activeIndustry) : ''}) — full list lives in Togile → Discovery / Nurturing.`;
 }
 
 const segmentToggle = document.getElementById('segmentToggle');
 const statTotal = document.getElementById('statTotal');
 const statTotalSub = document.getElementById('statTotalSub');
-const statOpen = document.getElementById('statOpen');
-const statOpenSub = document.getElementById('statOpenSub');
-const statWon = document.getElementById('statWon');
-const statWonSub = document.getElementById('statWonSub');
-const statLost = document.getElementById('statLost');
-const statLostSub = document.getElementById('statLostSub');
 const statArr = document.getElementById('statArr');
 const statArrSub = document.getElementById('statArrSub');
+const statCv = document.getElementById('statCv');
 const segmentSplitCard = document.getElementById('segmentSplitCard');
-const wonTile = document.getElementById('wonTile');
-const lostTile = document.getElementById('lostTile');
 const statStrip = document.querySelector('.stat-strip');
-
-const OPEN_STAGES = {
-  Discovery: ["Prospects","Contacted","SalesQualifiedLead","Demo"],
-  Nurturing: ["Proposal","Value Demonstration/POC","Upsell Proposal"]
-};
 
 function formatINR(amount) {
   if (amount >= 10000000) return `₹${(amount/10000000).toFixed(2)} Cr`;
@@ -1751,29 +1502,26 @@ function formatRelativeTime(isoString) {
   return then.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) + `, ${timeStr}`;
 }
 
-function computeOpenArr() {
+function computeArrAndCv() {
   const segments = activeSegment === 'All' ? ['Discovery','Nurturing'] : [activeSegment];
-  let totalArr = 0, withCost = 0, missing = 0;
+  let totalArr = 0, totalCv = 0, withCost = 0, missing = 0;
   sampleLeads.forEach(l => {
     if (!segments.includes(l.seg)) return;
-    if (!OPEN_STAGES[l.seg].includes(l.s)) return;
-    const cost = LEAD_COSTS[l.n];
-    if (cost) { totalArr += cost.arr; withCost++; }
-    else { missing++; }
+    totalArr += l.arr || 0;
+    totalCv += l.cv || 0;
+    if (l.arr) { withCost++; } else { missing++; }
   });
-  return { totalArr, withCost, missing };
+  return { totalArr, totalCv, withCost, missing };
 }
 
-function computeOwnerOpenArr(ownerName) {
+function computeOwnerArr(ownerName) {
   const segments = activeSegment === 'All' ? ['Discovery','Nurturing'] : [activeSegment];
   let totalArr = 0, count = 0;
   sampleLeads.forEach(l => {
     if (!segments.includes(l.seg)) return;
-    if (!OPEN_STAGES[l.seg].includes(l.s)) return;
     if (ownerShortName(l.o) !== ownerName) return;
     count++;
-    const cost = LEAD_COSTS[l.n];
-    if (cost) totalArr += cost.arr;
+    totalArr += l.arr || 0;
   });
   return { totalArr, count };
 }
@@ -1783,9 +1531,9 @@ function renderOwnerArrBadge() {
     ownerArrBadge.style.display = 'none';
     return;
   }
-  const { totalArr, count } = computeOwnerOpenArr(activeOwner);
+  const { totalArr, count } = computeOwnerArr(activeOwner);
   ownerArrBadge.style.display = 'inline-flex';
-  ownerArrBadge.textContent = `${formatINR(totalArr)} potential ARR · ${count} open`;
+  ownerArrBadge.textContent = `${formatINR(totalArr)} potential ARR · ${count} active`;
 }
 
 const sourceArrRow = document.getElementById('sourceArrRow');
@@ -1795,11 +1543,9 @@ function renderSourceArr() {
   const bySource = {};
   sampleLeads.forEach(l => {
     if (!segments.includes(l.seg)) return;
-    if (!OPEN_STAGES[l.seg].includes(l.s)) return;
     const src = l.src || 'Unspecified';
     if (!(src in bySource)) bySource[src] = { arr: 0, count: 0, Discovery: 0, Nurturing: 0 };
-    const cost = LEAD_COSTS[l.n];
-    if (cost) bySource[src].arr += cost.arr;
+    bySource[src].arr += l.arr || 0;
     bySource[src].count += 1;
     bySource[src][l.seg] += 1;
   });
@@ -1813,47 +1559,31 @@ function renderSourceArr() {
 
 function computeStats() {
   const segments = activeSegment === 'All' ? ['Discovery','Nurturing'] : [activeSegment];
-  let total = 0, open = 0, won = 0, lost = 0;
+  let total = 0;
   segments.forEach(seg => {
-    const stages = stripArchivedStages(byStageBySegment[seg]);
-    Object.entries(stages).forEach(([stage, count]) => {
-      total += count;
-      if (OPEN_STAGES[seg].includes(stage)) open += count;
-      if (stage === 'Won') won += count;
-      if (stage === 'Lost') lost += count;
-    });
+    const stages = byStageBySegment[seg];
+    Object.values(stages).forEach(count => { total += count; });
   });
-  return { total, open, won, lost };
+  return { total };
 }
 
 function renderStats() {
-  const { total, open, won, lost } = computeStats();
+  const { total } = computeStats();
   statTotal.textContent = total;
-  statOpen.textContent = open;
-  statWon.textContent = won;
-  statLost.textContent = lost;
-  statWonSub.textContent = total ? `${(won/total*100).toFixed(1)}% of total` : '—';
-  statLostSub.textContent = total ? `${(lost/total*100).toFixed(1)}% of total` : '—';
-  statOpenSub.textContent = 'active, not yet won/lost';
 
-  const { totalArr, withCost, missing } = computeOpenArr();
+  const { totalArr, totalCv, withCost, missing } = computeArrAndCv();
   statArr.textContent = formatINR(totalArr);
-  statArrSub.textContent = missing ? `${withCost} of ${open} leads costed` : 'across open pipeline';
+  statArrSub.textContent = missing ? `${withCost} of ${total} leads have ARR` : 'across active leads';
+  statCv.textContent = formatINR(totalCv);
 
   if (activeSegment === 'All') {
     const discCount = sampleLeads.filter(l => l.seg === 'Discovery').length;
     const nurtCount = sampleLeads.filter(l => l.seg === 'Nurturing').length;
     statTotalSub.textContent = `${discCount} Discovery · ${nurtCount} Nurturing`;
     segmentSplitCard.style.display = '';
-    wonTile.style.display = 'none';
-    lostTile.style.display = 'none';
-    statStrip.classList.add('stat-strip-3');
   } else {
     statTotalSub.textContent = `in ${activeSegment}`;
     segmentSplitCard.style.display = 'none';
-    wonTile.style.display = '';
-    lostTile.style.display = '';
-    statStrip.classList.remove('stat-strip-3');
   }
 }
 
@@ -1863,9 +1593,11 @@ const leadOwnerByName = Object.fromEntries(sampleLeads.map(l => [l.n, l]));
 
 function renderTaskFeed() {
   taskFeed.innerHTML = '';
-  const entries = Object.entries(TASK_NOTES).sort((a, b) => {
-    return new Date(b[1].updatedAt || 0) - new Date(a[1].updatedAt || 0);
-  });
+  const entries = Object.entries(TASK_NOTES)
+    .filter(([leadName]) => leadOwnerByName[leadName])
+    .sort((a, b) => {
+      return new Date(b[1].updatedAt || 0) - new Date(a[1].updatedAt || 0);
+    });
   taskFeedCount.textContent = `${entries.length} update${entries.length === 1 ? '' : 's'}`;
 
   if (!entries.length) {
@@ -1904,7 +1636,8 @@ function renderAll() {
   renderOwnerFilter();
   renderOwnerArrBadge();
   renderSourceArr();
-  renderChips();
+  renderIndustryFilter();
+  renderStageFilter();
   renderTable();
 }
 
@@ -1914,12 +1647,26 @@ Array.from(segmentToggle.querySelectorAll('.seg-btn')).forEach(btn => {
   btn.addEventListener('click', () => {
     activeSegment = btn.dataset.seg;
     activeIndustry = 'All';
+    activeStage = 'All';
     Array.from(segmentToggle.querySelectorAll('.seg-btn')).forEach(b => {
       b.classList.toggle('is-active', b === btn);
       b.setAttribute('aria-selected', b === btn);
     });
+    segmentFilterSelect.value = activeSegment;
     renderAll();
   });
+});
+
+segmentFilterSelect.addEventListener('change', () => {
+  activeSegment = segmentFilterSelect.value;
+  activeIndustry = 'All';
+  activeStage = 'All';
+  Array.from(segmentToggle.querySelectorAll('.seg-btn')).forEach(b => {
+    const isActive = b.dataset.seg === activeSegment;
+    b.classList.toggle('is-active', isActive);
+    b.setAttribute('aria-selected', isActive);
+  });
+  renderAll();
 });
 
 renderAll();
