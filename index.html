@@ -810,7 +810,7 @@
       </div>
     </div>
     <div class="meta-row">
-      <span class="asof-pill"><span class="dot"></span>Data as of 18 Aug 2026, 3:05 PM IST &middot; Source: Togile</span>
+      <span class="asof-pill"><span class="dot"></span>Data as of 19 Aug 2026, 2:45 PM IST &middot; Source: Togile</span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
         <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
       </button>
@@ -818,15 +818,15 @@
   </div>
 
   <div class="segment-toggle" id="segmentToggle" role="tablist" aria-label="Filter by segment">
-    <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">72</span></button>
-    <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">48</span></button>
-    <button class="seg-btn" data-seg="Nurturing" role="tab" aria-selected="false">Nurturing <span class="seg-count">24</span></button>
+    <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">67</span></button>
+    <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">45</span></button>
+    <button class="seg-btn" data-seg="Nurturing" role="tab" aria-selected="false">Nurturing <span class="seg-count">22</span></button>
   </div>
 
   <div class="stat-strip stat-strip-3">
     <div class="stat-tile">
       <span class="label">Active Leads</span>
-      <div class="value-row"><span class="value" id="statTotal">72</span><span class="sub" id="statTotalSub">48 Discovery &middot; 24 Nurturing</span></div>
+      <div class="value-row"><span class="value" id="statTotal">67</span><span class="sub" id="statTotalSub">45 Discovery &middot; 22 Nurturing</span></div>
     </div>
     <div class="stat-tile accent-value">
       <span class="label">Potential ARR</span>
@@ -1027,8 +1027,6 @@ const TASK_NOTES = {
   "NTPC Limited (formerly National Thermal Power Corporation)": { note: "- Status: Waiting on confirmation for a meeting at the NTPC head office, with the Contracts team and Digital team - Next action: Align and confirm meeting schedule with head office stakeholders", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:58:37.117Z" },
   "Almaviva Saudi Arabia": { note: "- Client currently presenting a smart program for the PMBS Corridor project, under Jeddah Municipality - We are providing latest dashboard screenshots from our platform to support their presentation - Next action: Follow up to schedule and showcase a full application demo to the client", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:14:39.804Z" },
   "Powerica Ltd": { note: "As a next step, we'd like to understand your current systems for substation, transmission, and solar monitoring, so we can map them to our platform and run a focused POC — helping identify quick automation wins in monitoring, quality, and safety, and showcase value early.", status: "Open", isNew: true, updatedAt: "2026-08-05T09:17:16.531Z" },
-  "Sri Avantika Contractor ltd": { note: "POC is not responding to our calls", status: "Open", isNew: true, updatedAt: "2026-08-03T06:58:19.824Z" },
-  "Ankura Homes": { note: "Mr. Bhushan will revert on the quotation submitted by end of this week 7th Aug", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:57:19.022Z" },
   "Jindal Renewables": { note: "Demo rescheduled to week starting from 17th Aug as their team is on site visit.", status: "In Progress", isNew: true, updatedAt: "2026-08-06T09:30:47.909Z" },
   "SRR": { note: "Shared proposal on 25th June, we will receive an update after customer wedding, Meeting to be setup after 20th Aug.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:43:10.339Z" },
   "Honer Homes": { note: "We completed the demo and showcased the handover module for Ananda Homes, along with a few forms configured in Eminent. He also opened one of his friends SmartApp dashboards, shared some MIR dashboards, and requested a table-format report with filtering options in each coloumn", status: "Completed", isNew: false, updatedAt: "2026-04-07T09:49:44.068Z" },
@@ -1039,13 +1037,11 @@ const sampleLeads = [
   {"n": "GHB", "c": "Gujarat Housing Board", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": "Direct Call", "arr": 25000000, "cv": 87500000},
   {"n": "DFC", "c": "DFC", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
   {"n": "Abdurrahman", "c": "", "o": "Prateek Shendre", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
-  {"n": "Akshay", "c": "", "o": "Prateek Shendre", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
   {"n": "Deep", "c": "", "o": "Prateek Shendre", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
   {"n": "Karan Bohra", "c": "Emproy Realty", "o": "Vara Tejesh", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
-  {"n": "Nitish Pandey", "c": "Awfis", "o": "Prateek Shendre", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
+  {"n": "Nitish Pandey", "c": "Awfis", "o": "Prateek Shendre", "s": "Demo", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
   {"n": "Karthik Y", "c": "", "o": "Akash Parmar - 235", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
   {"n": "Balasaheb Lokhande", "c": "Maitri Interior projects", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
-  {"n": "Muhammed Musa (Livspace)", "c": "Livspace", "o": "Prateek Shendre", "s": "Prospects", "i": "Residential & Real Estate", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
   {"n": "Avtar Singh", "c": "Zepto", "o": "Prateek Shendre", "s": "Prospects", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
   {"n": "Swapnil Kadam", "c": "Aqcorp", "o": "Akash Parmar - 235", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
   {"n": "Satish Sinha", "c": "Jakson", "o": "Prateek Shendre", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery", "src": "Linkedin", "arr": 5000000, "cv": 30000000},
@@ -1068,7 +1064,7 @@ const sampleLeads = [
   {"n": "Smruthi Ranjan", "c": "Adani Group", "o": "Vara Tejesh", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery", "src": "", "arr": 5000000, "cv": 0},
   {"n": "S V Koteswara Rao", "c": "Athaang Infrastructure", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "", "arr": 2000000, "cv": 0},
   {"n": "NHAI", "c": "NHAI", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": "", "arr": 25600000, "cv": 300000000},
-  {"n": "Muhammed Musa (GHB)", "c": "GHB", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
+  {"n": "Muhammed Musa", "c": "GHB", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
   {"n": "Abhinav Agarwal", "c": "Godrej Enterprises", "o": "Vara Tejesh", "s": "Contacted", "i": "Corporate & Technology", "seg": "Discovery", "src": "", "arr": 2500000, "cv": 0},
   {"n": "BABUL GOMASTA", "c": "DP Jain & Co. Infrastructure Pvt. Ltd", "o": "Vara Tejesh", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "", "arr": 2000000, "cv": 0},
   {"n": "Atul Shirke", "c": "Turner Project Management India Pvt. Ltd.", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery", "src": "", "arr": 2000000, "cv": 0},
@@ -1077,10 +1073,9 @@ const sampleLeads = [
   {"n": "Krupa J", "c": "DRB infrastructures pvt ltd", "o": "Prateek Shendre", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin", "arr": 8000000, "cv": 20000000},
   {"n": "Santosh Sahu,Ameya", "c": "BPCL", "o": "Prateek Shendre", "s": "Demo", "i": "Energy & Power", "seg": "Discovery", "src": "", "arr": 3000000, "cv": 10000000},
   {"n": "Vinodh", "c": "NSL Infratech Pvt.Ltd", "o": "Prateek Shendre", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
-  {"n": "Akshay Chopra", "c": "", "o": "Akash Parmar", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
   {"n": "Arun varma", "c": "GHMC Hyderabad", "o": "Prateek Shendre", "s": "Demo", "i": "Unclassified", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
-  {"n": "Ravindra Parse", "c": "Shapoorji Pallonji Engineering & Construction", "o": "Vara Tejesh", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Direct Call", "arr": 0, "cv": 0},
-  {"n": "Ganani lakshmi", "c": "", "o": "Prateek Shendre", "s": "Prospects", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
+  {"n": "Ravindra Parse", "c": "Shapoorji Pallonji Engineering & Construction", "o": "Vara Tejesh", "s": "Demo", "i": "Unclassified", "seg": "Discovery", "src": "Direct Call", "arr": 0, "cv": 0},
+  {"n": "Ganani lakshmi", "c": "", "o": "Prateek Shendre", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
   {"n": "Ramnadh KJ", "c": "CBRE", "o": "Prateek Shendre", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
   {"n": "Vijay Sharma", "c": "SVHC Consultants", "o": "Prateek Shendre", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
   {"n": "Deepak Yervar", "c": "Gruner Renewable Energy", "o": "Prateek Shendre", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Direct Call", "arr": 0, "cv": 0},
@@ -1093,8 +1088,6 @@ const sampleLeads = [
   {"n": "Jindal Renewables", "c": "Jindal Renewables", "o": "Prateek Shendre", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": "", "arr": 3500000, "cv": 20000000},
   {"n": "Birdi Systems Inc", "c": "Birdi Systems Inc", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing", "src": "Direct Call", "arr": 2500000, "cv": 5000000},
   {"n": "CARE Hospitals", "c": "CARE Hospitals", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Healthcare", "seg": "Nurturing", "src": "Direct Call", "arr": 2000000, "cv": 5000000},
-  {"n": "Ankura Homes", "c": "Ankura Homes", "o": "Prateek Shendre", "s": "Proposal", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "", "arr": 6000000, "cv": 18750000},
-  {"n": "Sri Avantika Contractor ltd", "c": "Sri Avantika Contractor ltd", "o": "Prateek Shendre", "s": "Proposal", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "", "arr": 2160000, "cv": 6900000},
   {"n": "Bi RIDE", "c": "Bi RIDE", "o": "Abhinav Bommisetty - 041", "s": "Proposal", "i": "Government & Other", "seg": "Nurturing", "src": "", "arr": 15000000, "cv": 52500000},
   {"n": "TTD", "c": "TTD", "o": "Abhinav Bommisetty - 041", "s": "Proposal", "i": "Government & Other", "seg": "Nurturing", "src": "", "arr": 30000000, "cv": 105000000},
   {"n": "MEIL (Megha Engineering & Infrastructures Ltd.)", "c": "MEIL (Megha Engineering & Infrastructures Ltd.)", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call", "arr": 2500000, "cv": 2500000},
