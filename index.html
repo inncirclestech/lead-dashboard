@@ -242,13 +242,13 @@
 
   /* ---------- Layout grid ---------- */
   .main-grid {
-    display: grid;
-    grid-template-columns: 380px minmax(0, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: 16px;
-    align-items: start;
   }
 
-  .right-col { min-width: 0; }
+  .right-col { min-width: 0; width: 100%; }
+  .left-col { width: 100%; }
 
   .card {
     background: var(--surface);
@@ -701,7 +701,6 @@
 
   @media (max-width: 900px) {
     .stat-strip { grid-template-columns: repeat(2, 1fr); }
-    .main-grid { grid-template-columns: 1fr; }
     .page { padding-left: 20px; padding-right: 20px; }
   }
 
@@ -776,8 +775,8 @@
 
     .callout { padding: 10px; font-size: 10.5px; }
 
-    /* Table section starts on a clean page of its own */
-    .right-col { break-before: page; }
+    /* Charts/metrics section starts on a clean page of its own, after the table */
+    .left-col { break-before: page; }
     .right-col .card { border: none !important; padding: 0; }
     .right-col .card-head { margin-bottom: 8px; }
     .leads-table { font-size: 10.5px; }
@@ -810,7 +809,7 @@
       </div>
     </div>
     <div class="meta-row">
-      <span class="asof-pill"><span class="dot"></span>Data as of 19 Aug 2026, 2:45 PM IST &middot; Source: Togile</span>
+      <span class="asof-pill"><span class="dot"></span>Data as of 20 Aug 2026, 12:22 PM IST &middot; Source: Togile</span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
         <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
       </button>
@@ -841,6 +840,51 @@
   <div class="source-arr-row" id="sourceArrRow"></div>
 
   <div class="main-grid">
+
+    <div class="right-col">
+      <div class="card">
+        <div class="card-head">
+          <h2>All Leads</h2>
+          <span class="count-tag" id="tableCount">both segments</span>
+        </div>
+        <div class="filter-row">
+          <label class="owner-filter-label" for="segmentFilter">Segment</label>
+          <select class="owner-filter-select" id="segmentFilter">
+            <option value="All">All Segments</option>
+            <option value="Discovery">Discovery</option>
+            <option value="Nurturing">Nurturing</option>
+          </select>
+          <label class="owner-filter-label" for="stageFilter">Stage</label>
+          <select class="owner-filter-select" id="stageFilter"></select>
+          <label class="owner-filter-label" for="industryFilter">Industry</label>
+          <select class="owner-filter-select" id="industryFilter"></select>
+          <label class="owner-filter-label" for="ownerFilter">Owner</label>
+          <select class="owner-filter-select" id="ownerFilter"></select>
+          <span class="owner-arr-badge" id="ownerArrBadge" style="display:none;"></span>
+        </div>
+        <div class="table-scroll-wrap" id="tableScrollWrap">
+          <div class="table-scroll" id="tableScroll">
+            <table class="leads-table">
+              <thead>
+                <tr>
+                  <th>Lead</th>
+                  <th>Company</th>
+                  <th>Owner</th>
+                  <th>Segment</th>
+                  <th>Stage</th>
+                  <th>Source</th>
+                  <th>ARR</th>
+                  <th>Contract Value</th>
+                  <th>Next action</th>
+                </tr>
+              </thead>
+              <tbody id="leadsBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <p class="table-note" id="tableNote">Showing sampled leads — full list lives in Togile → Discovery / Nurturing.</p>
+      </div>
+    </div>
 
     <div class="left-col">
 
@@ -901,51 +945,6 @@
 
     </div>
 
-    <div class="right-col">
-      <div class="card">
-        <div class="card-head">
-          <h2>All Leads</h2>
-          <span class="count-tag" id="tableCount">both segments</span>
-        </div>
-        <div class="filter-row">
-          <label class="owner-filter-label" for="segmentFilter">Segment</label>
-          <select class="owner-filter-select" id="segmentFilter">
-            <option value="All">All Segments</option>
-            <option value="Discovery">Discovery</option>
-            <option value="Nurturing">Nurturing</option>
-          </select>
-          <label class="owner-filter-label" for="stageFilter">Stage</label>
-          <select class="owner-filter-select" id="stageFilter"></select>
-          <label class="owner-filter-label" for="industryFilter">Industry</label>
-          <select class="owner-filter-select" id="industryFilter"></select>
-          <label class="owner-filter-label" for="ownerFilter">Owner</label>
-          <select class="owner-filter-select" id="ownerFilter"></select>
-          <span class="owner-arr-badge" id="ownerArrBadge" style="display:none;"></span>
-        </div>
-        <div class="table-scroll-wrap" id="tableScrollWrap">
-          <div class="table-scroll" id="tableScroll">
-            <table class="leads-table">
-              <thead>
-                <tr>
-                  <th>Lead</th>
-                  <th>Company</th>
-                  <th>Owner</th>
-                  <th>Segment</th>
-                  <th>Stage</th>
-                  <th>Source</th>
-                  <th>ARR</th>
-                  <th>Contract Value</th>
-                  <th>Next action</th>
-                </tr>
-              </thead>
-              <tbody id="leadsBody"></tbody>
-            </table>
-          </div>
-        </div>
-        <p class="table-note" id="tableNote">Showing sampled leads — full list lives in Togile → Discovery / Nurturing.</p>
-      </div>
-    </div>
-
   </div>
 
   <footer class="page-footer">
@@ -988,19 +987,19 @@ const SEGMENT_META = {
 };
 
 const TASK_NOTES = {
-  "Avtar Singh": { note: "Spoke to their management and shared our brochure , they are yet to get back to us.", status: "In Progress", isNew: true, updatedAt: "2026-08-06T09:20:12.777Z" },
+  "Avtar Singh": { note: "They are in advance stage of discussions with R Dash, will update us if they dont go ahead with them. Next follow-up on 20th Aug.", status: "In Progress", isNew: true, updatedAt: "2026-08-18T04:10:00.000Z" },
   "Swapnil Kadam": { note: "Follow-up call to reschedule the missed demo.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:55:25.948Z" },
-  "Satish Sinha": { note: "Connected with Mr. Satish, yet to get his time for the demo call. ", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:49:19.969Z" },
+  "Satish Sinha": { note: "Not responding to calls/messages. Will try again in this week else with drop this account.", status: "In Progress", isNew: true, updatedAt: "2026-08-18T04:13:00.000Z" },
   "Dowlath Pasha": { note: "Follow-up call to reschedule the missed demo.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:56:04.836Z" },
   "Avinash Kotla": { note: "Platform Demo Outreach (Dashboard–Field Gap) Problem statement identified: Gap between dashboards and field data capturing Currently in the process of reaching out to the client Next step: Schedule and showcase platform demo addressing this gap", status: "In Progress", isNew: true, updatedAt: "2026-08-03T08:14:10.156Z" },
-  "Mrs. Vishaka Waghmare": { note: "- Already contacted: Cluster Planning Head, based in Ahmedabad - Context: Subsidiary funded by Adani Group - Status: Ongoing follow-up Action plan: 1. Call to identify their requirement and check if any existing systems are in use 2. Create a value document/video tailored to their projects and share it", status: "Open", isNew: true, updatedAt: "2026-08-03T13:04:38.539Z" },
-  "Mayur Somani": { note: "- Status: Already contacted; awaiting response - Action plan: Continue follow-up to schedule a platform demo — virtual or in-person", status: "Open", isNew: true, updatedAt: "2026-08-03T12:57:48.055Z" },
-  "Amit Deshmukh": { note: "- Current contact level: Planning Manager - Goal: Reach a decision-maker — Digital/PMO Head level - Action plan: Follow up to identify and connect with the right senior contact, then arrange a demo", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:51:44.357Z" },
-  "Bhaskar K": { note: "- Status: Genuine requirement exists, but decision process is slow - Estimated timeline to close: At least one quarter - Action plan: Stay in touch, share relevant assets showcasing real estate/realty monitoring use cases", status: "Open", isNew: true, updatedAt: "2026-08-03T12:49:38.626Z" },
-  "Saptarshi Basu": { note: "- Details already shared with the concerned person - Contact confirmed he'll forward documents to the internal digital team - Status: Awaiting response-  in follow-up - Client currently implementing 4D & 5D models and progress monitoring in-house - Gap identified: Lacking Field Management and BIM assistance- potential entry point for Inncircles", status: "In Progress", isNew: true, updatedAt: "2026-08-03T09:02:07.036Z" },
+  "Mrs. Vishaka Waghmare": { note: "I will shared the relevant document to get the appointment for the Demo on 11th August'2026 and also will have a call Followup.", status: "In Progress", isNew: true, updatedAt: "2026-08-11T01:17:00.000Z" },
+  "Mayur Somani": { note: "I will contact on Monday 24th August for the recheck Mr. Mayur availability for In-person Demo.", status: "In Progress", isNew: true, updatedAt: "2026-08-18T01:42:00.000Z" },
+  "Amit Deshmukh": { note: "I will connect him by 13th August for getting Head Office PMO contact to showcase our platform.", status: "Open", isNew: true, updatedAt: "2026-08-11T01:21:00.000Z" },
+  "Bhaskar K": { note: "I will contact Mr. Bhaskar for the 13th August for the Demo.", status: "In Progress", isNew: true, updatedAt: "2026-08-11T02:08:00.000Z" },
+  "Saptarshi Basu": { note: "I will be speaking with Mr. Phani, CRISIL for his team appointment to showcase our platform by this week.", status: "In Progress", isNew: true, updatedAt: "2026-08-11T07:02:00.000Z" },
   "Aditya Kakkar": { note: "Task logged: Not responding to calls. (no note added)", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:01:13.278Z" },
   "Anant Salunkhe": { note: "- Connected with MEP Vice President (Navi Mumbai office) - Planning to connect with the right Digitalization/PMO Head at the Hyderabad office - Action plan: Follow up to identify and reach the correct contact", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:33:48.127Z" },
-  "Harsh Desai": { note: "- Current point of contact is below management/decision-making level - Action: Identify and reach the right senior/leadership contact to pitch to - Goal: Move the conversation up to a decision-maker level", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:22:23.018Z" },
+  "Harsh Desai": { note: "Action point 1: Share a walkthrough Residential video by August 20th to HO team. Action point 2: Align on a physical demo with top management early next week.", status: "In Progress", isNew: true, updatedAt: "2026-08-18T01:28:00.000Z" },
   "Suhotra Banerjee": { note: "In-person Demo aligned at Dosti Realty Head office on 12th March with Strategy team.", status: "In Progress", isNew: true, updatedAt: "2026-08-05T13:40:34.929Z" },
   "S Madan Kumar IGBC AP, ECBC, CE": { note: "Task logged: Follow-up for Demo for the entire Team (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T05:07:40.916Z" },
   "Pravindra Kumar": { note: "Task logged: Follow-up Call (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T10:43:26.458Z" },
@@ -1008,15 +1007,15 @@ const TASK_NOTES = {
   "Smruthi Ranjan": { note: "Adani Road Projects  Pursuit — Next Steps - Detailed presentation already shared with the client's representative (in addition to the road project materials) - Security documentation for the Inncircles application also shared - Next step: VAPT (Vulnerability Assessment and Penetration Testing) - POC planned for one project in Bangalore Priority: High", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:19:43.620Z" },
   "S V Koteswara Rao": { note: "Action: Follow up and align a demo showcasing value for their current infrastructure investments Focus: Demonstrate how the platform monitors construction projects relevant to their portfolio Next step: Schedule the demo", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:30:51.760Z" },
   "NHAI": { note: "Task logged: Submission of Bid along with NKI (no note added)", status: "In Progress", isNew: true, updatedAt: "2026-08-03T10:44:12.207Z" },
-  "Abhinav Agarwal": { note: "- Client has existing systems in place - Goal: Show how Inncircles can effectively complement/add value to their current setup, rather than replace it Next action: Align a call to showcase a demo", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:35:33.864Z" },
-  "BABUL GOMASTA": { note: "- Requirement: Automate DPRs (Daily Progress Reports) and project progress reporting for management dashboards - Action plan: Find the right connect to reach top management - Location: Nagpur", status: "In Progress", isNew: true, updatedAt: "2026-08-03T13:06:37.771Z" },
+  "Abhinav Agarwal": { note: "I will be sending a reminder to Mr. Anoop, BU Head to get appointment showcase our platform on 11th August.", status: "In Progress", isNew: true, updatedAt: "2026-08-11T01:28:00.000Z" },
+  "BABUL GOMASTA": { note: "I will be contacting Mr. Babul for the time slot for the demo on 12th August.", status: "Open", isNew: true, updatedAt: "2026-08-11T01:12:00.000Z" },
   "Atul Shirke": { note: "- Action: Follow up with Turner's Country Head to schedule a demo - Goal: Understand their current systems to identify how Inncircles can create value - Action plan: Follow up via WhatsApp and email over the next 7–10 days", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:47:10.111Z" },
   "Krupa J": { note: "MD is in travel to UK, will resume the discussion after he comes back to India on 18th Aug.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T06:53:49.655Z" },
   "Santosh Sahu,Ameya": { note: "Got a call from Santosh, DGM–Projects at BPCL, through Siga Srinivas Rao, Chief GM at BPCL, who shared my contact with him. I spoke with Santosh, and he mentioned that they are currently using only Primavera P6 and MS Project and are not using any project monitoring system.", status: "Completed", isNew: false, updatedAt: "2026-04-10T07:02:57.931Z" },
   "Masood Khan": { note: "Tried reaching him for a demo but call not answered.", status: "Completed", isNew: false, updatedAt: "2026-03-18T14:02:38.923Z" },
   "Vinodh": { note: "A follow-up email has been sent to him asking for a 30 min discovery call", status: "Completed", isNew: false, updatedAt: "2026-02-11T13:56:13.134Z" },
-  "Inorbit Malls (India) Private Limited": { note: "- Plan: Deploy the solution as a POC at one specific site - Goal: Drive actual usage at that site to demonstrate real value - Approach: Prove value through hands-on implementation at a single site before scaling further", status: "In Progress", isNew: true, updatedAt: "2026-08-03T09:13:21.967Z" },
-  "Birdi Systems Inc": { note: "- Demo already delivered - Proposal already shared - Next step: Nurture the account — showcase value through: - Sharing assets/videos - DPR (Daily Progress Report) automation - Automation of their current project workflows", status: "In Progress", isNew: true, updatedAt: "2026-08-03T09:08:07.296Z" },
+  "Inorbit Malls (India) Private Limited": { note: "1. 13th August – Kickoff call with the site team to showcase the platform and align on agenda points for the 19th August site visit. 2. By 14th August – Prepare training modules, videos, and user manuals for department-based training.", status: "In Progress", isNew: true, updatedAt: "2026-08-12T08:48:00.000Z" },
+  "Birdi Systems Inc": { note: "Action Points 1. 12th August – Follow-up visit conducted to discuss next steps (status update). 2. By 14th August – Share documents on Bob AI features and InnDoc, as requested, to support their current proposal writing. Note: Client has requested a delay on providing feedback for DPR automation.", status: "In Progress", isNew: true, updatedAt: "2026-08-12T08:51:00.000Z" },
   "CARE Hospitals": { note: "- Demo given; client has shown interest - Next step: Nurture by sharing asset videos - Value angle: Highlight that hospital projects specifically are monitored on our platform - Next action: Share a video walkthrough of hospital projects on the Inncircles platform", status: "In Progress", isNew: true, updatedAt: "2026-08-03T09:10:11.979Z" },
   "HCC": { note: "- Status: In touch, relevant details shared - Approach: Long-term nurture — client will reconnect once requirement becomes a priority on their end - Action plan: Stay in touch and follow up periodically with HCC until requirement converts into an active opportunity", status: "In Progress", isNew: true, updatedAt: "2026-08-03T12:17:48.437Z" },
   "MEIL (Megha Engineering & Infrastructures Ltd.)": { note: "- Plan: Configure the Zoji La Tunnel project schedule in 4.0 - Action: Share a video showcasing field quality, safety management, and progress tracking in an impactful way - Deadline: Share video/asset with MEIL by next week Also: Secure appointment with MEIL's Excellence/Vertical Head (and CEO)", status: "Open", isNew: true, updatedAt: "2026-08-04T07:03:22.585Z" },
@@ -1026,11 +1025,14 @@ const TASK_NOTES = {
   "GMR Group": { note: "- Requirement: GMR wants Inncircles to validate their current systems and provide a comparison - Goal: Demonstrate how Inncircles can drive additional value over their existing setup - Next action: Align with GMR to understand their current systems in detail, then prepare a comparison submission showing value-add potential", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:11:07.332Z" },
   "NTPC Limited (formerly National Thermal Power Corporation)": { note: "- Status: Waiting on confirmation for a meeting at the NTPC head office, with the Contracts team and Digital team - Next action: Align and confirm meeting schedule with head office stakeholders", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:58:37.117Z" },
   "Almaviva Saudi Arabia": { note: "- Client currently presenting a smart program for the PMBS Corridor project, under Jeddah Municipality - We are providing latest dashboard screenshots from our platform to support their presentation - Next action: Follow up to schedule and showcase a full application demo to the client", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:14:39.804Z" },
-  "Powerica Ltd": { note: "As a next step, we'd like to understand your current systems for substation, transmission, and solar monitoring, so we can map them to our platform and run a focused POC — helping identify quick automation wins in monitoring, quality, and safety, and showcase value early.", status: "Open", isNew: true, updatedAt: "2026-08-05T09:17:16.531Z" },
-  "Jindal Renewables": { note: "Demo rescheduled to week starting from 17th Aug as their team is on site visit.", status: "In Progress", isNew: true, updatedAt: "2026-08-06T09:30:47.909Z" },
-  "SRR": { note: "Shared proposal on 25th June, we will receive an update after customer wedding, Meeting to be setup after 20th Aug.", status: "In Progress", isNew: true, updatedAt: "2026-08-03T11:43:10.339Z" },
+  "Powerica Ltd": { note: "This week the management is at Site visit, We will be reaching out on 17th August'2026 for in-person meeting at Mumbai, H.O to understand the requirement and initiate the PoC.", status: "In Progress", isNew: true, updatedAt: "2026-08-11T02:50:00.000Z" },
+  "Jindal Renewables": { note: "Yet to get confirmation regarding second round of demo, following up actively. Next follow up on 20th Aug.", status: "In Progress", isNew: true, updatedAt: "2026-08-18T04:19:00.000Z" },
+  "SRR": { note: "Need to follow up on 21st Aug.", status: "In Progress", isNew: true, updatedAt: "2026-08-18T04:17:00.000Z" },
   "Honer Homes": { note: "We completed the demo and showcased the handover module for Ananda Homes, along with a few forms configured in Eminent. He also opened one of his friends SmartApp dashboards, shared some MIR dashboards, and requested a table-format report with filtering options in each coloumn", status: "Completed", isNew: false, updatedAt: "2026-04-07T09:49:44.068Z" },
-  "TTD": { note: "Task logged: Follow-up for new CE onboarding for a demo / meeting (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T05:06:18.452Z" }
+  "TTD": { note: "Task logged: Follow-up for new CE onboarding for a demo / meeting (no note added)", status: "Open", isNew: true, updatedAt: "2026-08-03T05:06:18.452Z" },
+  "MS Realty": { note: "Aug 17: Proposal discussion/demo given to client. Aug 18: Client to share requirements. Aug 19: Submit proposal based on shared requirements.", status: "In Progress", isNew: true, updatedAt: "2026-08-18T08:00:00.000Z" },
+  "Adani Navbharat": { note: "Followed up today on Primavera P6 Cloud details and requirements needed to fetch and push data between P6 Cloud and Inncircles. Our team is working on the action points from the last meeting.", status: "In Progress", isNew: true, updatedAt: "2026-08-18T02:46:00.000Z" },
+  "Dosti Realty": { note: "1. 12th August – In-person demo conducted at their office. 2. Within 2 days – Set up cost monitoring examples for residential projects to showcase in the next meeting. 3. 14th August – Follow-up email to be sent with Video and Presentation Document.", status: "In Progress", isNew: true, updatedAt: "2026-08-12T11:52:00.000Z" }
 };
 
 const sampleLeads = [
@@ -1055,7 +1057,7 @@ const sampleLeads = [
   {"n": "Bhaskar K", "c": "DA Realty", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": "", "arr": 2000000, "cv": 0},
   {"n": "Saptarshi Basu", "c": "Welspun Enterprises", "o": "Vara Tejesh", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery", "src": "", "arr": 2000000, "cv": 0},
   {"n": "Aditya Kakkar", "c": "Lenskart", "o": "Akash Parmar - 235", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
-  {"n": "Anant Salunkhe", "c": "CtrlS", "o": "Vara Tejesh", "s": "Contacted", "i": "Engineering & Consulting", "seg": "Discovery", "src": "", "arr": 2500000, "cv": 0},
+  {"n": "Anant Salunkhe", "c": "CtrlS", "o": "Vara Tejesh", "s": "Contacted", "i": "Engineering & Consulting", "seg": "Discovery", "src": "Referral", "arr": 2500000, "cv": 0},
   {"n": "Harsh Desai", "c": "Shapoorji Pallonji Real Estate", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Website", "arr": 2000000, "cv": 0},
   {"n": "S Madan Kumar IGBC AP, ECBC, CE", "c": "L&T Mindtree", "o": "Abhinav Bommisetty - 041", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin", "arr": 2500000, "cv": 8750000},
   {"n": "Pravindra Kumar", "c": "K-RIDE Bengaluru", "o": "Abhinav Bommisetty - 041", "s": "Prospects", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
