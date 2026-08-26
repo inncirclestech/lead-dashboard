@@ -509,6 +509,8 @@
     margin-left: 6px;
   }
   .new-badge .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--stage-lost); }
+  .new-badge.badge-old { color: var(--text-muted); background: var(--surface-2); }
+  .new-badge.badge-old .dot { background: var(--text-muted); }
 
   tr.row-new-task td { background: var(--stage-lost-bg); }
   tr.row-new-task:hover td { background: var(--stage-lost-bg); filter: brightness(0.97); }
@@ -809,7 +811,7 @@
       </div>
     </div>
     <div class="meta-row">
-      <span class="asof-pill"><span class="dot"></span>Data as of 26 Aug 2026, 4:53 AM IST &middot; Source: Togile</span>
+      <span class="asof-pill"><span class="dot"></span>Data as of 26 Aug 2026, 6:53 AM IST &middot; Source: Togile</span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
         <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
       </button>
@@ -995,6 +997,7 @@ const TASK_NOTES = {
   "Abhinav Agarwal": { note: "I will be sending a reminder to Mr. Anoop, BU Head to get appointment showcase our platform on 11th August.", status: "In Progress", isNew: false, updatedAt: "2026-08-11T06:58:24.480Z" },
   "NHAI": { note: "", status: "In Progress", isNew: false, updatedAt: "2026-08-03T10:44:12.207Z" },
   "Smruthi Ranjan": { note: "Adani Road Projects  Pursuit — Next Steps\n- Detailed presentation already shared with the client's representative (in addition to the road project materials)\n- Security documentation for the Inncircles application also shared\n- Next step: VAPT (Vulnerability Assessment and Penetration Testing)\n- POC planned for one project in Bangalore\nPriority: High", status: "In Progress", isNew: false, updatedAt: "2026-08-03T06:19:43.620Z" },
+  "Vishwas": { note: "- We have sent our InnPMIS Product details on 26th August, the lead relevant for the infrastructure projects will align a demo this week by 28th August'26  and understand the requirement. ", status: "In Progress", isNew: true, updatedAt: "2026-08-26T10:08:48.648Z" },
   "Vishal Mudda": { note: "- Approach channel: LinkedIn (client showed interest via LinkedIn campaign)\n- Current status: Unable to reach the contact so far\n- Action plan: Continue attempting to connect via LinkedIn for up to 1 week\nIf no response within that window: Close the pursuit", status: "In Progress", isNew: false, updatedAt: "2026-08-03T12:44:33.906Z" },
   "Pravindra": { note: "", status: "Open", isNew: false, updatedAt: "2026-08-03T10:43:26.458Z" },
   "S Madan Kumar": { note: "", status: "Open", isNew: false, updatedAt: "2026-08-03T05:07:40.916Z" },
@@ -1003,9 +1006,9 @@ const TASK_NOTES = {
   "Aditya": { note: "", status: "In Progress", isNew: false, updatedAt: "2026-08-03T12:01:13.278Z" },
   "Saptarshi Basu": { note: "I will be speaking with Mr. Phani , CRISIL for his team appointment to showcase our platform by this week. ", status: "In Progress", isNew: false, updatedAt: "2026-08-11T07:02:54.290Z" },
   "Bhaskar K": { note: "I will contact Mr. Bhaskar for the 13th August for the Demo.", status: "In Progress", isNew: false, updatedAt: "2026-08-11T07:38:41.687Z" },
-  "Amit Deshmukh": { note: "I will connect him by 13th August for getting Head Office PMO contact to showcase our platform.", status: "Open", isNew: false, updatedAt: "2026-08-11T06:51:13.386Z" },
+  "Amit Deshmukh": { note: "- They have a Digital team, We are waiting for the appointment to understand our match score. - We have contacted on 26th August for the appointment, we will be getting appointment in 1 week.", status: "In Progress", isNew: true, updatedAt: "2026-08-26T10:47:40.955Z" },
   "Mayur Somani": { note: "- I will contact on Monday 24th August for the recheck Mr. Mayur availability for In-person Demo.", status: "In Progress", isNew: true, updatedAt: "2026-08-18T07:12:30.614Z" },
-  "Vishwajit Kate": { note: "I will be contacting him to take appointment for the in-person Demo by 12th August'2026.", status: "In Progress", isNew: false, updatedAt: "2026-08-11T07:18:02.636Z" },
+  "Vishwajit Kate": { note: "- We are in process to identify right POC in management to reach and showcase our platform.", status: "In Progress", isNew: true, updatedAt: "2026-08-26T10:16:37.707Z" },
   "Mrs. Vishaka Waghmare": { note: "I will shared the relevant document to get the appointment for the Demo on 11th August'2026 and also will have a call Followup.", status: "In Progress", isNew: false, updatedAt: "2026-08-11T06:47:31.263Z" },
   "Gaurav": { note: "- Post-demo the Client is process of developing Proposal for PoC . I have contaced we will follow up by 7th Sep'2026 for the PoC requirements.", status: "In Progress", isNew: true, updatedAt: "2026-08-26T09:47:47.479Z" },
   "Avinash Kotla": { note: "- I will be sharing latest Presentation and short InnPMIS video on 18th August.\n- The Point of Count person (Project Coordinator) is in followup with management team to align meeting at Blore office. ", status: "In Progress", isNew: true, updatedAt: "2026-08-18T07:22:14.250Z" },
@@ -1016,15 +1019,18 @@ const TASK_NOTES = {
   "Deepak Yervar": { note: "Demo planned on 20th Aug at their Noida Office.", status: "In Progress", isNew: true, updatedAt: "2026-08-18T09:26:18.083Z" },
   "Vijay Sharma": { note: "Waiting - Not responding to calls or email. Will follow up on 1st Sept again. Cannot establish ARR/CV as we don't have the requirements", status: "In Progress", isNew: true, updatedAt: "2026-08-26T08:09:48.741Z" },
   "Ramnadh KJ": { note: "Solution feedback - The POC needs to discuss internally regarding the PMIS solution. Asked me to callback after 15 days, Next follow up on 8th Sept.", status: "In Progress", isNew: true, updatedAt: "2026-08-26T08:57:51.300Z" },
+  "Ganani lakshmi": { note: "Waiting - completed demo on 20th Aug. Awaiting for the POC to pick up the call for the update. Next follow-up on 28th Aug.", status: "In Progress", isNew: true, updatedAt: "2026-08-26T09:58:01.200Z" },
   "Ravindra Parse": { note: "- We have shared the Presentation and short InnPMIS video to Mr. Ravindra.\n- I will be aligning in-person Demo with the Management last week of August or 1st Week of September. ", status: "In Progress", isNew: true, updatedAt: "2026-08-18T07:56:52.260Z" },
   "Industry; Government": { note: "Proposal - Preparation of proposal, to be submitted on 26th Aug. Next follow-up on 1st Sept.", status: "In Progress", isNew: true, updatedAt: "2026-08-26T08:53:09.892Z" },
+  "K V": { note: "Following it up to get the for in-person demo. Next follow-up on 28th August'2026.", status: "In Progress", isNew: true, updatedAt: "2026-08-26T11:04:27.425Z" },
   "Satisha Sawh": { note: "Know Each Other - Tried to get connected on 25th Aug but couldnt speak due to timezone issue, will call again on 26th Aug.", status: "In Progress", isNew: true, updatedAt: "2026-08-26T08:56:03.086Z" },
-  "Anuj Saini": { note: "- I have connected JSW Infra Head briefed about Inncircles on 19th August'26\n- We are waiting to show Demo to respective dept by Next week.", status: "In Progress", isNew: true, updatedAt: "2026-08-20T08:59:15.669Z" },
+  "Anuj Saini": { note: "- Following it up to get the demo. We have sent email on 26th August'26. Next follow-up will be on 28th August'26 for the Demo.", status: "In Progress", isNew: true, updatedAt: "2026-08-26T10:22:31.664Z" },
+  "K V Satyanarao": { note: "Following it up to get the for in-person demo. Next follow-up on 28th August'2026.", status: "In Progress", isNew: true, updatedAt: "2026-08-26T11:05:20.973Z" },
   "Krishna Mohan": { note: "- We have given Demo to GM Projects 25th August'26. \n- GM Projects will be aligning a in-person meeting at Hyd- H.O Chairman office in 1 week. ", status: "In Progress", isNew: true, updatedAt: "2026-08-25T06:32:41.286Z" },
   "Jayant Ganiga": { note: "- Requirement: GMR wants Inncircles to validate their current systems and provide a comparison\n- Goal: Demonstrate how Inncircles can drive additional value over their existing setup\n- Next action: Align with GMR to understand their current systems in detail, then prepare a comparison submission showing value-add potential", status: "In Progress", isNew: false, updatedAt: "2026-08-03T11:11:07.332Z" },
   "PRAVEEN H SHETTIGAR": { note: "- Status: In touch, relevant details shared\n- Approach: Long-term nurture — client will reconnect once requirement becomes a priority on their end\n- Action plan: Stay in touch and follow up periodically with HCC until requirement converts into an active opportunity", status: "In Progress", isNew: false, updatedAt: "2026-08-03T12:17:48.437Z" },
   "Vidhi Munshau": { note: "1. 13th August – Kickoff call with the site team to showcase the platform and align on agenda points for the 19th August site visit.\n2. By 14th August – Prepare training modules, videos, and user manuals for department-based training.", status: "In Progress", isNew: true, updatedAt: "2026-08-12T14:18:00.263Z" },
-  "Shivaa": { note: "- Client currently presenting a smart program for the PMBS Corridor project, under Jeddah Municipality\n- We are providing latest dashboard screenshots from our platform to support their presentation\n- Next action: Follow up to schedule and showcase a full application demo to the client", status: "In Progress", isNew: false, updatedAt: "2026-08-03T11:14:39.804Z" },
+  "Shivaa": { note: "- Post-demo intent expressed is High, Next meeting aligned with AlmaViva Saudi Top Management on 5th September for next steps. ", status: "In Progress", isNew: true, updatedAt: "2026-08-26T11:30:10.446Z" },
   "Arun Iyer": { note: "- Nurture approach: Share energy and aluminum greenfield project walkthrough video via the Inncircles platform\n- Action 1: Share the walkthrough video with Vedanta\n- Action 2: Secure an appointment to showcase the platform at their head office", status: "In Progress", isNew: false, updatedAt: "2026-08-03T12:01:49.098Z" },
   "Amit Kumar Sahu": { note: "- Status: Waiting on confirmation for a meeting at the NTPC head office, with the Contracts team and Digital team\n- Next action: Align and confirm meeting schedule with head office stakeholders", status: "In Progress", isNew: false, updatedAt: "2026-08-03T11:58:37.117Z" },
   "Raja": { note: "- Plan: Configure the Zoji La Tunnel project schedule in 4.0\n- Action: Share a video showcasing field quality, safety management, and progress tracking in an impactful way\n- Deadline: Share video/asset with MEIL by next week\nAlso: Secure appointment with MEIL's Excellence/Vertical Head (and CEO)", status: "Open", isNew: false, updatedAt: "2026-08-04T07:03:22.585Z" },
@@ -1082,7 +1088,7 @@ const sampleLeads = [
   {"n": "Ravindra Parse", "c": "Shapoorji Pallonji Engineering & Construction", "o": "Vara Tejesh", "s": "Demo", "i": "Unclassified", "seg": "Discovery", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
   {"n": "Industry; Government", "c": "GHMC Hyderabad", "o": "Prateek Shendre", "s": "Demo", "i": "Unclassified", "seg": "Discovery", "src": "", "arr": 25000000, "cv": 75000000},
   {"n": "Surendra", "c": "capacite", "o": "Vara Tejesh", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
-  {"n": "K V", "c": "zeeco", "o": "Vara Tejesh", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 2000000, "cv": 6000000},
+  {"n": "K V", "c": "zeeco", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 2000000, "cv": 6000000},
   {"n": "Satisha Sawh", "c": "", "o": "Prateek Shendre", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
   {"n": "Anuj Saini", "c": "JSW Infrastructure Ltd", "o": "Vara Tejesh", "s": "Prospects", "i": "Unclassified", "seg": "Discovery", "src": "Direct Call", "arr": 5000000, "cv": 15000000},
   {"n": "Deepak Agarwal", "c": "Dineshchandra R. Agarwal Infracon Pvt Ltd.", "o": "Vara Tejesh", "s": "Prospects", "i": "Unclassified", "seg": "Discovery", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
@@ -1407,7 +1413,7 @@ function makeLeadRow(l, stage, meta) {
   const taskInfo = TASK_NOTES[l.n];
   if (taskInfo && taskInfo.isNew) tr.classList.add('row-new-task');
   const actionCell = taskInfo
-    ? `<div class="task-note">${taskInfo.note}${taskInfo.isNew ? `<span class="new-badge"><span class="dot"></span>${formatUpdatedBadge(taskInfo.updatedAt)}</span>` : ''}<br><span style="color:var(--text-muted)">Status: ${taskInfo.status}</span></div>`
+    ? `<div class="task-note">${taskInfo.note}<span class="new-badge${taskInfo.isNew ? '' : ' badge-old'}"><span class="dot"></span>${formatUpdatedBadge(taskInfo.updatedAt)}</span><br><span style="color:var(--text-muted)">Status: ${taskInfo.status}</span></div>`
     : `<span class="task-empty">Not logged</span>`;
   const arrCell = l.arr ? formatINR(l.arr) : '<span class="task-empty">—</span>';
   const cvCell = l.cv ? formatINR(l.cv) : '<span class="task-empty">—</span>';
