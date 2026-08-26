@@ -158,6 +158,15 @@
 
 
   /* ---------- Segment toggle ---------- */
+  .segment-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
   .segment-toggle {
     display: inline-flex;
     gap: 4px;
@@ -165,8 +174,38 @@
     background: var(--surface-2);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
-    margin-bottom: 16px;
   }
+
+  .industry-picker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .industry-picker-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .industry-picker-select {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-normal);
+    background: var(--surface);
+    border: 1px solid var(--border-normal);
+    border-radius: var(--radius-md);
+    padding: 7px 30px 7px 12px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235f6b80' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+
+  .industry-picker-select:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
 
   .seg-btn {
     display: inline-flex;
@@ -723,7 +762,7 @@
 
     /* Screen-only controls never belong in the report */
     .theme-toggle, .archive-toggle, .archive-toggle-row, tr.archived-row,
-    .segment-toggle, .chip-bar, .filter-row { display: none !important; }
+    .segment-bar, .chip-bar, .filter-row { display: none !important; }
 
     /* Compact, letterhead-style header */
     .topbar { align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid var(--brand); }
@@ -818,10 +857,16 @@
     </div>
   </div>
 
-  <div class="segment-toggle" id="segmentToggle" role="tablist" aria-label="Filter by segment">
-    <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">72</span></button>
-    <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">51</span></button>
-    <button class="seg-btn" data-seg="Nurturing" role="tab" aria-selected="false">Nurturing <span class="seg-count">21</span></button>
+  <div class="segment-bar">
+    <div class="segment-toggle" id="segmentToggle" role="tablist" aria-label="Filter by segment">
+      <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">72</span></button>
+      <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">51</span></button>
+      <button class="seg-btn" data-seg="Nurturing" role="tab" aria-selected="false">Nurturing <span class="seg-count">21</span></button>
+    </div>
+    <div class="industry-picker">
+      <label class="industry-picker-label" for="industryPicker">Industry</label>
+      <select class="industry-picker-select" id="industryPicker"></select>
+    </div>
   </div>
 
   <div class="stat-strip stat-strip-3">
@@ -858,8 +903,6 @@
           </select>
           <label class="owner-filter-label" for="stageFilter">Stage</label>
           <select class="owner-filter-select" id="stageFilter"></select>
-          <label class="owner-filter-label" for="industryFilter">Industry</label>
-          <select class="owner-filter-select" id="industryFilter"></select>
           <label class="owner-filter-label" for="ownerFilter">Owner</label>
           <select class="owner-filter-select" id="ownerFilter"></select>
           <span class="owner-arr-badge" id="ownerArrBadge" style="display:none;"></span>
@@ -1047,76 +1090,76 @@ const TASK_NOTES = {
 };
 
 const sampleLeads = [
-  {"n": "Santosh Sahu,Ameya", "c": "BPCL", "o": "Prateek Shendre", "s": "Demo", "i": "Unclassified", "seg": "Discovery", "src": "Cold call", "arr": 3000000, "cv": 10000000},
-  {"n": "Prerna K", "c": "NHEV", "o": "Prateek Shendre", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Email Campaign", "arr": 0, "cv": 0},
-  {"n": "Krupa", "c": "DRB infrastructures pvt ltd", "o": "Prateek Shendre", "s": "Demo", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 8000000, "cv": 20000000},
-  {"n": "Sesha Sai", "c": "Amazon", "o": "Arun", "s": "Demo", "i": "Unclassified", "seg": "Discovery", "src": "Cold call", "arr": 0, "cv": 0},
-  {"n": "Atul Shirke", "c": "Turner Project Management India Pvt. Ltd.", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
-  {"n": "BABUL GOMASTA", "c": "DP Jain & Co. Infrastructure Pvt. Ltd", "o": "Vara Tejesh", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
-  {"n": "Abhinav Agarwal", "c": "Godrej Enterprises ", "o": "Vara Tejesh", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
-  {"n": "Muhammed", "c": "GHB", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
-  {"n": "NHAI", "c": "NHAI", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "", "arr": 30000000, "cv": 300000000},
-  {"n": "Smruthi Ranjan", "c": "Adani Group", "o": "Vara Tejesh", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Referral", "arr": 5000000, "cv": 15000000},
-  {"n": "Vishwas", "c": "WSP ", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 2000000, "cv": 4000000},
-  {"n": "Vishal Mudda", "c": "NCCCL", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "", "arr": 2500000, "cv": 7500000},
-  {"n": "Pravindra", "c": "K-RIDE Bengaluru", "o": "Abhinav Bommisetty - 041", "s": "Prospects", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
-  {"n": "S Madan Kumar", "c": "L&T Mindtree", "o": "Abhinav Bommisetty - 041", "s": "Demo", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 2500000, "cv": 8750000},
-  {"n": "Harsh Desai", "c": "Shapoorji Pallonji Real Estate", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 2000000, "cv": 6000000},
-  {"n": "Anant Salunkhe", "c": "CtrlS ", "o": "Vara Tejesh", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Referral", "arr": 2500000, "cv": 7500000},
-  {"n": "Aditya", "c": "Lenskart", "o": "Akash Parmar - 235", "s": "Demo", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
-  {"n": "Saptarshi Basu", "c": "Welspun Enterprises ", "o": "Vara Tejesh", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
-  {"n": "Bhaskar K", "c": "DA Realty", "o": "Vara Tejesh", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
-  {"n": "Amit Deshmukh", "c": "Toyo Engineering India Private Limited", "o": "Vara Tejesh", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
-  {"n": "Mayur Somani", "c": "Vibe Realty", "o": "Vara Tejesh", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
-  {"n": "Vishwajit Kate", "c": "Nxtra by Airtel", "o": "Vara Tejesh", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
-  {"n": "Mrs. Vishaka Waghmare", "c": "PSP Projects ", "o": "Vara Tejesh", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
-  {"n": "Gaurav", "c": "CEM India", "o": "Vara Tejesh", "s": "Demo", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 3000000, "cv": 9000000},
-  {"n": "Avinash Kotla", "c": "Reliance Industries Limited", "o": "Vara Tejesh", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Referral", "arr": 2500000, "cv": 7500000},
+  {"n": "Santosh Sahu,Ameya", "c": "BPCL", "o": "Prateek Shendre", "s": "Demo", "i": "Energy & Power", "seg": "Discovery", "src": "Cold call", "arr": 3000000, "cv": 10000000},
+  {"n": "Prerna K", "c": "NHEV", "o": "Prateek Shendre", "s": "SalesQualifiedLead", "i": "Energy & Power", "seg": "Discovery", "src": "Email Campaign", "arr": 0, "cv": 0},
+  {"n": "Krupa", "c": "DRB infrastructures pvt ltd", "o": "Prateek Shendre", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin", "arr": 8000000, "cv": 20000000},
+  {"n": "Sesha Sai", "c": "Amazon", "o": "Arun", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": "Cold call", "arr": 0, "cv": 0},
+  {"n": "Atul Shirke", "c": "Turner Project Management India Pvt. Ltd.", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
+  {"n": "BABUL GOMASTA", "c": "DP Jain & Co. Infrastructure Pvt. Ltd", "o": "Vara Tejesh", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
+  {"n": "Abhinav Agarwal", "c": "Godrej Enterprises ", "o": "Vara Tejesh", "s": "Contacted", "i": "Corporate & Technology", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
+  {"n": "Muhammed", "c": "GHB", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
+  {"n": "NHAI", "c": "NHAI", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": "", "arr": 30000000, "cv": 300000000},
+  {"n": "Smruthi Ranjan", "c": "Adani Group", "o": "Vara Tejesh", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery", "src": "Referral", "arr": 5000000, "cv": 15000000},
+  {"n": "Vishwas", "c": "WSP ", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery", "src": "Linkedin", "arr": 2000000, "cv": 4000000},
+  {"n": "Vishal Mudda", "c": "NCCCL", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "", "arr": 2500000, "cv": 7500000},
+  {"n": "Pravindra", "c": "K-RIDE Bengaluru", "o": "Abhinav Bommisetty - 041", "s": "Prospects", "i": "Government & Other", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
+  {"n": "S Madan Kumar", "c": "L&T Mindtree", "o": "Abhinav Bommisetty - 041", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin", "arr": 2500000, "cv": 8750000},
+  {"n": "Harsh Desai", "c": "Shapoorji Pallonji Real Estate", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Website", "arr": 2000000, "cv": 6000000},
+  {"n": "Anant Salunkhe", "c": "CtrlS ", "o": "Vara Tejesh", "s": "Contacted", "i": "Corporate & Technology", "seg": "Discovery", "src": "Referral", "arr": 2500000, "cv": 7500000},
+  {"n": "Aditya", "c": "Lenskart", "o": "Akash Parmar - 235", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
+  {"n": "Saptarshi Basu", "c": "Welspun Enterprises ", "o": "Vara Tejesh", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
+  {"n": "Bhaskar K", "c": "DA Realty", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
+  {"n": "Amit Deshmukh", "c": "Toyo Engineering India Private Limited", "o": "Vara Tejesh", "s": "Contacted", "i": "Engineering & Consulting", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
+  {"n": "Mayur Somani", "c": "Vibe Realty", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
+  {"n": "Vishwajit Kate", "c": "Nxtra by Airtel", "o": "Vara Tejesh", "s": "Contacted", "i": "Corporate & Technology", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
+  {"n": "Mrs. Vishaka Waghmare", "c": "PSP Projects ", "o": "Vara Tejesh", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
+  {"n": "Gaurav", "c": "CEM India", "o": "Vara Tejesh", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin", "arr": 3000000, "cv": 9000000},
+  {"n": "Avinash Kotla", "c": "Reliance Industries Limited", "o": "Vara Tejesh", "s": "Contacted", "i": "Corporate & Technology", "seg": "Discovery", "src": "Referral", "arr": 2500000, "cv": 7500000},
   {"n": "Dowlath pasha", "c": "", "o": "Akash Parmar - 235", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
-  {"n": "Satish", "c": "Jakson", "o": "Prateek Shendre", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 5000000, "cv": 30000000},
-  {"n": "Swapnil Kadam", "c": "Aqcorp", "o": "Akash Parmar - 235", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
+  {"n": "Satish", "c": "Jakson", "o": "Prateek Shendre", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery", "src": "Linkedin", "arr": 5000000, "cv": 30000000},
+  {"n": "Swapnil Kadam", "c": "Aqcorp", "o": "Akash Parmar - 235", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
   {"n": "Karthik Y", "c": "", "o": "Akash Parmar - 235", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
-  {"n": "karan bohra", "c": "Emproy Realty", "o": "Vara Tejesh", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
+  {"n": "karan bohra", "c": "Emproy Realty", "o": "Vara Tejesh", "s": "Unspecified", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
   {"n": "Deep", "c": "", "o": "Prateek Shendre", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
-  {"n": "GHB", "c": "Gujarat Housing Board", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Direct Call", "arr": 25000000, "cv": 87500000},
+  {"n": "GHB", "c": "Gujarat Housing Board", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": "Direct Call", "arr": 25000000, "cv": 87500000},
   {"n": "Abdurrahman", "c": "", "o": "Prateek Shendre", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
-  {"n": "DFC", "c": "DFC", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "", "arr": 20000000, "cv": 60000000},
-  {"n": "Deepak Yervar", "c": "Gruner Renewable Energy", "o": "Prateek Shendre", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Direct Call", "arr": 0, "cv": 0},
-  {"n": "Vijay Sharma", "c": "SVHC Consultants", "o": "Prateek Shendre", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
-  {"n": "Ramnadh KJ", "c": "CBRE", "o": "Prateek Shendre", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
+  {"n": "DFC", "c": "DFC", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": "", "arr": 20000000, "cv": 60000000},
+  {"n": "Deepak Yervar", "c": "Gruner Renewable Energy", "o": "Prateek Shendre", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery", "src": "Direct Call", "arr": 0, "cv": 0},
+  {"n": "Vijay Sharma", "c": "SVHC Consultants", "o": "Prateek Shendre", "s": "Unspecified", "i": "Engineering & Consulting", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
+  {"n": "Ramnadh KJ", "c": "CBRE", "o": "Prateek Shendre", "s": "SalesQualifiedLead", "i": "Residential & Real Estate", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
   {"n": "Ganani lakshmi", "c": "", "o": "Prateek Shendre", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
-  {"n": "Ravindra Parse", "c": "Shapoorji Pallonji Engineering & Construction", "o": "Vara Tejesh", "s": "Demo", "i": "Unclassified", "seg": "Discovery", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
-  {"n": "Industry; Government", "c": "GHMC Hyderabad", "o": "Prateek Shendre", "s": "Demo", "i": "Unclassified", "seg": "Discovery", "src": "", "arr": 25000000, "cv": 75000000},
-  {"n": "Surendra", "c": "capacite", "o": "Vara Tejesh", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
-  {"n": "K V", "c": "zeeco", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 2000000, "cv": 6000000},
+  {"n": "Ravindra Parse", "c": "Shapoorji Pallonji Engineering & Construction", "o": "Vara Tejesh", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
+  {"n": "Industry; Government", "c": "GHMC Hyderabad", "o": "Prateek Shendre", "s": "Demo", "i": "Government & Other", "seg": "Discovery", "src": "", "arr": 25000000, "cv": 75000000},
+  {"n": "Surendra", "c": "capacite", "o": "Vara Tejesh", "s": "Unspecified", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
+  {"n": "K V", "c": "zeeco", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Energy & Power", "seg": "Discovery", "src": "Linkedin", "arr": 2000000, "cv": 6000000},
   {"n": "Satisha Sawh", "c": "", "o": "Prateek Shendre", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
-  {"n": "Anuj Saini", "c": "JSW Infrastructure Ltd", "o": "Vara Tejesh", "s": "Prospects", "i": "Unclassified", "seg": "Discovery", "src": "Direct Call", "arr": 5000000, "cv": 15000000},
-  {"n": "Deepak Agarwal", "c": "Dineshchandra R. Agarwal Infracon Pvt Ltd.", "o": "Vara Tejesh", "s": "Prospects", "i": "Unclassified", "seg": "Discovery", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
+  {"n": "Anuj Saini", "c": "JSW Infrastructure Ltd", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Direct Call", "arr": 5000000, "cv": 15000000},
+  {"n": "Deepak Agarwal", "c": "Dineshchandra R. Agarwal Infracon Pvt Ltd.", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
   {"n": "Dk bairwa", "c": "", "o": "Akash Parmar - 235", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
-  {"n": "K V Satyanarao", "c": "Greenko Group", "o": "Vara Tejesh", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Direct Call", "arr": 3000000, "cv": 9000000},
+  {"n": "K V Satyanarao", "c": "Greenko Group", "o": "Vara Tejesh", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery", "src": "Direct Call", "arr": 3000000, "cv": 9000000},
   {"n": "Waghmare Rajvardhan Chandan ce24b127", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
-  {"n": "Krishna Mohan", "c": "Lansum Properties ", "o": "Vara Tejesh", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
+  {"n": "Krishna Mohan", "c": "Lansum Properties ", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
   {"n": "Himanshu", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
-  {"n": "Jayant Ganiga", "c": "GMR Group", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Unclassified", "seg": "Nurturing", "src": "Direct Call", "arr": 2500000, "cv": 7500000},
-  {"n": "PRAVEEN H SHETTIGAR", "c": "HCC", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Unclassified", "seg": "Nurturing", "src": "Direct Call", "arr": 2500000, "cv": 7500000},
-  {"n": "Vidhi Munshau", "c": "Inorbit Malls (India) Private Limited", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Unclassified", "seg": "Nurturing", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
-  {"n": "Shivaa", "c": "Almaviva Saudi Arabia", "o": "Vara Tejesh", "s": "Proposal", "i": "Unclassified", "seg": "Nurturing", "src": "Direct Call", "arr": 15000000, "cv": 37500000},
-  {"n": "Arun Iyer", "c": "Vedant Group", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Unclassified", "seg": "Nurturing", "src": "Direct Call", "arr": 2500000, "cv": 7500000},
-  {"n": "Amit Kumar Sahu", "c": "NTPC Limited (formerly National Thermal Power Corporation)", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Unclassified", "seg": "Nurturing", "src": "Direct Call", "arr": 5000000, "cv": 15000000},
-  {"n": "Raja", "c": "MEIL (Megha Engineering & Infrastructures Ltd.) ", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Unclassified", "seg": "Nurturing", "src": "Direct Call", "arr": 2500000, "cv": 7500000},
-  {"n": "", "c": "TTD", "o": "Abhinav Bommisetty - 041", "s": "Proposal", "i": "Unclassified", "seg": "Nurturing", "src": "", "arr": 30000000, "cv": 105000000},
-  {"n": "", "c": "Bi RIDE", "o": "Abhinav Bommisetty - 041", "s": "Proposal", "i": "Unclassified", "seg": "Nurturing", "src": "", "arr": 15000000, "cv": 52500000},
-  {"n": "Ram Kannan", "c": "CARE Hospitals", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Unclassified", "seg": "Nurturing", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
-  {"n": "Prenul S", "c": "Birdi Systems Inc", "o": "Vara Tejesh", "s": "Proposal", "i": "Unclassified", "seg": "Nurturing", "src": "Direct Call", "arr": 2500000, "cv": 7500000},
-  {"n": "Atikur Rahman Pradhani", "c": "Jindal Renewables", "o": "Prateek Shendre", "s": "Value Demonstration/POC", "i": "Unclassified", "seg": "Nurturing", "src": "", "arr": 3500000, "cv": 20000000},
+  {"n": "Jayant Ganiga", "c": "GMR Group", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call", "arr": 2500000, "cv": 7500000},
+  {"n": "PRAVEEN H SHETTIGAR", "c": "HCC", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call", "arr": 2500000, "cv": 7500000},
+  {"n": "Vidhi Munshau", "c": "Inorbit Malls (India) Private Limited", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
+  {"n": "Shivaa", "c": "Almaviva Saudi Arabia", "o": "Vara Tejesh", "s": "Proposal", "i": "Government & Other", "seg": "Nurturing", "src": "Direct Call", "arr": 15000000, "cv": 37500000},
+  {"n": "Arun Iyer", "c": "Vedant Group", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call", "arr": 2500000, "cv": 7500000},
+  {"n": "Amit Kumar Sahu", "c": "NTPC Limited (formerly National Thermal Power Corporation)", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call", "arr": 5000000, "cv": 15000000},
+  {"n": "Raja", "c": "MEIL (Megha Engineering & Infrastructures Ltd.) ", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Infrastructure & Construction", "seg": "Nurturing", "src": "Direct Call", "arr": 2500000, "cv": 7500000},
+  {"n": "", "c": "TTD", "o": "Abhinav Bommisetty - 041", "s": "Proposal", "i": "Government & Other", "seg": "Nurturing", "src": "", "arr": 30000000, "cv": 105000000},
+  {"n": "", "c": "Bi RIDE", "o": "Abhinav Bommisetty - 041", "s": "Proposal", "i": "Government & Other", "seg": "Nurturing", "src": "", "arr": 15000000, "cv": 52500000},
+  {"n": "Ram Kannan", "c": "CARE Hospitals", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Healthcare", "seg": "Nurturing", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
+  {"n": "Prenul S", "c": "Birdi Systems Inc", "o": "Vara Tejesh", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing", "src": "Direct Call", "arr": 2500000, "cv": 7500000},
+  {"n": "Atikur Rahman Pradhani", "c": "Jindal Renewables", "o": "Prateek Shendre", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": "", "arr": 3500000, "cv": 20000000},
   {"n": "Jitvan Alluri", "c": "SRR", "o": "Prateek Shendre", "s": "Upsell Proposal", "i": "Unclassified", "seg": "Nurturing", "src": "Direct Call", "arr": 2400000, "cv": 5100000},
-  {"n": "saravanan", "c": "Gulfspic", "o": "Vara Tejesh", "s": "Proposal", "i": "Unclassified", "seg": "Nurturing", "src": "Linkedin", "arr": 2000000, "cv": 6000000},
-  {"n": "Narendra Verma", "c": "Powerica Ltd", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Unclassified", "seg": "Nurturing", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
-  {"n": "Moulica Chekuri", "c": "Yashoda Hospitals", "o": "Prateek Shendre", "s": "Upsell Proposal", "i": "Unclassified", "seg": "Nurturing", "src": "Direct Call", "arr": 2700000, "cv": 8500000},
+  {"n": "saravanan", "c": "Gulfspic", "o": "Vara Tejesh", "s": "Proposal", "i": "Engineering & Consulting", "seg": "Nurturing", "src": "Linkedin", "arr": 2000000, "cv": 6000000},
+  {"n": "Narendra Verma", "c": "Powerica Ltd", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
+  {"n": "Moulica Chekuri", "c": "Yashoda Hospitals", "o": "Prateek Shendre", "s": "Upsell Proposal", "i": "Healthcare", "seg": "Nurturing", "src": "Direct Call", "arr": 2700000, "cv": 8500000},
   {"n": "MGB", "c": "MGB", "o": "Abhinav Bommisetty - 041", "s": "Upsell Proposal", "i": "Unclassified", "seg": "Nurturing", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
-  {"n": "Suhotra Banerjee", "c": "Dosti Realty ", "o": "Vara Tejesh", "s": "Unspecified", "i": "Unclassified", "seg": "Nurturing", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
-  {"n": "Abhay Dattatraya Gharpure", "c": "Adani Navbharat", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Unclassified", "seg": "Nurturing", "src": "Direct Call", "arr": 5000000, "cv": 15000000},
-  {"n": "Chetan", "c": "MS Realty", "o": "Vara Tejesh", "s": "Proposal", "i": "Unclassified", "seg": "Nurturing", "src": "Linkedin", "arr": 2000000, "cv": 6000000}
+  {"n": "Suhotra Banerjee", "c": "Dosti Realty ", "o": "Vara Tejesh", "s": "Unspecified", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
+  {"n": "Abhay Dattatraya Gharpure", "c": "Adani Navbharat", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call", "arr": 5000000, "cv": 15000000},
+  {"n": "Chetan", "c": "MS Realty", "o": "Vara Tejesh", "s": "Proposal", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Linkedin", "arr": 2000000, "cv": 6000000}
 ];
 
 function groupCountBy(leads, keyFn) {
@@ -1341,7 +1384,7 @@ ownerFilterSelect.addEventListener('change', () => {
   renderTable();
 });
 
-const industryFilterSelect = document.getElementById('industryFilter');
+const industryFilterSelect = document.getElementById('industryPicker');
 const stageFilterSelect = document.getElementById('stageFilter');
 const segmentFilterSelect = document.getElementById('segmentFilter');
 
@@ -1369,6 +1412,7 @@ function renderIndustryFilter() {
 
 industryFilterSelect.addEventListener('change', () => {
   activeIndustry = industryFilterSelect.value;
+  renderStats();
   renderTable();
 });
 
@@ -1527,6 +1571,7 @@ function computeArrAndCv() {
   let totalArr = 0, totalCv = 0, withCost = 0, missing = 0;
   sampleLeads.forEach(l => {
     if (!segments.includes(l.seg)) return;
+    if (activeIndustry !== 'All' && l.i !== activeIndustry) return;
     totalArr += l.arr || 0;
     totalCv += l.cv || 0;
     if (l.arr) { withCost++; } else { missing++; }
@@ -1580,9 +1625,10 @@ function renderSourceArr() {
 function computeStats() {
   const segments = activeSegment === 'All' ? ['Discovery','Nurturing'] : [activeSegment];
   let total = 0;
-  segments.forEach(seg => {
-    const stages = byStageBySegment[seg];
-    Object.values(stages).forEach(count => { total += count; });
+  sampleLeads.forEach(l => {
+    if (!segments.includes(l.seg)) return;
+    if (activeIndustry !== 'All' && l.i !== activeIndustry) return;
+    total++;
   });
   return { total };
 }
@@ -1596,13 +1642,15 @@ function renderStats() {
   statArrSub.textContent = missing ? `${withCost} of ${total} leads have ARR` : 'across active leads';
   statCv.textContent = formatINR(totalCv);
 
+  const industrySuffix = activeIndustry !== 'All' ? ` · ${industryLabel(activeIndustry)}` : '';
   if (activeSegment === 'All') {
-    const discCount = sampleLeads.filter(l => l.seg === 'Discovery').length;
-    const nurtCount = sampleLeads.filter(l => l.seg === 'Nurturing').length;
-    statTotalSub.textContent = `${discCount} Discovery · ${nurtCount} Nurturing`;
+    const inIndustry = l => activeIndustry === 'All' || l.i === activeIndustry;
+    const discCount = sampleLeads.filter(l => l.seg === 'Discovery' && inIndustry(l)).length;
+    const nurtCount = sampleLeads.filter(l => l.seg === 'Nurturing' && inIndustry(l)).length;
+    statTotalSub.textContent = `${discCount} Discovery · ${nurtCount} Nurturing${industrySuffix}`;
     segmentSplitCard.style.display = '';
   } else {
-    statTotalSub.textContent = `in ${activeSegment}`;
+    statTotalSub.textContent = `in ${activeSegment}${industrySuffix}`;
     segmentSplitCard.style.display = 'none';
   }
 }
@@ -1648,6 +1696,7 @@ function renderTaskFeed() {
 }
 
 function renderAll() {
+  renderIndustryFilter();
   renderStats();
   renderSegmentSplit();
   renderStackBar();
@@ -1656,7 +1705,6 @@ function renderAll() {
   renderOwnerFilter();
   renderOwnerArrBadge();
   renderSourceArr();
-  renderIndustryFilter();
   renderStageFilter();
   renderTable();
 }
