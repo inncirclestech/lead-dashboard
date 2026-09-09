@@ -850,7 +850,7 @@
       </div>
     </div>
     <div class="meta-row">
-      <span class="asof-pill"><span class="dot"></span>Data as of 4 Sep 2026 &middot; Source: Togile</span>
+      <span class="asof-pill"><span class="dot"></span>Data as of 9 Sep 2026 &middot; Source: Togile</span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
         <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
       </button>
@@ -859,8 +859,8 @@
 
   <div class="segment-bar">
     <div class="segment-toggle" id="segmentToggle" role="tablist" aria-label="Filter by segment">
-      <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">70</span></button>
-      <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">49</span></button>
+      <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">71</span></button>
+      <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">50</span></button>
       <button class="seg-btn" data-seg="Nurturing" role="tab" aria-selected="false">Nurturing <span class="seg-count">21</span></button>
     </div>
     <div class="industry-picker">
@@ -872,7 +872,7 @@
   <div class="stat-strip stat-strip-3">
     <div class="stat-tile">
       <span class="label">Active Leads</span>
-      <div class="value-row"><span class="value" id="statTotal">70</span><span class="sub" id="statTotalSub">49 Discovery &middot; 21 Nurturing</span></div>
+      <div class="value-row"><span class="value" id="statTotal">71</span><span class="sub" id="statTotalSub">50 Discovery &middot; 21 Nurturing</span></div>
     </div>
     <div class="stat-tile accent-value">
       <span class="label">Potential ARR</span>
@@ -1059,7 +1059,6 @@ const TASK_NOTES = {
   "Deep": { note: "Solution Feedback - Asked to contact in 3rd week of sept, Next follow-up on 15th Sept.", status: "In Progress", isNew: true, updatedAt: "2026-09-01T09:23:59.425Z" },
   "Vijay Sharma": { note: "Waiting - Not responding to calls or email. Will follow up on 1st Sept again. Cannot establish ARR/CV as we don't have the requirements", status: "In Progress", isNew: true, updatedAt: "2026-08-26T08:09:48.741Z" },
   "Ramnadh KJ": { note: "Solution feedback - The POC needs to discuss internally regarding the PMIS solution. Asked me to callback after 15 days, Next follow up on 8th Sept.", status: "In Progress", isNew: true, updatedAt: "2026-08-26T08:57:51.300Z" },
-  "Ganani lakshmi": { note: "Demo Preparation - Scheduled on 2nd Sept. Next follow-up on 4th Sept.", status: "In Progress", isNew: true, updatedAt: "2026-09-01T09:22:11.665Z" },
   "Ravindra Parse": { note: "Demo preparation: In-person Demo aligned with H.O team on 8th September' 26, Tuesday at 11:30 AM, Mumbai.", status: "In Progress", isNew: true, updatedAt: "2026-09-01T13:18:50.393Z" },
   "Industry; Government": { note: "Proposal - Preparation of proposal, to be submitted on 26th Aug. Next follow-up on 1st Sept.", status: "In Progress", isNew: true, updatedAt: "2026-08-26T08:53:09.892Z" },
   "K V": { note: "- Construction Head confirmed to contact on 8th Sep'26 , Tuesday for in-person meeting appointment.", status: "In Progress", isNew: true, updatedAt: "2026-09-03T08:06:28.339Z" },
@@ -1122,7 +1121,6 @@ const sampleLeads = [
   {"n": "DFC", "c": "DFC", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": "", "arr": 20000000, "cv": 60000000},
   {"n": "Vijay Sharma", "c": "SVHC Consultants", "o": "Prateek Shendre", "s": "Contacted", "i": "Engineering & Consulting", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
   {"n": "Ramnadh KJ", "c": "CBRE", "o": "Prateek Shendre", "s": "SalesQualifiedLead", "i": "Residential & Real Estate", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
-  {"n": "Ganani lakshmi", "c": "", "o": "Prateek Shendre", "s": "Contacted", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
   {"n": "Ravindra Parse", "c": "Shapoorji Pallonji Engineering & Construction", "o": "Vara Tejesh", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
   {"n": "Industry; Government", "c": "GHMC Hyderabad", "o": "Prateek Shendre", "s": "Demo", "i": "Government & Other", "seg": "Discovery", "src": "", "arr": 25000000, "cv": 75000000},
   {"n": "Surendra", "c": "capacite", "o": "Vara Tejesh", "s": "Unspecified", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
@@ -1158,7 +1156,9 @@ const sampleLeads = [
   {"n": "Deepak Yervar", "c": "Gruner Renewable Energy", "o": "Prateek Shendre", "s": "Proposal", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call", "arr": 7000000, "cv": 23000000},
   {"n": "Sophie Ware", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
   {"n": "Scott", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
-  {"n": "ARTHAM MOUNIKA", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0}
+  {"n": "ARTHAM MOUNIKA", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
+  {"n": "Vardhan Bhogavilli", "c": "", "o": "Lasya Ganapathi", "s": "Unspecified", "i": "Unclassified", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
+  {"n": "Shanti Prakash", "c": "Listenlights Pvt. Ltd.", "o": "Vara Tejesh", "s": "Demo", "i": "Unclassified", "seg": "Discovery", "src": "Direct Call", "arr": 0, "cv": 0}
 ];
 
 function groupCountBy(leads, keyFn) {
