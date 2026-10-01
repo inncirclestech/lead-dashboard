@@ -1,5 +1,5 @@
 <meta charset="UTF-8">
-<title>Discovery & Nurturing — Lead Status Dashboard</title>
+<title>Inncircles Business Tracker</title>
 <style>
   @font-face {
     font-family: 'InterVar';
@@ -156,6 +156,102 @@
   }
   .theme-toggle:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 
+
+  /* ---------- Module nav (Business Development / Delivery / Product) ---------- */
+  .module-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .module-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-subtle);
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .module-btn:hover { color: var(--text-normal); }
+  .module-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+  .module-btn.is-active { background: var(--surface); color: var(--brand-dark); box-shadow: var(--shadow-sm); }
+
+  .subnav {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .subnav-btn {
+    padding: 9px 4px;
+    margin-right: 18px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .subnav-btn:hover { color: var(--text-normal); }
+  .subnav-btn.is-active { color: var(--brand-dark); border-bottom-color: var(--brand); }
+
+  .module-panel { display: none; }
+  .module-panel.is-active { display: block; }
+  .subpanel { display: none; }
+  .subpanel.is-active { display: block; }
+
+  .empty-tracker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 56px 24px;
+    text-align: center;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px dashed var(--border-normal);
+    border-radius: var(--radius-lg);
+  }
+  .empty-tracker svg { color: var(--text-muted); opacity: 0.6; }
+  .empty-tracker .title { font-size: 14.5px; font-weight: 600; color: var(--text-subtle); }
+  .empty-tracker .sub { font-size: 12.5px; max-width: 420px; }
+
+  .tracker-table-wrap { background: var(--surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); padding: 18px 20px; }
+  table.tracker-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tracker-table thead th {
+    text-align: left;
+    font-size: 11.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+    padding: 0 10px 10px;
+    border-bottom: 1px solid var(--border-subtle);
+    white-space: nowrap;
+  }
+  .tracker-table tbody td {
+    padding: 14px 10px;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 12.5px;
+  }
 
   /* ---------- Segment toggle ---------- */
   .segment-bar {
@@ -762,7 +858,7 @@
 
     /* Screen-only controls never belong in the report */
     .theme-toggle, .archive-toggle, .archive-toggle-row, tr.archived-row,
-    .segment-bar, .chip-bar, .filter-row { display: none !important; }
+    .segment-bar, .chip-bar, .filter-row, .module-nav, .subnav { display: none !important; }
 
     /* Compact, letterhead-style header */
     .topbar { align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid var(--brand); }
@@ -845,8 +941,8 @@
         </svg>
       </div>
       <div class="brand-text">
-        <span class="org">Inncircles &middot; Business Development</span>
-        <span class="title">Discovery &amp; Nurturing — Lead Status</span>
+        <span class="org">Inncircles</span>
+        <span class="title">Business Tracker</span>
       </div>
     </div>
     <div class="meta-row">
@@ -856,6 +952,22 @@
       </button>
     </div>
   </div>
+
+  <div class="module-nav" id="moduleNav" role="tablist" aria-label="Business area">
+    <button class="module-btn is-active" data-module="bd" role="tab" aria-selected="true">Business Development</button>
+    <button class="module-btn" data-module="delivery" role="tab" aria-selected="false">Delivery</button>
+    <button class="module-btn" data-module="product" role="tab" aria-selected="false">Product</button>
+  </div>
+
+  <div class="module-panel is-active" id="panel-bd">
+
+  <div class="subnav" id="bdSubnav">
+    <button class="subnav-btn is-active" data-subpanel="bd-leads">Leads</button>
+    <button class="subnav-btn" data-subpanel="bd-poc">POCs</button>
+    <button class="subnav-btn" data-subpanel="bd-expcenter">Experience Center</button>
+  </div>
+
+  <div class="subpanel is-active" id="bd-leads">
 
   <div class="segment-bar">
     <div class="segment-toggle" id="segmentToggle" role="tablist" aria-label="Filter by segment">
@@ -991,6 +1103,150 @@
     </div>
 
   </div>
+
+  </div><!-- /bd-leads -->
+
+  <div class="subpanel" id="bd-poc">
+    <div class="tracker-table-wrap">
+      <div class="card-head">
+        <h2>POC Tracker</h2>
+        <span class="count-tag">0 active</span>
+      </div>
+      <div class="table-scroll">
+        <table class="tracker-table">
+          <thead>
+            <tr>
+              <th>POC Name</th>
+              <th>Client</th>
+              <th>Product / System</th>
+              <th>Owner</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="7">No POCs tracked yet — source to be connected.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="subpanel" id="bd-expcenter">
+    <div class="tracker-table-wrap">
+      <div class="card-head">
+        <h2>Experience Center Tracker</h2>
+        <span class="count-tag">0 active</span>
+      </div>
+      <div class="table-scroll">
+        <table class="tracker-table">
+          <thead>
+            <tr>
+              <th>Demo System / Product</th>
+              <th>Industry Focus</th>
+              <th>Owner</th>
+              <th>Client Visited</th>
+              <th>Response</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="6">No Experience Center records tracked yet — source to be connected.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /panel-bd -->
+
+  <div class="module-panel" id="panel-delivery">
+
+  <div class="subnav" id="deliverySubnav">
+    <button class="subnav-btn is-active" data-subpanel="delivery-implementation">Implementation</button>
+    <button class="subnav-btn" data-subpanel="delivery-support">Support</button>
+  </div>
+
+  <div class="subpanel is-active" id="delivery-implementation">
+    <div class="tracker-table-wrap">
+      <div class="card-head">
+        <h2>Implementation Tracker</h2>
+        <span class="count-tag">0 active</span>
+      </div>
+      <div class="table-scroll">
+        <table class="tracker-table">
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Owner</th>
+              <th>Implementation Start</th>
+              <th>Implementation End</th>
+              <th>Current Step</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="6">No implementations tracked yet — source to be connected.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="subpanel" id="delivery-support">
+    <div class="tracker-table-wrap">
+      <div class="card-head">
+        <h2>Support Tracker</h2>
+        <span class="count-tag">0 clients</span>
+      </div>
+      <div class="table-scroll">
+        <table class="tracker-table">
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Overall Health</th>
+              <th>Customer-perceived RAG</th>
+              <th>Our-perceived RAG</th>
+              <th>Open Tickets</th>
+              <th>Support Portal Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="6">No support records tracked yet — source (Jira / support portal) to be connected.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /panel-delivery -->
+
+  <div class="module-panel" id="panel-product">
+    <div class="tracker-table-wrap">
+      <div class="card-head">
+        <h2>Product Roadmap Tracker</h2>
+        <span class="count-tag">0 items</span>
+      </div>
+      <div class="table-scroll">
+        <table class="tracker-table">
+          <thead>
+            <tr>
+              <th>Feature / Item</th>
+              <th>Owner</th>
+              <th>Building / Running</th>
+              <th>Status</th>
+              <th>Target Date</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="6">No roadmap items tracked yet — source to be connected.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /panel-product -->
 
   <footer class="page-footer">
     <span>Generated from Togile Discovery + Nurturing export &middot; Owner: Aashray Raj Mathur</span>
@@ -1787,4 +2043,29 @@ themeToggle.addEventListener('click', () => {
   root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
 });
 
+/* ---------- Module / subnav switching ---------- */
+document.getElementById('moduleNav').querySelectorAll('.module-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const mod = btn.dataset.module;
+    document.querySelectorAll('.module-btn').forEach(b => {
+      b.classList.toggle('is-active', b === btn);
+      b.setAttribute('aria-selected', b === btn);
+    });
+    document.querySelectorAll('.module-panel').forEach(p => {
+      p.classList.toggle('is-active', p.id === 'panel-' + mod);
+    });
+  });
+});
+
+document.querySelectorAll('.subnav').forEach(nav => {
+  nav.querySelectorAll('.subnav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      nav.querySelectorAll('.subnav-btn').forEach(b => b.classList.toggle('is-active', b === btn));
+      const parentPanel = nav.closest('.module-panel');
+      parentPanel.querySelectorAll('.subpanel').forEach(p => {
+        p.classList.toggle('is-active', p.id === btn.dataset.subpanel);
+      });
+    });
+  });
+});
 </script>
