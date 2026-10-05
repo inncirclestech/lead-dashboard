@@ -1073,7 +1073,7 @@
     </button>
   </div>
 
-  <div class="local-banner" id="localBanner" hidden>This copy cannot share records. Entries here stay on this device. To add records everyone can see, use the <a href="https://claude.ai/artifact/PnQ3fNx5gLMTt189oTNivm" target="_blank" rel="noopener">shared tracker on Claude &#8599;</a>.</div>
+  <div class="local-banner" id="localBanner" hidden>The shared database could not be reached, so entries made here stay on this device. Reload to try again.</div>
 
   <div class="module-nav" id="moduleNav" role="tablist" aria-label="Business area">
     <button class="module-btn is-active" data-module="bd" role="tab" aria-selected="true">Business Development</button>
@@ -2210,7 +2210,7 @@ function toast(msg) {
 async function saveDoc(path, data) {
   if (Store.db) {
     try { await Store.db.doc(path).set(data); return true; }
-    catch (e) { toast(e && e.code === 'invalid_argument' ? 'You have view-only access, so this change was not saved. Ask the owner for Contributor access.' : 'Could not save. Try again.'); return false; }
+    catch (e) { toast(e && (e.code === 'invalid_argument' || e.code === 'permission-denied') ? 'You do not have permission to save this change.' : 'Could not save. Try again.'); return false; }
   }
   const o = lsData(); const [c, id] = path.split('/'); (o[c] = o[c] || {})[id] = data; lsWrite(o);
   applyLocal(); return true;
@@ -2243,10 +2243,42 @@ function applyLocal() {
   ['poc', 'expcenter', 'impl', 'config'].forEach(c => ingest(c, Object.entries(o[c] || {}).map(([id, data]) => ({ id, data }))));
 }
 
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyDZ8xfprTunvh-h9zZ0X8HUYKgmpdBFiDM",
+  authDomain: "inncircles-business-tracker.firebaseapp.com",
+  projectId: "inncircles-business-tracker",
+  storageBucket: "inncircles-business-tracker.firebasestorage.app",
+  messagingSenderId: "75122868736",
+  appId: "1:75122868736:web:a8d0465cda7bff7d958ee5"
+};
+const FB_BASE = 'https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/';
+function loadScript(src) {
+  return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('load ' + src)); document.head.appendChild(s); });
+}
+async function connectFirebase() {
+  try {
+    await loadScript(FB_BASE + 'firebase-app-compat.min.js');
+    await loadScript(FB_BASE + 'firebase-firestore-compat.min.js');
+    firebase.initializeApp(FIREBASE_CONFIG);
+    const fs = firebase.firestore();
+    // first visitor loads the starting Experience Center projects; fixed ids make this safe if two visitors race
+    const flag = await fs.doc('config/seeded').get();
+    if (!flag.exists) {
+      const batch = fs.batch();
+      Object.entries(EXP_SEED).forEach(([id, d]) => batch.set(fs.doc('expcenter/' + id), d));
+      batch.set(fs.doc('config/fields_expcenter'), { fields: EXP_FIELDS });
+      batch.set(fs.doc('config/seeded'), { at: new Date().toISOString() });
+      await batch.commit();
+    }
+    return fs;
+  } catch (e) { console.warn('Firebase unavailable', e); return null; }
+}
+
 async function initStore() {
   let db = null;
   try { db = window.claude && window.claude.use ? await window.claude.use('db') : null; } catch (e) { db = null; }
   const note = document.getElementById('syncNote');
+  if (!db) db = await connectFirebase();
   if (db) {
     Store.db = db; Store.shared = true;
     note.textContent = 'Shared: everyone with the link sees changes live';
@@ -2254,7 +2286,7 @@ async function initStore() {
       db.collection(c).onSnapshot(snap => ingest(c, snap.docs.map(d => ({ id: d.id, data: d.data() }))), e => toast('Live updates stopped. Reload the page.'));
     });
   } else {
-    note.textContent = 'Changes are saved on this device only.';
+    note.textContent = 'Could not reach the shared database. Changes are saved on this device only.';
     const bn = document.getElementById('localBanner'); if (bn) bn.hidden = false;
     applyLocal();
   }
