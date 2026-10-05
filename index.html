@@ -946,7 +946,7 @@
       </div>
     </div>
     <div class="meta-row">
-      <span class="asof-pill"><span class="dot"></span>Data as of 30 Sep 2026 &middot; Source: Togile</span>
+      <span class="asof-pill"><span class="dot"></span>Data as of 5 Oct 2026 &middot; Source: Togile</span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
         <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
       </button>
@@ -971,8 +971,8 @@
 
   <div class="segment-bar">
     <div class="segment-toggle" id="segmentToggle" role="tablist" aria-label="Filter by segment">
-      <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">79</span></button>
-      <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">54</span></button>
+      <button class="seg-btn is-active" data-seg="All" role="tab" aria-selected="true">All Segments <span class="seg-count">77</span></button>
+      <button class="seg-btn" data-seg="Discovery" role="tab" aria-selected="false">Discovery <span class="seg-count">52</span></button>
       <button class="seg-btn" data-seg="Nurturing" role="tab" aria-selected="false">Nurturing <span class="seg-count">25</span></button>
     </div>
     <div class="industry-picker">
@@ -984,7 +984,7 @@
   <div class="stat-strip stat-strip-3">
     <div class="stat-tile">
       <span class="label">Active Leads</span>
-      <div class="value-row"><span class="value" id="statTotal">79</span><span class="sub" id="statTotalSub">54 Discovery &middot; 25 Nurturing</span></div>
+      <div class="value-row"><span class="value" id="statTotal">77</span><span class="sub" id="statTotalSub">52 Discovery &middot; 25 Nurturing</span></div>
     </div>
     <div class="stat-tile accent-value">
       <span class="label">Potential ARR</span>
@@ -1290,8 +1290,6 @@ const SEGMENT_META = {
 const TASK_NOTES = {
   "Santosh Sahu,Ameya": { note: "Product Feedback - Refresher demo arrange on 5th Oct", status: "In Progress", isNew: true, updatedAt: "2026-09-29T09:37:48.936Z" },
   "Prerna K": { note: "Solution Feedback - Asked for the time to get our doubts clarified regarding the classification of the digital service we are providing, yet to get a response, Next follow-up on 24th Sept.", status: "In Progress", isNew: true, updatedAt: "2026-09-22T09:12:49.487Z" },
-  "Atul Shirke": { note: "- Action: Follow up with Turner's Country Head to schedule a demo\n- Goal: Understand their current systems to identify how Inncircles can create value\n- Action plan: Follow up via WhatsApp and email over the next 7–10 days", status: "In Progress", isNew: false, updatedAt: "2026-08-03T12:47:10.111Z" },
-  "BABUL GOMASTA": { note: "I will be contacting Mr. Babul for the time slot for the demo on 12th August.", status: "Open", isNew: false, updatedAt: "2026-08-11T06:41:03.984Z" },
   "Abhinav Agarwal": { note: "I will be sending a reminder to Mr. Anoop, BU Head to get appointment showcase our platform on 11th August.", status: "In Progress", isNew: false, updatedAt: "2026-08-11T06:58:24.480Z" },
   "NHAI": { note: "", status: "In Progress", isNew: false, updatedAt: "2026-08-03T10:44:12.207Z" },
   "Smruthi Ranjan": { note: "Intent check- Post-demo intent expressed is Medium. We will call him on 22nd Sepe for next steps for VAPT.", status: "In Progress", isNew: true, updatedAt: "2026-09-21T07:59:48.152Z" },
@@ -1300,20 +1298,18 @@ const TASK_NOTES = {
   "Pravindra": { note: "", status: "Open", isNew: false, updatedAt: "2026-08-03T10:43:26.458Z" },
   "S Madan Kumar": { note: "", status: "Open", isNew: false, updatedAt: "2026-08-03T05:07:40.916Z" },
   "Harsh Desai": { note: "Solution Feedback- Post-demo required to prepare customer-specific video/any other content. Working on the content; release date: 25th September'26. Next follow-up on 25th September for Demo with Top Management. ", status: "In Progress", isNew: true, updatedAt: "2026-09-22T08:20:15.834Z" },
-  "Anant Salunkhe": { note: "- Connected with MEP Vice President (Navi Mumbai office)\n- Planning to connect with the right Digitalization/PMO Head at the Hyderabad office\n- Action plan: Follow up to identify and reach the correct contact", status: "In Progress", isNew: false, updatedAt: "2026-08-03T12:33:48.127Z" },
   "Saptarshi Basu": { note: "I will speaking with Mr. Phani , CRISIL for his team appointment to showcase our platform by this week.", status: "In Progress", isNew: false, updatedAt: "2026-08-11T07:02:27.969Z" },
   "Bhaskar K": { note: "Know each other- Planned head confirmed to contact next week for in-person meeting for Demo at H.O. I will contact him on 8th September'2026.", status: "In Progress", isNew: true, updatedAt: "2026-09-03T08:11:05.522Z" },
   "Amit Deshmukh": { note: "- They have a Digital team, We are waiting for the appointment to understand our match score. - We have contacted on 26th August for the appointment, we will be getting appointment in 1 week.", status: "In Progress", isNew: true, updatedAt: "2026-08-26T10:47:40.955Z" },
   "Mayur Somani": { note: "We will schedule an in-person meeting between 5th and 9th October.", status: "Open", isNew: true, updatedAt: "2026-09-29T12:37:09.308Z" },
   "Vishwajit Kate": { note: "- We are in process to identify right POC in management to reach and showcase our platform.", status: "In Progress", isNew: true, updatedAt: "2026-08-26T10:16:37.707Z" },
   "Mrs. Vishaka Waghmare": { note: "I will shared the relevant document to get the appointment for the Demo on 11th August'2026 and also will have a call Followup.", status: "In Progress", isNew: false, updatedAt: "2026-08-11T06:47:31.263Z" },
-  "Gaurav": { note: "Intent check- Post-demo intent expressed- Medium.  CemIndia suggest us to approach through Adani Airport team / PMC team for the PMIS. ", status: "Completed", isNew: true, updatedAt: "2026-08-27T10:55:29.893Z" },
-  "Avinash Kotla": { note: "- I will be sharing latest Presentation and short InnPMIS video on 18th August.\n- The Point of Count person (Project Coordinator) is in followup with management team to align meeting at Blore office. ", status: "In Progress", isNew: true, updatedAt: "2026-08-18T07:22:14.250Z" },
+  "Avinash Kotla": { note: "- I will be sharing latest Presentation and short InnPMIS video on 18th August.\n- The Point of Count person (Project Coordinator) is in followup with management team to align meeting at Blore office. ", status: "In Progress", isNew: false, updatedAt: "2026-08-18T07:22:14.250Z" },
   "Satish": { note: "Demo Feedback -Customer not responding, Need to try again on 1st Oct", status: "In Progress", isNew: true, updatedAt: "2026-09-29T09:35:27.933Z" },
   "Deep": { note: "Intent Check - Customer Not responding, will try to connect again om 30th Oct", status: "In Progress", isNew: true, updatedAt: "2026-09-29T11:15:22.768Z" },
   "Vijay Sharma": { note: "Know each other - Have not been able to establish connect due to no response, Been 2 months since spoke last time. Will follow-up on more time on 22nd Sept, if no response will close this account.", status: "In Progress", isNew: true, updatedAt: "2026-09-19T17:14:32.751Z" },
   "Ramnadh KJ": { note: "Know each other - Asked us to wait and call in next week. Next update on 22nd Sept.", status: "In Progress", isNew: true, updatedAt: "2026-09-19T17:16:32.590Z" },
-  "Ravindra Parse": { note: "Solution Feedback- Post demo feedback requested. Working on the requirements, release date: 23rd September. Follow-up for in-person meeting at H.O Mumbai on 24th September.", status: "In Progress", isNew: true, updatedAt: "2026-09-22T08:03:34.976Z" },
+  "Ravindra Parse": { note: "Shared required document. we will be having online meeting next to next week to discuss solution", status: "In Progress", isNew: true, updatedAt: "2026-10-01T10:31:38.172Z" },
   "Industry; Government": { note: "Proposal - Spoke to Mr. Arun regarding the proposal he is busy and asked us to contact on 30th oct.", status: "In Progress", isNew: true, updatedAt: "2026-09-29T09:33:10.824Z" },
   "K V": { note: "Post Demo intent expressed its high. working on the requirements, working on POC setup, release date - 8th Oct 2026", status: "In Progress", isNew: true, updatedAt: "2026-09-29T13:47:45.724Z" },
   "Anuj Saini": { note: "Demo preparation- Next follow-up- 23rd September for a in-person Demo the week. They are looking forward to visit Inncircles Mumbai office in current week.", status: "In Progress", isNew: true, updatedAt: "2026-09-21T08:14:32.102Z" },
@@ -1348,15 +1344,15 @@ const TASK_NOTES = {
   "Gaurav Trivedi": { note: "Know each other- Match score identified and the opportunity is relevant. Following it up to get the demo. Next follow-up: 28th September'26.", status: "In Progress", isNew: true, updatedAt: "2026-09-23T12:32:47.228Z" },
   "Siddharth Ghorpade": { note: "Know each other: Match score identified and the opportunity is relevant. Following it up to get the demo. Next follow-up: 23rd Sep'26.", status: "In Progress", isNew: true, updatedAt: "2026-09-22T08:42:00.042Z" },
   "Venkat Kumar": { note: "", status: "Open", isNew: true, updatedAt: "2026-09-29T05:26:59.258Z" },
-  "vinay sundeep": { note: "Proposal - Submitted proposal on 28th Sept, will take update on 30th Sept.", status: "In Progress", isNew: true, updatedAt: "2026-09-29T11:18:17.446Z" }
+  "vinay sundeep": { note: "Proposal - Submitted proposal on 28th Sept, will take update on 30th Sept.", status: "In Progress", isNew: true, updatedAt: "2026-09-29T11:18:17.446Z" },
+  "Shrikant Yadav": { note: "Following it up to get the demo. Next Follow up - 2nd week of Oct’26", status: "Open", isNew: true, updatedAt: "2026-09-30T09:28:31.296Z" },
+  "Rahul Birla": { note: "Intent check- Post-demo intent expressed- High. We will be presenting Demo to ED-East on 1st October and planning to meet in-person next week for next steps.", status: "In Progress", isNew: true, updatedAt: "2026-10-01T05:30:31.161Z" }
 };
 
 const sampleLeads = [
   {"n": "Santosh Sahu,Ameya", "c": "BPCL", "o": "Prateek Shendre", "s": "Demo", "i": "Energy & Power", "seg": "Discovery", "src": "Cold call", "arr": 3000000, "cv": 10000000},
   {"n": "Prerna K", "c": "NHEV", "o": "Prateek Shendre", "s": "SalesQualifiedLead", "i": "Energy & Power", "seg": "Discovery", "src": "Email Campaign", "arr": 0, "cv": 0},
   {"n": "Sesha Sai", "c": "Amazon", "o": "Arun", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": "Cold call", "arr": 0, "cv": 0},
-  {"n": "Atul Shirke", "c": "Turner Project Management India Pvt. Ltd.", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Engineering & Consulting", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
-  {"n": "BABUL GOMASTA", "c": "DP Jain & Co. Infrastructure Pvt. Ltd", "o": "Vara Tejesh", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
   {"n": "Abhinav Agarwal", "c": "Godrej Enterprises ", "o": "Vara Tejesh", "s": "Contacted", "i": "Corporate & Technology", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
   {"n": "Muhammed", "c": "GHB", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
   {"n": "NHAI", "c": "NHAI", "o": "Abhinav Bommisetty - 041", "s": "SalesQualifiedLead", "i": "Government & Other", "seg": "Discovery", "src": "", "arr": 30000000, "cv": 300000000},
@@ -1366,14 +1362,12 @@ const sampleLeads = [
   {"n": "Pravindra", "c": "K-RIDE Bengaluru", "o": "Abhinav Bommisetty - 041", "s": "Prospects", "i": "Government & Other", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
   {"n": "S Madan Kumar", "c": "L&T Mindtree", "o": "Abhinav Bommisetty - 041", "s": "Demo", "i": "Corporate & Technology", "seg": "Discovery", "src": "Linkedin", "arr": 2500000, "cv": 8750000},
   {"n": "Harsh Desai", "c": "Shapoorji Pallonji Real Estate", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "", "arr": 2000000, "cv": 2000000},
-  {"n": "Anant Salunkhe", "c": "CtrlS ", "o": "Vara Tejesh", "s": "Contacted", "i": "Corporate & Technology", "seg": "Discovery", "src": "Referral", "arr": 2500000, "cv": 7500000},
   {"n": "Saptarshi Basu", "c": "Welspun Enterprises ", "o": "Vara Tejesh", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
   {"n": "Bhaskar K", "c": "DA Realty", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
   {"n": "Amit Deshmukh", "c": "Toyo Engineering India Private Limited", "o": "Vara Tejesh", "s": "Contacted", "i": "Engineering & Consulting", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
   {"n": "Mayur Somani", "c": "Vibe Realty", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
   {"n": "Vishwajit Kate", "c": "Nxtra by Airtel", "o": "Vara Tejesh", "s": "Contacted", "i": "Corporate & Technology", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
   {"n": "Mrs. Vishaka Waghmare", "c": "PSP Projects ", "o": "Vara Tejesh", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Referral", "arr": 2000000, "cv": 6000000},
-  {"n": "Gaurav", "c": "CEM India", "o": "Vara Tejesh", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin", "arr": 3000000, "cv": 9000000},
   {"n": "Avinash Kotla", "c": "Reliance Industries Limited", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Corporate & Technology", "seg": "Discovery", "src": "Referral", "arr": 2500000, "cv": 7500000},
   {"n": "Satish", "c": "Jakson", "o": "Prateek Shendre", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery", "src": "Linkedin", "arr": 5000000, "cv": 30000000},
   {"n": "Deep", "c": "BPTP Realty", "o": "Prateek Shendre", "s": "SalesQualifiedLead", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Website", "arr": 0, "cv": 0},
@@ -1385,7 +1379,7 @@ const sampleLeads = [
   {"n": "Industry; Government", "c": "GHMC Hyderabad", "o": "Prateek Shendre", "s": "Demo", "i": "Government & Other", "seg": "Discovery", "src": "", "arr": 25000000, "cv": 75000000},
   {"n": "Surendra", "c": "capacite", "o": "Vara Tejesh", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
   {"n": "K V", "c": "zeeco", "o": "Vara Tejesh", "s": "Proposal", "i": "Energy & Power", "seg": "Nurturing", "src": "", "arr": 1500000, "cv": 4500000},
-  {"n": "Anuj Saini", "c": "JSW Infrastructure Ltd", "o": "Vara Tejesh", "s": "Prospects", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Direct Call", "arr": 5000000, "cv": 15000000},
+  {"n": "Anuj Saini", "c": "JSW Infrastructure Ltd", "o": "Vara Tejesh", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Direct Call", "arr": 5000000, "cv": 15000000},
   {"n": "Deepak Agarwal", "c": "Dineshchandra R. Agarwal Infracon Pvt Ltd.", "o": "Vara Tejesh", "s": "SalesQualifiedLead", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
   {"n": "K V Satyanarao", "c": "Greenko Group", "o": "Vara Tejesh", "s": "Contacted", "i": "Energy & Power", "seg": "Discovery", "src": "Direct Call", "arr": 3000000, "cv": 9000000},
   {"n": "Krishna Mohan", "c": "Lansum Properties ", "o": "Vara Tejesh", "s": "Contacted", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
@@ -1409,11 +1403,11 @@ const sampleLeads = [
   {"n": "MGB", "c": "MGB", "o": "Abhinav Bommisetty - 041", "s": "Upsell Proposal", "i": "Unclassified", "seg": "Nurturing", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
   {"n": "Suhotra Banerjee", "c": "Dosti Realty ", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "Direct Call", "arr": 2000000, "cv": 6000000},
   {"n": "Abhay Dattatraya Gharpure", "c": "Adani Navbharat", "o": "Vara Tejesh", "s": "Value Demonstration/POC", "i": "Energy & Power", "seg": "Nurturing", "src": "Direct Call", "arr": 5000000, "cv": 15000000},
-  {"n": "Shanti Prakash", "c": "Listen Lights", "o": "Prateek Shendre", "s": "Proposal", "i": "Unclassified", "seg": "Nurturing", "src": "", "arr": 0, "cv": 0},
+  {"n": "Shanti Prakash", "c": "Listen Lights", "o": "Prateek Shendre", "s": "Proposal", "i": "Unclassified", "seg": "Nurturing", "src": "", "arr": 2000000, "cv": 5200000},
   {"n": "Kalrav", "c": "Riviera Infraprojects Pvt Ltd", "o": "Shubham Shinde", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Direct Call", "arr": 0, "cv": 0},
   {"n": "Sanmathi Kumar", "c": "Ramky Estates & Farms Limited", "o": "Prateek Shendre", "s": "Upsell Request", "i": "Residential & Real Estate", "seg": "Nurturing", "src": "", "arr": 0, "cv": 0},
   {"n": "Vinay", "c": "Quantum realty", "o": "Lasya Ganapathi", "s": "Demo", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
-  {"n": "Madhu Putta", "c": "PRK Hospitals", "o": "Vara Tejesh", "s": "Contacted", "i": "Healthcare", "seg": "Discovery", "src": "Direct Call", "arr": 0, "cv": 0},
+  {"n": "Madhu Putta", "c": "PRK Hospitals", "o": "Vara Tejesh", "s": "Contacted", "i": "Healthcare", "seg": "Discovery", "src": "Direct Call", "arr": 8000000, "cv": 2400000},
   {"n": "Santosh kokitkar", "c": "Vascon Engineers Limited", "o": "Vara Tejesh", "s": "Contacted", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
   {"n": "Ashok Kumar", "c": "Kalpataru Projects", "o": "Vara Tejesh", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "", "arr": 0, "cv": 0},
   {"n": "Nitish", "c": "Awfis", "o": "Prateek Shendre", "s": "Value Demonstration/POC", "i": "Corporate & Technology", "seg": "Nurturing", "src": "", "arr": 65000, "cv": 65000},
@@ -1430,7 +1424,9 @@ const sampleLeads = [
   {"n": "Nandini", "c": "", "o": "Lasya Ganapathi", "s": "Prospects", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
   {"n": "Vikas Yadav", "c": "Godrej Properties", "o": "Lasya Ganapathi", "s": "Prospects", "i": "Residential & Real Estate", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
   {"n": "Komal", "c": "", "o": "Lasya Ganapathi", "s": "Prospects", "i": "Unclassified", "seg": "Discovery", "src": "Linkedin", "arr": 0, "cv": 0},
-  {"n": "vinay sundeep", "c": "GA spaces / Surana Group", "o": "Prateek Shendre", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing", "src": "", "arr": 0, "cv": 0}
+  {"n": "Rahul Birla", "c": "ArcelorMittal Nippon Steel India", "o": "Vara Tejesh", "s": "Demo", "i": "Infrastructure & Construction", "seg": "Discovery", "src": "Direct Call", "arr": 0, "cv": 0},
+  {"n": "Satyendra", "c": "Indian Railways", "o": "Vara Tejesh", "s": "Contacted", "i": "Government & Other", "seg": "Discovery", "src": "Direct Call", "arr": 40000000, "cv": 120000000},
+  {"n": "vinay sundeep", "c": "GA spaces / Surana Group", "o": "Prateek Shendre", "s": "Proposal", "i": "Corporate & Technology", "seg": "Nurturing", "src": "", "arr": 1800000, "cv": 3850000}
 ];
 
 function groupCountBy(leads, keyFn) {
