@@ -1047,6 +1047,18 @@
     .tr-search { width: 100%; }
   }
   @media print { .tr-tools, .btn, .dlg-back, .toast { display: none !important; } }
+
+  .entry-row td { background: var(--brand-subtle-bg) !important; border-bottom: 2px solid var(--brand-subtle-border) !important; }
+  .edit-row td { background: var(--surface-2) !important; }
+  .in-cell { min-width: 150px; }
+  .in-cell input, .in-cell select, .in-cell textarea {
+    font-family: inherit; font-size: 13px; color: var(--text-normal); background: var(--surface);
+    border: 1px solid var(--border-normal); border-radius: var(--radius-md); padding: 6px 8px; width: 100%; min-width: 0;
+  }
+  .in-cell textarea { min-height: 54px; resize: vertical; }
+  .in-cell input:focus-visible, .in-cell select:focus-visible, .in-cell textarea:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+  .in-cell .chips { margin-bottom: 6px; }
+  .in-cell .tag-input { background: var(--surface); }
 </style>
 
 <div class="page">
@@ -1220,7 +1232,6 @@
         <div class="tr-tools">
           <input class="tr-search" id="search-poc" type="search" placeholder="Search POCs" aria-label="Search POCs">
           <button class="btn btn-ghost" id="addfield-poc" type="button">+ Add field</button>
-          <button class="btn btn-primary" id="add-poc" type="button">+ Add POC</button>
         </div>
       </div>
       <div class="table-scroll" id="mount-poc"></div>
@@ -1234,7 +1245,6 @@
         <div class="tr-tools">
           <input class="tr-search" id="search-expcenter" type="search" placeholder="Search projects" aria-label="Search projects">
           <button class="btn btn-ghost" id="addfield-expcenter" type="button">+ Add field</button>
-          <button class="btn btn-primary" id="add-expcenter" type="button">+ Add project</button>
         </div>
       </div>
       <div class="table-scroll" id="mount-expcenter"></div>
@@ -1257,7 +1267,6 @@
         <div class="tr-tools">
           <input class="tr-search" id="search-impl" type="search" placeholder="Search clients" aria-label="Search implementations">
           <button class="btn btn-ghost" id="addfield-impl" type="button">+ Add field</button>
-          <button class="btn btn-primary" id="add-impl" type="button">+ Add client</button>
         </div>
       </div>
       <div class="table-scroll" id="mount-impl"></div>
@@ -2259,86 +2268,34 @@ function allFields(key) {
   return TRACKERS[key].fields.concat(S.cfg[key].map(f => ({ k: 'c_' + f.id, l: f.label, t: f.type === 'select' ? 'select' : f.type, opts: f.options || [], custom: true, cid: f.id })));
 }
 
-function fieldHtml(f, v) {
-  const id = 'f_' + f.k, val = v == null ? '' : v;
-  const lbl = `<label for="${id}">${esc(f.l)}${f.req ? ' *' : ''}</label>`;
-  const hint = f.hint ? `<span class="hint">${esc(f.hint)}</span>` : '';
-  if (f.t === 'textarea') return `<div class="fld">${lbl}<textarea id="${id}">${esc(val)}</textarea></div>`;
-  if (f.t === 'select') return `<div class="fld">${lbl}<select id="${id}"><option value="">Select</option>${(f.opts || []).map(o => `<option${o === val ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select></div>`;
-  if (f.t === 'date') return `<div class="fld">${lbl}<input id="${id}" type="date" value="${esc(val)}"></div>`;
-  if (f.t === 'lead') return `<div class="fld">${lbl}<input id="${id}" type="text" list="leadList" value="${esc(val)}" placeholder="Lead name or https://app.togile.com/leads/...">${hint}</div>`;
-  if (f.t === 'modules') {
-    const sel = new Set(Array.isArray(val) ? val : []);
-    const names = S.modules.concat([...sel].filter(m => !S.modules.includes(m)));
-    return `<div class="fld"><span class="lbl">${esc(f.l)}</span>
-      <div class="mod-grid" id="${id}">${names.map((m, i) => `<label><input type="checkbox" value="${esc(m)}"${sel.has(m) ? ' checked' : ''}>${esc(m)}</label>`).join('')}</div>
-      <div class="add-inline"><input id="newModule" type="text" placeholder="Module not listed? Add it here" aria-label="New module name"><button class="btn btn-sm" type="button" id="addModuleBtn">Add module</button></div></div>`;
-  }
-  if (f.t === 'list') {
-    const arr = Array.isArray(val) ? val : [];
-    return `<div class="fld"><span class="lbl">${esc(f.l)}</span><div class="tag-input" id="${id}" data-list>${arr.map(x => `<span class="tag" data-v="${esc(x)}">${esc(x)}<button type="button" aria-label="Remove ${esc(x)}">&times;</button></span>`).join('')}<input id="${id}_in" type="text" placeholder="Add a project" aria-label="Add a project"></div>${hint}</div>`;
-  }
-  return `<div class="fld">${lbl}<input id="${id}" type="text" value="${esc(val)}"></div>`;
-}
-
-function readField(f) {
-  const el = document.getElementById('f_' + f.k);
-  if (f.t === 'modules') return [...el.querySelectorAll('input:checked')].map(i => i.value);
-  if (f.t === 'list') {
-    const out = [...el.querySelectorAll('.tag')].map(t => t.dataset.v);
-    const pend = document.getElementById('f_' + f.k + '_in').value.trim(); if (pend) out.push(pend);
-    return out;
-  }
-  return el.value.trim();
-}
-
-dlgBody.addEventListener('click', e => {
-  const x = e.target.closest('.tag button'); if (x) { x.parentElement.remove(); return; }
-  if (e.target.id === 'addModuleBtn') addModuleFromInput();
-});
-dlgBody.addEventListener('keydown', e => {
-  if (e.key !== 'Enter') return;
-  if (e.target.id === 'newModule') { e.preventDefault(); addModuleFromInput(); }
-  else if (e.target.closest('[data-list]') && e.target.tagName === 'INPUT') {
-    e.preventDefault();
-    const v = e.target.value.trim(); if (!v) return;
-    const tag = document.createElement('span'); tag.className = 'tag'; tag.dataset.v = v;
-    tag.innerHTML = `${esc(v)}<button type="button" aria-label="Remove ${esc(v)}">&times;</button>`;
-    e.target.parentElement.insertBefore(tag, e.target); e.target.value = '';
-  }
-});
-function addModuleFromInput() {
-  const inp = document.getElementById('newModule'); const v = inp.value.trim(); if (!v) return;
-  const grid = document.querySelector('.mod-grid');
-  const existing = [...grid.querySelectorAll('input')].find(i => i.value.toLowerCase() === v.toLowerCase());
-  if (existing) existing.checked = true;
-  else {
-    const l = document.createElement('label'); l.innerHTML = `<input type="checkbox" value="${esc(v)}" checked>${esc(v)}`; grid.appendChild(l);
-    if (!S.modules.includes(v)) { S.modules = S.modules.concat(v); saveDoc('config/modules', { list: S.modules }); }
-  }
-  inp.value = '';
-}
-
-function openRecord(key, rec) {
-  const T = TRACKERS[key], fields = allFields(key), isNew = !rec;
-  openDlg(isNew ? 'Add ' + T.noun : 'Edit ' + T.noun,
-    fields.map(f => fieldHtml(f, rec ? rec[f.k] : '')).join(''),
-    `${isNew ? '' : '<button class="btn btn-danger" type="button" id="delBtn">Delete</button>'}<span class="spacer"></span><button class="btn" type="button" data-act="cancel">Cancel</button><button class="btn btn-primary" type="submit">Save</button>`,
-    async () => {
-      const data = {};
-      fields.forEach(f => { data[f.k] = readField(f); });
-      const miss = fields.find(f => f.req && !data[f.k]);
-      if (miss) { toast(miss.l + ' is required.'); document.getElementById('f_' + miss.k).focus(); return; }
-      const now = new Date().toISOString();
-      const id = rec ? rec.id : uid();
-      const ok = await saveDoc(key + '/' + id, { ...data, createdAt: rec ? rec.createdAt : now, updatedAt: now });
-      if (ok) { closeDlg(); toast('Saved.'); }
+/* modules checklist dialog (opened from a table row) */
+function chipsHtml(arr, cls) { return arr.length ? arr.map(x => `<span class="tag ${cls || ''}">${esc(x)}</span>`).join('') : '<span class="task-empty">None selected</span>'; }
+function openModulePicker(tr) {
+  const sel = new Set(JSON.parse(tr.dataset.modules || '[]'));
+  const names = S.modules.concat([...sel].filter(m => !S.modules.includes(m)));
+  openDlg('Select modules',
+    `<div class="mod-grid" id="modGrid">${names.map(m => `<label><input type="checkbox" value="${esc(m)}"${sel.has(m) ? ' checked' : ''}>${esc(m)}</label>`).join('')}</div>
+     <div class="add-inline"><input id="newModule" type="text" placeholder="Module not listed? Add it here" aria-label="New module name"><button class="btn btn-sm" type="button" id="addModuleBtn">Add module</button></div>`,
+    `<span class="spacer"></span><button class="btn" type="button" data-act="cancel">Cancel</button><button class="btn btn-primary" type="submit">Apply</button>`,
+    () => {
+      const v = [...document.querySelectorAll('#modGrid input:checked')].map(i => i.value);
+      tr.dataset.modules = JSON.stringify(v);
+      const box = tr.querySelector('[data-modchips]'); if (box) box.innerHTML = chipsHtml(v, 'tag-blue');
+      closeDlg();
     });
-  const del = document.getElementById('delBtn');
-  if (del) del.addEventListener('click', () => {
-    dlgFoot.innerHTML = `<span class="hint" style="align-self:center">Delete this ${esc(T.noun)} for everyone?</span><span class="spacer"></span><button class="btn" type="button" data-act="cancel">Keep</button><button class="btn btn-danger" type="button" id="delYes">Delete</button>`;
-    document.getElementById('delYes').addEventListener('click', async () => { if (await deleteDoc(key + '/' + rec.id)) { closeDlg(); toast('Deleted.'); } });
-  });
+  const add = () => {
+    const inp = document.getElementById('newModule'); const v = inp.value.trim(); if (!v) return;
+    const grid = document.getElementById('modGrid');
+    const hit = [...grid.querySelectorAll('input')].find(i => i.value.toLowerCase() === v.toLowerCase());
+    if (hit) hit.checked = true;
+    else {
+      const l = document.createElement('label'); l.innerHTML = `<input type="checkbox" value="${esc(v)}" checked>${esc(v)}`; grid.appendChild(l);
+      S.modules = S.modules.concat(v); saveDoc('config/modules', { list: S.modules });
+    }
+    inp.value = '';
+  };
+  document.getElementById('addModuleBtn').addEventListener('click', add);
+  document.getElementById('newModule').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); add(); } });
 }
 
 function openFieldDlg(key) {
@@ -2367,7 +2324,37 @@ function openFieldDlg(key) {
   show();
 }
 
-/* ---- tracker tables ---- */
+/* ---- tracker tables: an input row sits at the top of every table, and rows edit in place ---- */
+const editing = { poc: null, expcenter: null, impl: null };
+const tableSig = {};
+
+function inputCell(f, v) {
+  const k = esc(f.k), a = `data-k="${k}" aria-label="${esc(f.l)}"`;
+  let h;
+  if (f.t === 'textarea') h = `<textarea ${a} rows="2">${esc(v)}</textarea>`;
+  else if (f.t === 'select') h = `<select ${a}><option value="">Select</option>${(f.opts || []).map(o => `<option${o === v ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select>`;
+  else if (f.t === 'date') h = `<input ${a} type="date" value="${esc(v)}">`;
+  else if (f.t === 'lead') h = `<input ${a} type="text" list="leadList" value="${esc(v)}" placeholder="Lead name or link">`;
+  else if (f.t === 'modules') h = `<div class="chips" data-modchips>${chipsHtml(Array.isArray(v) ? v : [], 'tag-blue')}</div><button class="btn btn-sm" type="button" data-pick>Select modules</button>`;
+  else if (f.t === 'list') h = `<div class="tag-input" data-k="${k}" data-list>${(Array.isArray(v) ? v : []).map(x => `<span class="tag" data-v="${esc(x)}">${esc(x)}<button type="button" aria-label="Remove ${esc(x)}">&times;</button></span>`).join('')}<input type="text" placeholder="Type, press Enter" aria-label="Add ${esc(f.l)}"></div>`;
+  else h = `<input ${a} type="text" value="${esc(v)}" placeholder="${f.req ? 'Required' : ''}">`;
+  return `<td class="in-cell">${h}</td>`;
+}
+
+function collectRow(key, tr) {
+  const data = {};
+  allFields(key).forEach(f => {
+    if (f.t === 'modules') { data[f.k] = JSON.parse(tr.dataset.modules || '[]'); return; }
+    const el = tr.querySelector(`[data-k="${f.k}"]`); if (!el) { data[f.k] = ''; return; }
+    if (f.t === 'list') {
+      const out = [...el.querySelectorAll('.tag')].map(t => t.dataset.v);
+      const p = el.querySelector('input').value.trim(); if (p) out.push(p);
+      data[f.k] = out;
+    } else data[f.k] = el.value.trim();
+  });
+  return data;
+}
+
 function cell(f, rec) {
   const v = rec[f.k];
   if (f.t === 'date') return `<td class="cell-num">${v ? fmtDate(v) : '<span class="task-empty">—</span>'}</td>`;
@@ -2391,25 +2378,83 @@ function cell(f, rec) {
   return `<td>${v ? esc(v) : '<span class="task-empty">—</span>'}</td>`;
 }
 
-function renderTracker(key) {
+function buildTable(key) {
+  const mount = document.getElementById('mount-' + key), fields = allFields(key);
+  const old = mount.querySelector('tr.entry-row');
+  const draft = old ? collectRow(key, old) : {};
+  mount.innerHTML = `<table class="tracker-table"><thead><tr>${fields.map(f => `<th>${esc(f.l)}</th>`).join('')}<th></th></tr></thead>
+    <tbody class="entry"><tr class="entry-row" data-modules="${esc(JSON.stringify(draft.modules || []))}">${fields.map(f => inputCell(f, draft[f.k] || '')).join('')}<td class="cell-actions"><button class="btn btn-primary btn-sm" type="button" data-add>Add</button></td></tr></tbody>
+    <tbody class="rows"></tbody></table>`;
+  tableSig[key] = fields.map(f => f.k).join('|');
+}
+
+function renderRows(key) {
   const fields = allFields(key);
   const q = (document.getElementById('search-' + key).value || '').toLowerCase().trim();
   const rows = S[key].filter(r => !q || JSON.stringify(Object.values(r)).toLowerCase().includes(q));
   document.getElementById('count-' + key).textContent = `${S[key].length} record${S[key].length === 1 ? '' : 's'}`;
-  const head = fields.map(f => `<th>${esc(f.l)}</th>`).join('') + '<th></th>';
-  const body = rows.length
-    ? rows.map(r => `<tr data-id="${esc(r.id)}">${fields.map(f => cell(f, r)).join('')}<td class="cell-actions"><button class="btn btn-sm" type="button" data-edit="${esc(r.id)}">Edit</button></td></tr>`).join('')
-    : `<tr class="empty-row"><td colspan="${fields.length + 1}">${S[key].length ? 'No records match your search.' : `Nothing here yet. Use "+ Add ${esc(TRACKERS[key].noun)}" to create the first one.`}</td></tr>`;
-  document.getElementById('mount-' + key).innerHTML = `<table class="tracker-table"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+  const body = rows.length ? rows.map(r => {
+    if (r.id === editing[key]) {
+      return `<tr class="edit-row" data-id="${esc(r.id)}" data-modules="${esc(JSON.stringify(r.modules || []))}">${fields.map(f => inputCell(f, r[f.k] || '')).join('')}<td class="cell-actions"><button class="btn btn-primary btn-sm" type="button" data-save>Save</button> <button class="btn btn-sm" type="button" data-cancel>Cancel</button> <button class="btn btn-danger btn-sm" type="button" data-del>Delete</button></td></tr>`;
+    }
+    return `<tr data-id="${esc(r.id)}">${fields.map(f => cell(f, r)).join('')}<td class="cell-actions"><button class="btn btn-sm" type="button" data-edit>Edit</button></td></tr>`;
+  }).join('') : `<tr class="empty-row"><td colspan="${fields.length + 1}">${S[key].length ? 'No records match your search.' : 'No records yet. Fill the first row above and press Add.'}</td></tr>`;
+  document.getElementById('mount-' + key).querySelector('tbody.rows').innerHTML = body;
+}
+
+function renderTracker(key) {
+  const sig = allFields(key).map(f => f.k).join('|');
+  if (tableSig[key] !== sig) buildTable(key);
+  if (editing[key] && S[key].some(r => r.id === editing[key])) return;   // keep the row being edited intact
+  editing[key] = null;
+  renderRows(key);
+}
+
+async function addFromEntry(key, tr) {
+  const fields = allFields(key), data = collectRow(key, tr);
+  const miss = fields.find(f => f.req && !data[f.k]);
+  if (miss) { toast(miss.l + ' is required.'); const el = tr.querySelector(`[data-k="${miss.k}"]`); if (el) el.focus(); return; }
+  const now = new Date().toISOString();
+  if (await saveDoc(key + '/' + uid(), { ...data, createdAt: now, updatedAt: now })) { tableSig[key] = ''; buildTable(key); renderRows(key); toast('Added.'); }
 }
 
 Object.keys(TRACKERS).forEach(key => {
-  document.getElementById('add-' + key).addEventListener('click', () => openRecord(key, null));
+  const mount = document.getElementById('mount-' + key);
   document.getElementById('addfield-' + key).addEventListener('click', () => openFieldDlg(key));
-  document.getElementById('search-' + key).addEventListener('input', () => renderTracker(key));
-  document.getElementById('mount-' + key).addEventListener('click', e => {
-    const b = e.target.closest('[data-edit]'); if (!b) return;
-    const rec = S[key].find(r => r.id === b.dataset.edit); if (rec) openRecord(key, rec);
+  document.getElementById('search-' + key).addEventListener('input', () => { if (!editing[key]) renderRows(key); });
+  mount.addEventListener('click', async e => {
+    const tr = e.target.closest('tr'); if (!tr) return;
+    const x = e.target.closest('.tag button');
+    if (x && x.closest('[data-list]')) { x.parentElement.remove(); return; }
+    if (e.target.closest('[data-pick]')) { openModulePicker(tr); return; }
+    if (e.target.closest('[data-add]')) { addFromEntry(key, tr); return; }
+    if (e.target.closest('[data-edit]')) { editing[key] = tr.dataset.id; renderRows(key); return; }
+    if (e.target.closest('[data-cancel]')) { editing[key] = null; renderRows(key); return; }
+    if (e.target.closest('[data-save]')) {
+      const rec = S[key].find(r => r.id === tr.dataset.id), fields = allFields(key), data = collectRow(key, tr);
+      const miss = fields.find(f => f.req && !data[f.k]);
+      if (miss) { toast(miss.l + ' is required.'); return; }
+      if (await saveDoc(key + '/' + rec.id, { ...data, createdAt: rec.createdAt, updatedAt: new Date().toISOString() })) { editing[key] = null; renderRows(key); toast('Saved.'); }
+      return;
+    }
+    const del = e.target.closest('[data-del]');
+    if (del) {
+      if (del.dataset.sure) { const id = tr.dataset.id; if (await deleteDoc(key + '/' + id)) { editing[key] = null; renderRows(key); toast('Deleted.'); } }
+      else { del.dataset.sure = '1'; del.textContent = 'Confirm delete'; }
+    }
+  });
+  mount.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    const inp = e.target;
+    if (inp.tagName === 'INPUT' && inp.closest('[data-list]')) {
+      e.preventDefault();
+      const v = inp.value.trim(); if (!v) return;
+      const tag = document.createElement('span'); tag.className = 'tag'; tag.dataset.v = v;
+      tag.innerHTML = `${esc(v)}<button type="button" aria-label="Remove ${esc(v)}">&times;</button>`;
+      inp.parentElement.insertBefore(tag, inp); inp.value = '';
+    } else if (inp.tagName === 'INPUT') {
+      const tr = inp.closest('tr.entry-row'); if (tr) { e.preventDefault(); addFromEntry(key, tr); }
+    }
   });
   renderTracker(key);
 });
