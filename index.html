@@ -1077,15 +1077,28 @@
   .prod-tiles-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   @media (max-width: 1100px) { .prod-tiles-6 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   @media (max-width: 600px) { .prod-tiles-6 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  body.locked .page { display: none; }
+  .login-overlay { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .login-overlay[hidden] { display: none; }
+  .login-card { background: var(--surface); border: 1px solid var(--border-normal); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 28px; width: 100%; max-width: 380px; display: grid; gap: 14px; }
+  .login-card h2 { margin: 0; font-size: 20px; }
+  .login-card p { margin: 0; color: var(--text-muted); font-size: 13px; }
+  .login-card .login-msg { min-height: 18px; color: var(--stage-lost); }
+  .top-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .user-box { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-subtle); }
+  .user-box[hidden] { display: none; }
 </style>
 
 <div class="page">
 
   <div class="topbar">
     <h1 class="page-title">Inncircles Business Tracker</h1>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
+    <div class="top-right">
+      <span class="user-box" id="userBox" hidden><span id="userEmail"></span><button class="btn btn-sm" id="signOutBtn" type="button">Sign out</button></span>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
       <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
     </button>
+    </div>
   </div>
 
   <div class="local-banner" id="localBanner" hidden>The shared database could not be reached, so entries made here stay on this device. Reload to try again.</div>
@@ -1367,6 +1380,16 @@
 
 </div>
 
+<div class="login-overlay" id="loginOverlay" hidden>
+  <form class="login-card" id="loginForm">
+    <h2>Inncircles Business Tracker</h2>
+    <p>Sign in with your Inncircles email.</p>
+    <div class="fld"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="username" required></div>
+    <div class="fld"><label for="loginPass">Password</label><input id="loginPass" type="password" autocomplete="current-password" required></div>
+    <button class="btn btn-primary" type="submit">Sign in</button>
+    <p class="login-msg" id="loginMsg" role="status"></p>
+  </form>
+</div>
 <div class="dlg-back" id="dlgBack" hidden>
   <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
     <div class="dlg-head"><h3 id="dlgTitle"></h3><button class="dlg-x" id="dlgX" type="button" aria-label="Close">&times;</button></div>
@@ -2352,45 +2375,71 @@ async function connectFirebase() {
   try {
     await loadScript(FB_BASE + 'firebase-app-compat.min.js');
     await loadScript(FB_BASE + 'firebase-firestore-compat.min.js');
+    await loadScript(FB_BASE + 'firebase-auth-compat.min.js');
     firebase.initializeApp(FIREBASE_CONFIG);
-    const fs = firebase.firestore();
-    // first visitor loads the starting Experience Center projects; fixed ids make this safe if two visitors race
-    const flag = await fs.doc('config/seeded').get();
-    if (!flag.exists) {
-      const batch = fs.batch();
-      Object.entries(EXP_SEED).forEach(([id, d]) => batch.set(fs.doc('expcenter/' + id), d));
-      batch.set(fs.doc('config/fields_expcenter'), { fields: EXP_FIELDS });
-      batch.set(fs.doc('config/seeded'), { at: new Date().toISOString() });
-      await batch.commit();
-    }
-    const f2 = await fs.doc('config/seeded_impl3').get();
-    if (!f2.exists) {
-      const b2 = fs.batch();
-      Object.entries(IMPL_SEED).forEach(([id, d]) => b2.set(fs.doc('impl/' + id), d));
-      b2.set(fs.doc('config/seeded_impl3'), { at: new Date().toISOString() });
-      await b2.commit();
-    }
-    return fs;
+    return { fs: firebase.firestore(), auth: firebase.auth() };
   } catch (e) { console.warn('Firebase unavailable', e); return null; }
 }
+// first signed-in visitor loads the starting records; fixed ids make this safe if two people race
+async function seedIfNeeded(fs) {
+  const flag = await fs.doc('config/seeded').get();
+  if (!flag.exists) {
+    const batch = fs.batch();
+    Object.entries(EXP_SEED).forEach(([id, d]) => batch.set(fs.doc('expcenter/' + id), d));
+    batch.set(fs.doc('config/fields_expcenter'), { fields: EXP_FIELDS });
+    batch.set(fs.doc('config/seeded'), { at: new Date().toISOString() });
+    await batch.commit();
+  }
+  const f2 = await fs.doc('config/seeded_impl3').get();
+  if (!f2.exists) {
+    const b2 = fs.batch();
+    Object.entries(IMPL_SEED).forEach(([id, d]) => b2.set(fs.doc('impl/' + id), d));
+    b2.set(fs.doc('config/seeded_impl3'), { at: new Date().toISOString() });
+    await b2.commit();
+  }
+}
 
+function startShared(db, onDenied) {
+  Store.db = db; Store.shared = true;
+  document.getElementById('syncNote').textContent = 'Shared: everyone signed in sees changes live';
+  [...TRACKER_KEYS, 'config'].forEach(c => {
+    db.collection(c).onSnapshot(snap => ingest(c, snap.docs.map(d => ({ id: d.id, data: d.data() }))), e => {
+      if (e && e.code === 'permission-denied' && onDenied) onDenied(); else toast('Live updates stopped. Reload the page.');
+    });
+  });
+}
+function gateWithLogin(fb) {
+  const ov = document.getElementById('loginOverlay'), msg = document.getElementById('loginMsg');
+  const show = text => { ov.hidden = false; document.body.classList.add('locked'); msg.textContent = text || ''; };
+  let started = false;
+  const denied = () => { fb.auth.signOut(); show('This account is not on the access list. Ask the admin to add it.'); };
+  document.getElementById('loginForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const em = document.getElementById('loginEmail').value.trim(), pw = document.getElementById('loginPass').value;
+    msg.textContent = 'Signing in...';
+    fb.auth.signInWithEmailAndPassword(em, pw).catch(err => {
+      msg.textContent = /network/i.test(err.code || '') ? 'Could not reach the sign-in service. Check your connection.' : 'Wrong email or password.';
+    });
+  });
+  document.getElementById('signOutBtn').addEventListener('click', () => fb.auth.signOut().then(() => location.reload()));
+  fb.auth.onAuthStateChanged(async user => {
+    if (!user) { document.getElementById('userBox').hidden = true; show(''); return; }
+    try { await seedIfNeeded(fb.fs); } catch (e) { if (e && e.code === 'permission-denied') { denied(); return; } }
+    ov.hidden = true; document.body.classList.remove('locked');
+    document.getElementById('userEmail').textContent = user.email; document.getElementById('userBox').hidden = false;
+    if (!started) { started = true; startShared(fb.fs, denied); }
+  });
+}
 async function initStore() {
-  applyLocal();   // show the built-in starting records right away; the shared database replaces them once connected
+  applyLocal();   // show the built-in starting records right away
   let db = null;
   try { db = window.claude && window.claude.use ? await window.claude.use('db') : null; } catch (e) { db = null; }
-  const note = document.getElementById('syncNote');
-  if (!db) db = await Promise.race([connectFirebase(), new Promise(r => setTimeout(() => r(null), 7000))]);
-  if (db) {
-    Store.db = db; Store.shared = true;
-    note.textContent = 'Shared: everyone with the link sees changes live';
-    [...TRACKER_KEYS, 'config'].forEach(c => {
-      db.collection(c).onSnapshot(snap => ingest(c, snap.docs.map(d => ({ id: d.id, data: d.data() }))), e => toast('Live updates stopped. Reload the page.'));
-    });
-  } else {
-    note.textContent = 'Could not reach the shared database. Changes are saved on this device only.';
-    const bn = document.getElementById('localBanner'); if (bn) bn.hidden = false;
-    applyLocal();
-  }
+  if (db) { startShared(db); return; }
+  const fb = await Promise.race([connectFirebase(), new Promise(r => setTimeout(() => r(null), 7000))]);
+  if (fb) { gateWithLogin(fb); return; }
+  document.getElementById('syncNote').textContent = 'Could not reach the shared database. Changes are saved on this device only.';
+  const bn = document.getElementById('localBanner'); if (bn) bn.hidden = false;
+  applyLocal();
 }
 
 /* ---- dialog ---- */
