@@ -2408,7 +2408,9 @@ function startShared(db, onDenied) {
     });
   });
 }
-function gateWithLogin(fb) {
+async function gateWithLogin(fb) {
+  // nobody stays signed in: every time the link is opened (or reloaded) the person must sign in again
+  try { await fb.auth.setPersistence(firebase.auth.Auth.Persistence.NONE); await fb.auth.signOut(); } catch (e) {}
   const ov = document.getElementById('loginOverlay'), msg = document.getElementById('loginMsg');
   const show = text => { ov.hidden = false; document.body.classList.add('locked'); msg.textContent = text || ''; };
   let started = false;
