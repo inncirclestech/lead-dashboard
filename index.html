@@ -2253,7 +2253,8 @@ const TRACKERS = {
       { k: 'owner', l: 'Owner', t: 'owner' },
       { k: 'dueDate', l: 'Due Date', t: 'date' },
       { k: 'module', l: 'Module', t: 'module' },
-      { k: 'project', l: 'Project', t: 'project' }
+      { k: 'project', l: 'Project', t: 'project' },
+      { k: 'link', l: 'Link (Canva link or any other link)', t: 'url', linkText: 'Open link', hint: 'Paste the Canva link or any other link for this asset.' }
     ]
   },
   assetsdel: {
@@ -2264,7 +2265,8 @@ const TRACKERS = {
       { k: 'owner', l: 'Owner', t: 'owner' },
       { k: 'dueDate', l: 'Due Date', t: 'date' },
       { k: 'module', l: 'Module', t: 'module' },
-      { k: 'project', l: 'Project', t: 'project' }
+      { k: 'project', l: 'Project', t: 'project' },
+      { k: 'link', l: 'Link (Canva link or any other link)', t: 'url', linkText: 'Open link', hint: 'Paste the Canva link or any other link for this asset.' }
     ]
   }
 };
@@ -2595,7 +2597,7 @@ function cell(f, rec) {
   const v = rec[f.k];
   if (f.t === 'date') return `<td class="cell-num">${v ? fmtDate(v) : '<span class="task-empty">—</span>'}</td>`;
   if (f.t === 'textarea') return `<td class="cell-comment">${v ? esc(v) : '<span class="task-empty">—</span>'}</td>`;
-  if (f.t === 'url') return v ? `<td><a class="lead-link" href="${esc(v)}" target="_blank" rel="noopener">Open tracker &#8599;</a></td>` : '<td><span class="task-empty">—</span></td>';
+  if (f.t === 'url') return v ? `<td><a class="lead-link" href="${esc(v)}" target="_blank" rel="noopener">${esc(f.linkText || 'Open tracker')} &#8599;</a></td>` : '<td><span class="task-empty">—</span></td>';
   if (f.t === 'lead') {
     if (!v) return '<td><span class="task-empty">—</span></td>';
     return /^https?:\/\//i.test(v) ? `<td><a class="lead-link" href="${esc(v)}" target="_blank" rel="noopener">Open lead &#8599;</a></td>` : `<td><span class="tag tag-teal">${esc(v)}</span></td>`;
