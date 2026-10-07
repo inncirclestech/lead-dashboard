@@ -1102,6 +1102,7 @@
     <button class="subnav-btn is-active" data-subpanel="bd-leads">Leads</button>
     <button class="subnav-btn" data-subpanel="bd-poc">POCs</button>
     <button class="subnav-btn" data-subpanel="bd-expcenter">Experience Center</button>
+    <button class="subnav-btn" data-subpanel="bd-assets">Assets</button>
   </div>
 
   <div class="subpanel is-active" id="bd-leads">
@@ -1271,6 +1272,19 @@
     </div>
   </div>
 
+  <div class="subpanel" id="bd-assets">
+    <div class="tracker-table-wrap">
+      <div class="tr-head">
+        <div class="tr-title"><h2>Assets</h2><span class="count-tag" id="count-assetsbd">0 records</span></div>
+        <div class="tr-tools">
+          <input class="tr-search" id="search-assetsbd" type="search" placeholder="Search assets" aria-label="Search assets">
+          <button class="btn btn-ghost" id="addfield-assetsbd" type="button">+ Add asset</button>
+        </div>
+      </div>
+      <div class="table-scroll" id="mount-assetsbd"></div>
+    </div>
+  </div>
+
   </div><!-- /panel-bd -->
 
   <div class="module-panel" id="panel-delivery">
@@ -1278,6 +1292,7 @@
   <div class="subnav" id="deliverySubnav">
     <button class="subnav-btn is-active" data-subpanel="delivery-implementation">Implementation</button>
     <button class="subnav-btn" data-subpanel="delivery-support">Support</button>
+    <button class="subnav-btn" data-subpanel="delivery-assets">Assets</button>
   </div>
 
   <div class="subpanel is-active" id="delivery-implementation">
@@ -1311,6 +1326,19 @@
       <div class="prod-tiles prod-tiles-6" id="supTiles"></div>
       <div class="table-scroll" id="mount-support"></div>
       <p class="table-note">Open and closed tickets from Jira, grouped by client. Closing rate is closed tickets divided by all tickets raised. Arena APAC Delivery uses the Client Name field, Black Squad Project uses Found In, and Arena Support (US) uses the customer organisation or the reporter's email company; tickets with no company are under Unmapped. Select a client to see its tickets.</p>
+    </div>
+  </div>
+
+  <div class="subpanel" id="delivery-assets">
+    <div class="tracker-table-wrap">
+      <div class="tr-head">
+        <div class="tr-title"><h2>Assets</h2><span class="count-tag" id="count-assetsdel">0 records</span></div>
+        <div class="tr-tools">
+          <input class="tr-search" id="search-assetsdel" type="search" placeholder="Search assets" aria-label="Search assets">
+          <button class="btn btn-ghost" id="addfield-assetsdel" type="button">+ Add asset</button>
+        </div>
+      </div>
+      <div class="table-scroll" id="mount-assetsdel"></div>
     </div>
   </div>
 
@@ -2180,15 +2208,17 @@ const TRACKERS = {
   poc: {
     noun: 'POC',
     fields: [
-      { k: 'projectName', l: 'Project Name', t: 'text', req: true, main: true },
-      { k: 'clientName', l: 'Client Name', t: 'text', req: true },
+      { k: 'clientName', l: 'Client Name', t: 'text', req: true, main: true },
+      { k: 'pocModules', l: 'POC Modules', t: 'modules' },
       { k: 'owner', l: 'Owner', t: 'owner' },
-      { k: 'projectType', l: 'Type of Project', t: 'text' },
+      { k: 'team', l: 'Team', t: 'people' },
+      { k: 'handoverDate', l: 'Handover Date', t: 'date' },
+      { k: 'pocCompletionDate', l: 'POC Completion Date', t: 'date' },
+      { k: 'projectName', l: 'Project Name', t: 'text', req: true },
+      { k: 'projectType', l: 'Type of Construction', t: 'text' },
       { k: 'usage', l: 'Demo / Usage', t: 'select', opts: ['Demo', 'Usage'] },
       { k: 'dataReceivedDate', l: 'Data Received Date', t: 'date' },
-      { k: 'handoverDate', l: 'Handover Date', t: 'date' },
-      { k: 'comment', l: 'Comment', t: 'textarea' },
-      { k: 'leadLink', l: 'Link to Lead', t: 'lead', hint: 'Pick a lead from the dashboard, or paste a Togile link.' }
+      { k: 'comment', l: 'Comment', t: 'textarea' }
     ]
   },
   expcenter: {
@@ -2214,10 +2244,33 @@ const TRACKERS = {
       { k: 'trackerLink', l: 'Client Tracker', t: 'url', hint: 'Link to the shared tracker sheet for this client.' },
       { k: 'trackerAsOf', l: 'Tracker As At', t: 'date' }
     ]
+  },
+  assetsbd: {
+    noun: 'asset',
+    fields: [
+      { k: 'assetName', l: 'Asset Name', t: 'text', req: true, main: true },
+      { k: 'description', l: 'Description', t: 'textarea' },
+      { k: 'owner', l: 'Owner', t: 'owner' },
+      { k: 'dueDate', l: 'Due Date', t: 'date' },
+      { k: 'module', l: 'Module', t: 'module' },
+      { k: 'project', l: 'Project', t: 'project' }
+    ]
+  },
+  assetsdel: {
+    noun: 'asset',
+    fields: [
+      { k: 'assetName', l: 'Asset Name', t: 'text', req: true, main: true },
+      { k: 'description', l: 'Description', t: 'textarea' },
+      { k: 'owner', l: 'Owner', t: 'owner' },
+      { k: 'dueDate', l: 'Due Date', t: 'date' },
+      { k: 'module', l: 'Module', t: 'module' },
+      { k: 'project', l: 'Project', t: 'project' }
+    ]
   }
 };
 
-const S = { poc: [], expcenter: [], impl: [], cfg: { poc: [], expcenter: [], impl: [] }, modules: DEFAULT_MODULES.slice(), owners: DEFAULT_OWNERS.slice(), plans: {} };
+const TRACKER_KEYS = Object.keys(TRACKERS);
+const S = { poc: [], expcenter: [], impl: [], assetsbd: [], assetsdel: [], projects: [], cfg: { poc: [], expcenter: [], impl: [], assetsbd: [], assetsdel: [] }, modules: DEFAULT_MODULES.slice(), owners: DEFAULT_OWNERS.slice(), plans: {} };
 const Store = { db: null, shared: false };
 const LS = 'inncircles-tracker-v1';
 
@@ -2261,7 +2314,7 @@ async function deleteDoc(path) {
 }
 
 function ingest(coll, docs) {
-  if (['poc', 'expcenter', 'impl'].includes(coll)) {
+  if (TRACKER_KEYS.includes(coll)) {
     S[coll] = docs.map(d => ({ id: d.id, ...d.data })).sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
     renderTracker(coll);
   } else if (coll === 'config') {
@@ -2269,15 +2322,16 @@ function ingest(coll, docs) {
       if (d.id.startsWith('fields_')) S.cfg[d.id.slice(7)] = d.data.fields || [];
       else if (d.id === 'modules') S.modules = d.data.list && d.data.list.length ? d.data.list : DEFAULT_MODULES.slice();
       else if (d.id === 'owners') S.owners = d.data.list && d.data.list.length ? d.data.list : DEFAULT_OWNERS.slice();
+      else if (d.id === 'projects') S.projects = d.data.list || [];
       else if (d.id === 'plans') S.plans = d.data.map || {};
     });
-    ['poc', 'expcenter', 'impl'].forEach(renderTracker);
+    TRACKER_KEYS.forEach(renderTracker);
     renderProduct();
   }
 }
 function applyLocal() {
   const o = lsData();
-  ['poc', 'expcenter', 'impl', 'config'].forEach(c => ingest(c, Object.entries(o[c] || {}).map(([id, data]) => ({ id, data }))));
+  [...TRACKER_KEYS, 'config'].forEach(c => ingest(c, Object.entries(o[c] || {}).map(([id, data]) => ({ id, data }))));
 }
 
 const FIREBASE_CONFIG = {
@@ -2327,7 +2381,7 @@ async function initStore() {
   if (db) {
     Store.db = db; Store.shared = true;
     note.textContent = 'Shared: everyone with the link sees changes live';
-    ['poc', 'expcenter', 'impl', 'config'].forEach(c => {
+    [...TRACKER_KEYS, 'config'].forEach(c => {
       db.collection(c).onSnapshot(snap => ingest(c, snap.docs.map(d => ({ id: d.id, data: d.data() }))), e => toast('Live updates stopped. Reload the page.'));
     });
   } else {
@@ -2362,6 +2416,13 @@ function allFields(key) {
 }
 
 /* ---- record dialog (opened by "+ Add field" and by Edit on a row) ---- */
+function allProjects() {
+  const set = new Set(S.projects);
+  S.expcenter.forEach(r => r.projectName && set.add(String(r.projectName).trim()));
+  S.poc.forEach(r => r.projectName && set.add(String(r.projectName).trim()));
+  S.impl.forEach(r => (Array.isArray(r.projects) ? r.projects : []).forEach(p => p && set.add(String(p).trim())));
+  return [...set].filter(Boolean).sort((a, b) => a.localeCompare(b));
+}
 function fieldHtml(f, v) {
   const id = 'f_' + f.k, val = v == null ? '' : v;
   const lbl = `<label for="${id}">${esc(f.l)}${f.req ? ' *' : ''}</label>`;
@@ -2369,6 +2430,23 @@ function fieldHtml(f, v) {
   if (f.t === 'textarea') return `<div class="fld">${lbl}<textarea id="${id}">${esc(val)}</textarea></div>`;
   if (f.t === 'select') return `<div class="fld">${lbl}<select id="${id}"><option value="">Select</option>${(f.opts || []).map(o => `<option${o === val ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select></div>`;
   if (f.t === 'date') return `<div class="fld">${lbl}<input id="${id}" type="date" value="${esc(val)}"></div>`;
+  if (f.t === 'module') {
+    const names = S.modules.concat(val && !S.modules.includes(val) ? [val] : []);
+    return `<div class="fld">${lbl}<select id="${id}"><option value="">Select a module</option>${names.map(o => `<option${o === val ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select>
+      <div class="add-inline"><input id="newModuleSel" type="text" placeholder="Module not listed? Add it here" aria-label="New module name"><button class="btn btn-sm" type="button" id="addModuleSelBtn">Add to list</button></div></div>`;
+  }
+  if (f.t === 'project') {
+    const names = allProjects().concat(val && !allProjects().includes(val) ? [val] : []);
+    return `<div class="fld">${lbl}<select id="${id}"><option value="">Select a project</option>${names.map(o => `<option${o === val ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select>
+      <div class="add-inline"><input id="newProject" type="text" placeholder="Project not listed? Add it here" aria-label="New project name"><button class="btn btn-sm" type="button" id="addProjectBtn">Add to list</button></div></div>`;
+  }
+  if (f.t === 'people') {
+    const sel = new Set(Array.isArray(val) ? val : []);
+    const names = S.owners.concat([...sel].filter(m => !S.owners.includes(m)));
+    return `<div class="fld"><span class="lbl">${esc(f.l)}</span>
+      <div class="mod-grid" id="${id}">${names.map(m => `<label><input type="checkbox" value="${esc(m)}"${sel.has(m) ? ' checked' : ''}>${esc(m)}</label>`).join('')}</div>
+      <div class="add-inline"><input id="newPerson" type="text" placeholder="Person not listed? Add a name" aria-label="New person name"><button class="btn btn-sm" type="button" id="addPersonBtn">Add to list</button></div></div>`;
+  }
   if (f.t === 'owner') {
     const names = S.owners.concat(val && !S.owners.includes(val) ? [val] : []);
     return `<div class="fld">${lbl}<select id="${id}"><option value="">Select an owner</option>${names.map(o => `<option${o === val ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select>
@@ -2391,7 +2469,7 @@ function fieldHtml(f, v) {
 }
 function readField(f) {
   const el = document.getElementById('f_' + f.k);
-  if (f.t === 'modules') return [...el.querySelectorAll('input:checked')].map(i => i.value);
+  if (f.t === 'modules' || f.t === 'people') return [...el.querySelectorAll('input:checked')].map(i => i.value);
   if (f.t === 'list') {
     const out = [...el.querySelectorAll('.tag')].map(t => t.dataset.v);
     const p = document.getElementById('f_' + f.k + '_in').value.trim(); if (p) out.push(p);
@@ -2402,13 +2480,18 @@ function readField(f) {
 dlgBody.addEventListener('click', e => {
   const x = e.target.closest('.tag button'); if (x) { x.parentElement.remove(); return; }
   if (e.target.id === 'addModuleBtn') addModuleFromInput();
-  if (e.target.id === 'addOwnerBtn') addOwnerFromInput();
+  if (e.target.id === 'addOwnerBtn') addPersonFromInput('newOwner');
+  if (e.target.id === 'addPersonBtn') addPersonFromInput('newPerson');
+  if (e.target.id === 'addModuleSelBtn') addModuleSel();
+  if (e.target.id === 'addProjectBtn') addProjectToList();
   if (e.target.closest('[data-newfield]')) { const k = e.target.closest('[data-newfield]').dataset.newfield; closeDlg(); openFieldDlg(k); }
 });
 dlgBody.addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
   if (e.target.id === 'newModule') { e.preventDefault(); addModuleFromInput(); }
-  else if (e.target.id === 'newOwner') { e.preventDefault(); addOwnerFromInput(); }
+  else if (e.target.id === 'newOwner' || e.target.id === 'newPerson') { e.preventDefault(); addPersonFromInput(e.target.id); }
+  else if (e.target.id === 'newModuleSel') { e.preventDefault(); addModuleSel(); }
+  else if (e.target.id === 'newProject') { e.preventDefault(); addProjectToList(); }
   else if (e.target.closest('[data-list]') && e.target.tagName === 'INPUT') {
     e.preventDefault();
     const v = e.target.value.trim(); if (!v) return;
@@ -2417,19 +2500,40 @@ dlgBody.addEventListener('keydown', e => {
     e.target.parentElement.insertBefore(tag, e.target); e.target.value = '';
   }
 });
-function addOwnerFromInput() {
-  const inp = document.getElementById('newOwner'), v = inp.value.trim(); if (!v) return;
+function addPersonFromInput(inputId) {
+  const inp = document.getElementById(inputId), v = inp.value.trim(); if (!v) return;
+  if (!S.owners.some(o => o.toLowerCase() === v.toLowerCase())) { S.owners = S.owners.concat(v); saveDoc('config/owners', { list: S.owners }); }
+  const name = S.owners.find(o => o.toLowerCase() === v.toLowerCase());
   const sel = document.getElementById('f_owner');
-  let opt = [...sel.options].find(o => o.value.toLowerCase() === v.toLowerCase());
-  if (!opt) {
-    opt = document.createElement('option'); opt.textContent = v; sel.appendChild(opt);
-    S.owners = S.owners.concat(v); saveDoc('config/owners', { list: S.owners });
+  if (sel) { if (![...sel.options].some(o => o.value === name)) { const op = document.createElement('option'); op.textContent = name; sel.appendChild(op); } if (inputId === 'newOwner') sel.value = name; }
+  const grid = document.getElementById('f_team');
+  if (grid) {
+    let cb = [...grid.querySelectorAll('input')].find(i => i.value === name);
+    if (!cb) { const l = document.createElement('label'); l.innerHTML = `<input type="checkbox" value="${esc(name)}">${esc(name)}`; grid.appendChild(l); cb = l.querySelector('input'); }
+    if (inputId === 'newPerson') cb.checked = true;
   }
-  sel.value = opt.value; inp.value = '';
+  inp.value = '';
+}
+function addModuleSel() {
+  const inp = document.getElementById('newModuleSel'), v = inp.value.trim(); if (!v) return;
+  if (!S.modules.some(m => m.toLowerCase() === v.toLowerCase())) { S.modules = S.modules.concat(v); saveDoc('config/modules', { list: S.modules }); }
+  const name = S.modules.find(m => m.toLowerCase() === v.toLowerCase());
+  const sel = document.getElementById('f_module');
+  if (![...sel.options].some(o => o.value === name)) { const op = document.createElement('option'); op.textContent = name; sel.appendChild(op); }
+  sel.value = name; inp.value = '';
+}
+function addProjectToList() {
+  const inp = document.getElementById('newProject'), v = inp.value.trim(); if (!v) return;
+  const have = allProjects().find(p => p.toLowerCase() === v.toLowerCase());
+  const name = have || v;
+  if (!have) { S.projects = S.projects.concat(v); saveDoc('config/projects', { list: S.projects }); }
+  const sel = document.getElementById('f_project');
+  if (![...sel.options].some(o => o.value === name)) { const op = document.createElement('option'); op.textContent = name; sel.appendChild(op); }
+  sel.value = name; inp.value = '';
 }
 function addModuleFromInput() {
   const inp = document.getElementById('newModule'); const v = inp.value.trim(); if (!v) return;
-  const grid = document.querySelector('.mod-grid');
+  const grid = inp.closest('.fld').querySelector('.mod-grid');
   const hit = [...grid.querySelectorAll('input')].find(i => i.value.toLowerCase() === v.toLowerCase());
   if (hit) hit.checked = true;
   else {
@@ -2496,10 +2600,11 @@ function cell(f, rec) {
     if (!v) return '<td><span class="task-empty">—</span></td>';
     return /^https?:\/\//i.test(v) ? `<td><a class="lead-link" href="${esc(v)}" target="_blank" rel="noopener">Open lead &#8599;</a></td>` : `<td><span class="tag tag-teal">${esc(v)}</span></td>`;
   }
-  if (f.t === 'modules' || f.t === 'list') {
+  if (f.t === 'module' || f.t === 'project') return `<td>${v ? `<span class="tag${f.t === 'module' ? ' tag-blue' : ''}">${esc(v)}</span>` : '<span class="task-empty">—</span>'}</td>`;
+  if (f.t === 'modules' || f.t === 'list' || f.t === 'people') {
     const arr = Array.isArray(v) ? v : [];
     if (!arr.length) return '<td><span class="task-empty">—</span></td>';
-    return `<td><div class="chips">${arr.map(x => `<span class="tag${f.t === 'modules' ? ' tag-blue' : ''}">${esc(x)}</span>`).join('')}</div></td>`;
+    return `<td><div class="chips">${arr.map(x => `<span class="tag${f.t === 'modules' ? ' tag-blue' : f.t === 'people' ? ' tag-teal' : ''}">${esc(x)}</span>`).join('')}</div></td>`;
   }
   if (f.stage) {
     const i = IMPL_STAGES.indexOf(v);
