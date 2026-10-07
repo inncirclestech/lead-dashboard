@@ -1087,6 +1087,8 @@
   .top-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .user-box { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-subtle); }
   .user-box[hidden] { display: none; }
+  .module-admin { margin-left: auto; }
+  .module-admin[hidden] { display: none; }
 </style>
 
 <div class="page">
@@ -1107,6 +1109,7 @@
     <button class="module-btn is-active" data-module="bd" role="tab" aria-selected="true">Business Development</button>
     <button class="module-btn" data-module="delivery" role="tab" aria-selected="false">Delivery</button>
     <button class="module-btn" data-module="product" role="tab" aria-selected="false">Product</button>
+    <button class="module-btn module-admin" id="adminBtn" data-module="admin" role="tab" aria-selected="false" hidden>Admin</button>
   </div>
 
   <div class="module-panel is-active" id="panel-bd">
@@ -1372,6 +1375,20 @@
       <p class="table-note">Build = new product being developed. Run = enhancements and requests on the live product. Status and progress come from the Product Command Center. The Plan column shows what is coming next, and anyone can overwrite it.</p>
     </div>
   </div><!-- /panel-product -->
+
+  <div class="module-panel" id="panel-admin">
+    <div class="tracker-table-wrap">
+      <div class="tr-head">
+        <div class="tr-title"><h2>Admin: user activity</h2><span class="count-tag">Sessions end automatically after 8 hours</span></div>
+      </div>
+      <div class="prod-tiles" id="adminTiles"></div>
+      <div class="table-scroll" id="adminMount"></div>
+    </div>
+    <div class="tracker-table-wrap" style="margin-top:16px">
+      <div class="tr-head"><div class="tr-title"><h2>Recent sign-ins and sign-outs</h2><span class="count-tag">last 100 events</span></div></div>
+      <div class="table-scroll" id="adminLog"></div>
+    </div>
+  </div><!-- /panel-admin -->
 
   <footer class="page-footer">
     <span>Leads are pulled from Togile &middot; Owner: Aashray Raj Mathur</span>
@@ -2408,30 +2425,107 @@ function startShared(db, onDenied) {
     });
   });
 }
+const ACCESS_USERS = ['info@inncircles.com', 'aashray@inncircles.com', 'abhinav@inncircles.com', 'pvtejesh@inncircles.com', 'akash.p@inncircles.com', 'chandra@inncircles.com', 'ravikiran@inncircles.com', 'prateek.shendre@inncircles.com', 'lasya.g@inncircles.com', 'tracker-master@inncircles.com'];
+const ADMIN_USERS = ['tracker-master@inncircles.com', 'aashray@inncircles.com', 'chandra@inncircles.com'];
+const SESSION_MS = 8 * 60 * 60 * 1000;
+function browserLabel() {
+  const u = navigator.userAgent;
+  const b = /Edg\//.test(u) ? 'Edge' : /Chrome\//.test(u) ? 'Chrome' : /Firefox\//.test(u) ? 'Firefox' : /Safari\//.test(u) ? 'Safari' : 'Browser';
+  const o = /iPhone|iPad/.test(u) ? 'iOS' : /Android/.test(u) ? 'Android' : /Mac OS X/.test(u) ? 'Mac' : /Windows/.test(u) ? 'Windows' : /Linux/.test(u) ? 'Linux' : '';
+  return b + (o ? ' on ' + o : '');
+}
+async function trackAuth(fs, email, type, patch) {
+  try {
+    const now = new Date().toISOString();
+    await fs.collection('auth_log').add({ email, type, at: now, device: browserLabel() });
+    await fs.doc('user_activity/' + email).set({ email, ...(patch || {}) }, { merge: true });
+  } catch (e) { console.warn('activity not recorded', e); }
+}
 async function gateWithLogin(fb) {
-  // nobody stays signed in: every time the link is opened (or reloaded) the person must sign in again
-  try { await fb.auth.setPersistence(firebase.auth.Auth.Persistence.NONE); await fb.auth.signOut(); } catch (e) {}
   const ov = document.getElementById('loginOverlay'), msg = document.getElementById('loginMsg');
   const show = text => { ov.hidden = false; document.body.classList.add('locked'); msg.textContent = text || ''; };
-  let started = false;
-  const denied = () => { fb.auth.signOut(); show('This account is not on the access list. Ask the admin to add it.'); };
+  let started = false, timer = null, beat = null, explicit = false;
+  try { await fb.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL); } catch (e) {}
+  const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+  const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const lsDel = k => { try { localStorage.removeItem(k); } catch (e) {} };
+  const signOutWith = async (user, type, text) => {
+    clearTimeout(timer); clearInterval(beat);
+    if (user) await trackAuth(fb.fs, user.email, type, { online: false, lastLogout: new Date().toISOString(), lastLogoutType: type });
+    lsDel('tracker_login_at');
+    await fb.auth.signOut();
+    if (text) { show(text); } else location.reload();
+  };
+  const denied = () => { lsDel('tracker_login_at'); fb.auth.signOut(); show('This account is not on the access list. Ask the admin to add it.'); };
   document.getElementById('loginForm').addEventListener('submit', e => {
     e.preventDefault();
     const em = document.getElementById('loginEmail').value.trim(), pw = document.getElementById('loginPass').value;
-    msg.textContent = 'Signing in...';
+    msg.textContent = 'Signing in...'; explicit = true;
     fb.auth.signInWithEmailAndPassword(em, pw).catch(err => {
+      explicit = false;
       msg.textContent = /network/i.test(err.code || '') ? 'Could not reach the sign-in service. Check your connection.' : 'Wrong email or password.';
     });
   });
-  document.getElementById('signOutBtn').addEventListener('click', () => fb.auth.signOut().then(() => location.reload()));
+  document.getElementById('signOutBtn').addEventListener('click', () => signOutWith(fb.auth.currentUser, 'logout'));
   fb.auth.onAuthStateChanged(async user => {
-    if (!user) { document.getElementById('userBox').hidden = true; show(''); return; }
+    if (!user) { document.getElementById('userBox').hidden = true; show(msg.textContent === 'Signing in...' ? '' : msg.textContent); return; }
+    // 8-hour session: a fresh sign-in starts the clock, a restored session keeps its original start
+    let at = +lsGet('tracker_login_at') || 0;
+    if (explicit || !at) { at = Date.now(); lsSet('tracker_login_at', String(at)); }
+    const left = at + SESSION_MS - Date.now();
+    if (left <= 0) { await signOutWith(user, 'auto-logout', 'Your 8-hour session ended. Please sign in again.'); return; }
     try { await seedIfNeeded(fb.fs); } catch (e) { if (e && e.code === 'permission-denied') { denied(); return; } }
+    const nowIso = new Date().toISOString();
+    if (explicit) {
+      explicit = false;
+      await trackAuth(fb.fs, user.email, 'login', { online: true, lastLogin: nowIso, lastSeen: nowIso, loginCount: firebase.firestore.FieldValue.increment(1), device: browserLabel() });
+    } else {
+      try { await fb.fs.doc('user_activity/' + user.email).set({ email: user.email, online: true, lastSeen: nowIso }, { merge: true }); } catch (e) {}
+    }
+    clearTimeout(timer); clearInterval(beat);
+    timer = setTimeout(() => signOutWith(fb.auth.currentUser, 'auto-logout', 'Your 8-hour session ended. Please sign in again.'), left);
+    beat = setInterval(() => { fb.fs.doc('user_activity/' + user.email).set({ email: user.email, online: true, lastSeen: new Date().toISOString() }, { merge: true }).catch(() => {}); }, 120000);
     ov.hidden = true; document.body.classList.remove('locked');
     document.getElementById('userEmail').textContent = user.email; document.getElementById('userBox').hidden = false;
-    if (!started) { started = true; startShared(fb.fs, denied); }
+    const isAdmin = ADMIN_USERS.includes(user.email);
+    document.getElementById('adminBtn').hidden = !isAdmin;
+    if (!started) { started = true; startShared(fb.fs, denied); if (isAdmin) startAdmin(fb.fs); }
   });
 }
+let adminUsers = {}, adminLog = [], adminStarted = false;
+function startAdmin(fs) {
+  if (adminStarted) return; adminStarted = true;
+  fs.collection('user_activity').onSnapshot(s => { adminUsers = {}; s.docs.forEach(d => adminUsers[d.id] = d.data()); renderAdmin(); }, () => toast('Admin data could not be read. Check the database rules.'));
+  fs.collection('auth_log').orderBy('at', 'desc').limit(100).onSnapshot(s => { adminLog = s.docs.map(d => d.data()); renderAdmin(); }, () => {});
+}
+const EVT_LABEL = { login: 'Signed in', logout: 'Signed out', 'auto-logout': 'Signed out automatically (8 hours)' };
+function fmtDT(iso) { if (!iso) return '<span class="task-empty">—</span>'; const d = new Date(iso); return isNaN(d) ? '—' : d.toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', hour12: true }); }
+function renderAdmin() {
+  const mount = document.getElementById('adminMount'); if (!mount) return;
+  const now = Date.now();
+  const rows = ACCESS_USERS.map(e => {
+    const u = adminUsers[e] || {};
+    const online = !!u.online && u.lastSeen && now - new Date(u.lastSeen) < 5 * 60 * 1000;
+    const week = adminLog.filter(l => l.email === e && l.type === 'login' && now - new Date(l.at) < 7 * 864e5).length;
+    return { e, u, online, week, role: ADMIN_USERS.includes(e) ? 'Admin' : 'Member' };
+  }).sort((a, b) => (b.online - a.online) || String(b.u.lastLogin || '').localeCompare(String(a.u.lastLogin || '')));
+  const today = new Date().toDateString();
+  const todayLogins = adminLog.filter(l => l.type === 'login' && new Date(l.at).toDateString() === today).length;
+  document.getElementById('adminTiles').innerHTML = [
+    ['Users', rows.length, `${rows.filter(r => r.role === 'Admin').length} admins`],
+    ['Online now', rows.filter(r => r.online).length, 'active in the last 5 minutes'],
+    ['Sign-ins today', todayLogins, 'from the last 100 events'],
+    ['Never signed in', rows.filter(r => !r.u.lastLogin).length, 'no login recorded yet']
+  ].map(([l, v, s]) => `<div class="prod-tile"><span class="l">${l}</span><span class="v">${v}</span><span class="s">${s}</span></div>`).join('');
+  mount.innerHTML = '<table class="tracker-table"><thead><tr><th>User</th><th>Role</th><th>Status</th><th>Last sign-in</th><th>Last sign-out</th><th>Last seen</th><th>Total sign-ins</th><th>Sign-ins this week</th><th>Last device</th></tr></thead><tbody>' +
+    rows.map(r => `<tr><td class="cell-main">${esc(r.e)}</td><td><span class="tag ${r.role === 'Admin' ? 'tag-pink' : 'tag-grey'}">${r.role}</span></td>
+      <td><span class="tag ${r.online ? 'tag-green' : 'tag-grey'}">${r.online ? 'Online' : 'Offline'}</span></td>
+      <td class="cell-num">${fmtDT(r.u.lastLogin)}</td><td class="cell-num">${fmtDT(r.u.lastLogout)}${r.u.lastLogoutType === 'auto-logout' ? ' <span class="hint">(auto)</span>' : ''}</td><td class="cell-num">${fmtDT(r.u.lastSeen)}</td>
+      <td class="cell-num">${r.u.loginCount || 0}</td><td class="cell-num">${r.week}</td><td>${esc(r.u.device) || '<span class="task-empty">—</span>'}</td></tr>`).join('') + '</tbody></table>';
+  document.getElementById('adminLog').innerHTML = '<table class="tracker-table"><thead><tr><th>When</th><th>User</th><th>Event</th><th>Device</th></tr></thead><tbody>' +
+    (adminLog.length ? adminLog.map(l => `<tr><td class="cell-num">${fmtDT(l.at)}</td><td>${esc(l.email)}</td><td><span class="tag ${l.type === 'login' ? 'tag-green' : 'tag-grey'}">${esc(EVT_LABEL[l.type] || l.type)}</span></td><td>${esc(l.device) || '—'}</td></tr>`).join('') : '<tr class="empty-row"><td colspan="4">No activity recorded yet.</td></tr>') + '</tbody></table>';
+}
+setInterval(() => { if (adminStarted) renderAdmin(); }, 60000);
 async function initStore() {
   applyLocal();   // show the built-in starting records right away
   let db = null;
