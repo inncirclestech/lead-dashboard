@@ -2346,18 +2346,26 @@ function toast(msg) {
 }
 
 /* ---- persistence: shared db when the page runs as a Claude artifact, this device otherwise ---- */
+const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej({ code: 'timeout' }), ms))]);
+function saveErrorText(e) {
+  const c = (e && e.code) || '';
+  if (c === 'timeout') return 'Saving is taking too long, so the change may not be saved. Check your connection and try again.';
+  if (c === 'permission-denied' || c === 'invalid_argument') return 'You do not have permission to save this change (' + c + ').';
+  if (c === 'unauthenticated') return 'Your session has ended. Reload the page and sign in again.';
+  return 'Could not save' + (c ? ' (' + c + ')' : '') + '. Try again.';
+}
 async function saveDoc(path, data) {
   if (Store.db) {
-    try { await Store.db.doc(path).set(data); return true; }
-    catch (e) { toast(e && (e.code === 'invalid_argument' || e.code === 'permission-denied') ? 'You do not have permission to save this change.' : 'Could not save. Try again.'); return false; }
+    try { await withTimeout(Store.db.doc(path).set(data), 10000); return true; }
+    catch (e) { console.warn('save failed', path, e); toast(saveErrorText(e)); return false; }
   }
   const o = lsData(); const [c, id] = path.split('/'); (o[c] = o[c] || {})[id] = data; lsWrite(o);
   applyLocal(); return true;
 }
 async function deleteDoc(path) {
   if (Store.db) {
-    try { await Store.db.doc(path).delete(); return true; }
-    catch (e) { toast('Could not delete. You may have view-only access.'); return false; }
+    try { await withTimeout(Store.db.doc(path).delete(), 10000); return true; }
+    catch (e) { console.warn('delete failed', path, e); toast(saveErrorText(e).replace('save', 'delete')); return false; }
   }
   const o = lsData(); const [c, id] = path.split('/'); if (o[c]) delete o[c][id]; lsWrite(o);
   applyLocal(); return true;
