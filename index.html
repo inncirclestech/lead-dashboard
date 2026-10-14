@@ -1118,7 +1118,7 @@
   <div class="topbar">
     <h1 class="page-title">Inncircles Business Tracker</h1>
     <div class="top-right">
-      <span class="user-box" id="userBox" hidden><span id="userEmail"></span><button class="btn btn-sm" id="signOutBtn" type="button">Sign out</button></span>
+      <span class="user-box" id="userBox" hidden><span id="userEmail"></span><button class="btn btn-sm btn-ghost" id="changePwBtn" type="button">Change password</button><button class="btn btn-sm" id="signOutBtn" type="button">Sign out</button></span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
       <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
     </button>
@@ -2691,6 +2691,31 @@ async function gateWithLogin(fb) {
     } catch (e) {
       msg.textContent = /network/i.test(e.code || '') ? 'Could not reach the service. Check your connection.' : /too-many/.test(e.code || '') ? 'Too many attempts. Wait a few minutes and try again.' : /user-not-found/.test(e.code || '') ? 'No account exists for this email yet. Ask the admin to create it.' : 'Could not send the reset email. Try again or ask the admin.';
     }
+  });
+  document.getElementById('changePwBtn').addEventListener('click', () => {
+    const user = fb.auth.currentUser; if (!user) return;
+    openDlg('Change password',
+      `<div class="fld"><label for="cp_old">Current password</label><input id="cp_old" type="password" autocomplete="current-password"></div>
+       <div class="fld"><label for="cp_new">New password</label><input id="cp_new" type="password" autocomplete="new-password"><span class="hint">At least 8 characters.</span></div>
+       <div class="fld"><label for="cp_new2">Confirm new password</label><input id="cp_new2" type="password" autocomplete="new-password"></div>
+       <p class="login-msg" id="cp_msg" role="status" style="margin:0;color:var(--stage-lost);font-size:13px"></p>`,
+      '<span class="spacer"></span><button class="btn" type="button" data-act="cancel">Cancel</button><button class="btn btn-primary" type="submit">Change password</button>',
+      async () => {
+        const old = document.getElementById('cp_old').value, nw = document.getElementById('cp_new').value, nw2 = document.getElementById('cp_new2').value, m = document.getElementById('cp_msg');
+        if (!old || !nw) { m.textContent = 'Fill in the current and the new password.'; return; }
+        if (nw.length < 8) { m.textContent = 'The new password must be at least 8 characters.'; return; }
+        if (nw !== nw2) { m.textContent = 'The two new passwords do not match.'; return; }
+        if (nw === old) { m.textContent = 'The new password must be different from the current one.'; return; }
+        m.textContent = 'Changing...';
+        try {
+          await user.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(user.email, old));
+          await user.updatePassword(nw);
+          closeDlg(); toast('Password changed. Use it the next time you sign in.');
+        } catch (e) {
+          const c = (e && e.code) || '';
+          m.textContent = /wrong-password|invalid-credential|invalid-login/.test(c) ? 'The current password is wrong.' : /too-many/.test(c) ? 'Too many attempts. Wait a few minutes and try again.' : /network/.test(c) ? 'Could not reach the service. Check your connection.' : /weak/.test(c) ? 'That password is too weak. Use a longer one.' : 'Could not change the password. Try again.';
+        }
+      });
   });
   document.getElementById('signOutBtn').addEventListener('click', () => signOutWith(fb.auth.currentUser, 'logout'));
   fb.auth.onAuthStateChanged(async user => {
