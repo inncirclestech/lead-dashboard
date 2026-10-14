@@ -1106,6 +1106,8 @@
   .need-cell { min-width: 84px; }
   .dm-cell { min-width: 130px; }
   .need-cell select:focus-visible, .dm-cell input:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+  .prod-tiles-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  @media (max-width: 900px) { .prod-tiles-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>
 
 <div class="page">
@@ -1341,12 +1343,19 @@
   <div class="subpanel" id="bd-brand">
     <div class="tracker-table-wrap">
       <div class="tr-head">
-        <div class="tr-title"><h2>Brand Tracker</h2><span class="count-tag" id="count-brand">0 records</span></div>
+        <div class="tr-title"><h2>Brand Tracker</h2><span class="count-tag" id="count-brand">0 records</span>
+          <a class="btn btn-link" href="https://docs.google.com/spreadsheets/d/12sBuLQTRR8qdfWDu00l1qtHkuCJ080B05brXg-Oc8L0/edit" target="_blank" rel="noopener">Brand plan &#8599;</a>
+          <a class="btn btn-link" href="https://docs.google.com/spreadsheets/d/1D2lbpK4Hv4EqDOplsW0dRlhziRqQoHBCNXsv2uSivsc/edit" target="_blank" rel="noopener">Growth plan &#8599;</a>
+          <a class="btn btn-link" href="https://drive.google.com/drive/folders/1J5FGWHZtNFCjJhh9DyCFPSO3Om7s6MT5" target="_blank" rel="noopener">Scripts folder &#8599;</a></div>
         <div class="tr-tools">
           <input class="tr-search" id="search-brand" type="search" placeholder="Search brand" aria-label="Search brand">
-          <button class="btn btn-ghost" id="addfield-brand" type="button">+ Add brand activity</button>
+          <button class="btn btn-ghost" id="addtopic-brand" type="button">+ Add topic</button>
+          <button class="btn btn-ghost" id="addfield-brand" type="button">+ Add content piece</button>
         </div>
       </div>
+      <div class="prod-tiles prod-tiles-5" id="brandTiles"></div>
+      <div class="table-scroll" id="brandMatrix" style="margin-bottom:18px"></div>
+      <div class="tr-head" style="margin-bottom:10px"><div class="tr-title"><h2>All content pieces</h2></div></div>
       <div class="table-scroll" id="mount-brand"></div>
     </div>
   </div>
@@ -2348,6 +2357,31 @@ const DEFAULT_OWNERS = ['Prateek Shendre', 'Vara Tejesh', 'Lasya Ganapathi', 'Sh
 const IMPL_STAGES = ['Requirement gathering', 'Configurations / Integrations', 'Data gathering', 'Data setup', 'Go Live'];
 const DEFAULT_MODULES = ['Tender Management', 'Contract Management', 'Inventory', 'Planning', 'Schedule', 'Worklogs', 'RFI', 'Tasks', 'Safety (RCA & PTW)', 'Meeting Minutes', 'Reports', 'Data Analytics', 'Mobile App', 'Ina Planning', 'Ina Build', 'Ina Lens', 'InnDoc AI', 'InnClock AI'];
 
+const BRAND_STAGES = ['Not started', 'Script ready', 'Shooting', 'Editing', 'In review', 'Scheduled', 'Published', 'On hold'];
+const BRAND_PIECES_DEFAULT = ['Teaser blog', 'Teaser post', 'CEO video 1', 'CEO video 2', 'Industry podcast', 'Customer story', 'Closing blog', 'Closing post', 'CEO video clip', 'CEO post'];
+const BRAND_AGENCIES_DEFAULT = ['FTA (social media)', 'What a Story (video production)', 'Internal'];
+const BRAND_PLATFORMS_DEFAULT = ['LinkedIn', 'Instagram', 'YouTube', 'Website blog', 'Podcast platforms', 'Multiple'];
+const BRAND_DEFAULT_AGENCY = { 'Teaser blog': 'Internal', 'Closing blog': 'Internal', 'Teaser post': 'FTA (social media)', 'Closing post': 'FTA (social media)', 'CEO post': 'FTA (social media)', 'CEO video clip': 'FTA (social media)', 'CEO video 1': 'What a Story (video production)', 'CEO video 2': 'What a Story (video production)', 'Industry podcast': 'What a Story (video production)', 'Customer story': 'What a Story (video production)' };
+const BRAND_TOPICS = [
+  ['Invisible Money', 'Money lost on projects that never shows up in reports'],
+  ['Construction Monitoring: Macros & Micros', 'Seeing the big picture and the daily site details together'],
+  ['Integrated Construction Management Systems', 'Too many tools, no single view'],
+  ['Construction Command Center: From Monitoring to Decision-Making', 'Moving from watching dashboards to making decisions'],
+  ['Construction AI Agents Managing Constraints', 'AI is entering construction: what can it really handle?'],
+  ['Construction Knowledge: Building and Retaining', 'Site knowledge walks out when people leave'],
+  ['A Wrong Day on a Construction Site', 'What one bad day costs a project'],
+  ['Improving Construction Technology Adoption', 'Why site teams do not use the tools bought for them']
+];
+const BRAND_FLOW = ['Teaser blog', 'Teaser post', 'CEO video 1', 'CEO video 2', 'Industry podcast', 'Customer story', 'Closing blog'];
+function brandRow(plan, topic, piece, idx, notes) {
+  return { plan, topic, piece, title: topic + ' - ' + piece, status: 'Not started', agency: BRAND_DEFAULT_AGENCY[piece] || '', notes: notes || '', createdAt: new Date(Date.UTC(2026, 9, 14, 8, 0, idx)).toISOString(), updatedAt: '2026-10-14T08:00:00.000Z' };
+}
+function brandSeed() {
+  const out = {}; let i = 0;
+  BRAND_TOPICS.forEach(([topic, hook]) => BRAND_FLOW.forEach(p => { out['seed-b' + String(i).padStart(3, '0')] = brandRow('Inncircles Brand', topic, p, i, p === 'Teaser blog' ? 'Teaser hook: ' + hook : ''); i++; }));
+  ['Founder learnings', 'When to become a founder'].forEach(topic => ['CEO video clip', 'CEO post'].forEach(p => { out['seed-b' + String(i).padStart(3, '0')] = brandRow('CEO Brand', topic, p, i); i++; }));
+  return out;
+}
 const TRACKERS = {
   poc: {
     noun: 'POC',
@@ -2432,25 +2466,28 @@ const TRACKERS = {
     ]
   },
   brand: {
-    noun: 'brand activity',
+    noun: 'content piece',
     fields: [
-      { k: 'activity', l: 'Activity / Campaign', t: 'text', req: true, main: true },
-      { k: 'activityType', l: 'Type', t: 'select', opts: ['Social media', 'Event', 'PR / Media', 'Website', 'Collateral', 'Video', 'Other'] },
-      { k: 'description', l: 'Description', t: 'textarea' },
+      { k: 'plan', l: 'Brand Plan', t: 'select', opts: ['Inncircles Brand', 'CEO Brand'] },
+      { k: 'topic', l: 'Topic', t: 'text', req: true, main: true },
+      { k: 'piece', l: 'Content Piece', t: 'dynlist', list: 'pieceTypes' },
+      { k: 'title', l: 'Title / Script Name', t: 'text' },
+      { k: 'status', l: 'Stage', t: 'select', opts: BRAND_STAGES },
+      { k: 'agency', l: 'Agency', t: 'dynlist', list: 'agencies' },
       { k: 'owner', l: 'Owner', t: 'owner' },
-      { k: 'platform', l: 'Channel / Platform', t: 'text' },
-      { k: 'status', l: 'Status', t: 'select', opts: ['Planned', 'In progress', 'Completed', 'On hold'] },
-      { k: 'dueDate', l: 'Due Date', t: 'date' },
-      { k: 'metric', l: 'Reach / Result', t: 'text' },
-      { k: 'link', l: 'Link', t: 'url', linkText: 'Open link', hint: 'Paste a link to the post, campaign or asset.' },
-      { k: 'comment', l: 'Comment', t: 'textarea' }
+      { k: 'plannedDate', l: 'Planned Date', t: 'date' },
+      { k: 'publishedDate', l: 'Published Date', t: 'date' },
+      { k: 'platform', l: 'Channel / Platform', t: 'dynlist', list: 'platforms' },
+      { k: 'scriptLink', l: 'Script Link', t: 'url', linkText: 'Open script', hint: 'Link to the script document.' },
+      { k: 'link', l: 'Published Link', t: 'url', linkText: 'Open post', hint: 'Link to the published blog, video or post.' },
+      { k: 'notes', l: 'Notes', t: 'textarea' }
     ]
   }
 };
 
 const TRACKER_KEYS = Object.keys(TRACKERS);
 const ALL_COLLS = [...TRACKER_KEYS, 'config', 'leadmeta'];
-const S = { poc: [], expcenter: [], impl: [], assetsbd: [], assetsdel: [], projects: [], gtm: [], brand: [], assetTypes: DEFAULT_ASSET_TYPES.slice(), cfg: { poc: [], expcenter: [], impl: [], assetsbd: [], assetsdel: [], gtm: [], brand: [] }, modules: DEFAULT_MODULES.slice(), owners: DEFAULT_OWNERS.slice(), plans: {} };
+const S = { poc: [], expcenter: [], impl: [], assetsbd: [], assetsdel: [], projects: [], gtm: [], brand: [], assetTypes: DEFAULT_ASSET_TYPES.slice(), pieceTypes: BRAND_PIECES_DEFAULT.slice(), agencies: BRAND_AGENCIES_DEFAULT.slice(), platforms: BRAND_PLATFORMS_DEFAULT.slice(), cfg: { poc: [], expcenter: [], impl: [], assetsbd: [], assetsdel: [], gtm: [], brand: [] }, modules: DEFAULT_MODULES.slice(), owners: DEFAULT_OWNERS.slice(), plans: {} };
 const Store = { db: null, shared: false };
 const LS = 'inncircles-tracker-v1';
 
@@ -2461,6 +2498,7 @@ function lsData() {
   const o = lsRead();
   if (!o.expcenter) o.expcenter = EXP_SEED;
   if (!o.impl) o.impl = IMPL_SEED;
+  if (!o.brand) o.brand = brandSeed();
   o.config = o.config || {};
   if (!o.config.fields_expcenter) o.config.fields_expcenter = { fields: EXP_FIELDS };
   return o;
@@ -2503,7 +2541,7 @@ async function deleteDoc(path) {
 
 function ingest(coll, docs) {
   if (TRACKER_KEYS.includes(coll)) {
-    S[coll] = docs.map(d => ({ id: d.id, ...d.data })).sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+    S[coll] = docs.map(d => ({ id: d.id, ...d.data })).sort((a, b) => (coll === 'brand' ? -1 : 1) * String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
     renderTracker(coll);
   } else if (coll === 'leadmeta') {
     Object.keys(LEAD_META).forEach(k => delete LEAD_META[k]);
@@ -2515,6 +2553,9 @@ function ingest(coll, docs) {
       else if (d.id === 'modules') S.modules = d.data.list && d.data.list.length ? d.data.list : DEFAULT_MODULES.slice();
       else if (d.id === 'owners') S.owners = d.data.list && d.data.list.length ? d.data.list : DEFAULT_OWNERS.slice();
       else if (d.id === 'projects') S.projects = d.data.list || [];
+      else if (d.id === 'piece_types') S.pieceTypes = d.data.list && d.data.list.length ? d.data.list : BRAND_PIECES_DEFAULT.slice();
+      else if (d.id === 'agencies') S.agencies = d.data.list && d.data.list.length ? d.data.list : BRAND_AGENCIES_DEFAULT.slice();
+      else if (d.id === 'platforms') S.platforms = d.data.list && d.data.list.length ? d.data.list : BRAND_PLATFORMS_DEFAULT.slice();
       else if (d.id === 'asset_types') S.assetTypes = d.data.list && d.data.list.length ? d.data.list : DEFAULT_ASSET_TYPES.slice();
       else if (d.id === 'plans') S.plans = d.data.map || {};
     });
@@ -2564,6 +2605,7 @@ async function seedIfNeeded(fs) {
   };
   await seedMissing('seeded', 'expcenter', EXP_SEED, { 'config/fields_expcenter': { fields: EXP_FIELDS } });
   await seedMissing('seeded_impl3', 'impl', IMPL_SEED);
+  await seedMissing('seeded_brand', 'brand', brandSeed());
 }
 
 function startShared(db, onDenied) {
@@ -2680,7 +2722,15 @@ async function initStore() {
   applyLocal();   // show the built-in starting records right away
   let db = null;
   try { db = window.claude && window.claude.use ? await window.claude.use('db') : null; } catch (e) { db = null; }
-  if (db) { startShared(db); return; }
+  if (db) {
+    startShared(db);
+    // the Claude version has no sign-in step, so the one-time brand starting rows are created here
+    try {
+      const flag = db.doc('config/seeded_brand');
+      if (!(await flag.get()).exists) { await flag.set({ at: new Date().toISOString() }); for (const [id, d] of Object.entries(brandSeed())) { const ref = db.doc('brand/' + id); if (!(await ref.get()).exists) await ref.set(d); } }
+    } catch (e) { console.warn('brand seed skipped', e); }
+    return;
+  }
   const fb = await Promise.race([connectFirebase(), new Promise(r => setTimeout(() => r(null), 7000))]);
   if (fb) { gateWithLogin(fb); return; }
   document.getElementById('syncNote').textContent = 'Could not reach the shared database. Changes are saved on this device only.';
@@ -2818,7 +2868,7 @@ function addPersonFromInput(inputId) {
   }
   inp.value = '';
 }
-const DYN_CONFIG = { assetTypes: 'asset_types' };
+const DYN_CONFIG = { assetTypes: 'asset_types', pieceTypes: 'piece_types', agencies: 'agencies', platforms: 'platforms' };
 function addDynFromInput() {
   const inp = document.getElementById('newDyn'), v = inp.value.trim(); if (!v) return;
   const sel = document.getElementById(inp.dataset.for), key = sel.dataset.dyn;
@@ -2914,7 +2964,7 @@ function cell(f, rec) {
     return /^https?:\/\//i.test(v) ? `<td><a class="lead-link" href="${esc(v)}" target="_blank" rel="noopener">Open lead &#8599;</a></td>` : `<td><span class="tag tag-teal">${esc(v)}</span></td>`;
   }
   if (f.t === 'dynlist') return `<td>${v ? `<span class="tag tag-pink">${esc(v)}</span>` : '<span class="task-empty">—</span>'}</td>`;
-  if (f.k === 'status' && f.t === 'select') return `<td>${v ? `<span class="tag ${v === 'Completed' ? 'tag-green' : v === 'In progress' ? 'tag-blue' : v === 'On hold' ? 'tag-pink' : 'tag-grey'}">${esc(v)}</span>` : '<span class="task-empty">—</span>'}</td>`;
+  if (f.k === 'status' && f.t === 'select') return `<td>${v ? `<span class="tag ${stageClass(v)}">${esc(v)}</span>` : '<span class="task-empty">—</span>'}</td>`;
   if (f.t === 'module' || f.t === 'project') return `<td>${v ? `<span class="tag${f.t === 'module' ? ' tag-blue' : ''}">${esc(v)}</span>` : '<span class="task-empty">—</span>'}</td>`;
   if (f.t === 'modules' || f.t === 'list' || f.t === 'people') {
     const arr = Array.isArray(v) ? v : [];
@@ -2932,6 +2982,26 @@ function cell(f, rec) {
   return `<td>${v ? esc(v) : '<span class="task-empty">—</span>'}</td>`;
 }
 
+function stageClass(v) {
+  if (/^(Completed|Published)$/.test(v)) return 'tag-green';
+  if (/^(In progress|Shooting|Editing|In review|Scheduled|Script ready)$/.test(v)) return 'tag-blue';
+  if (v === 'On hold') return 'tag-pink';
+  return 'tag-grey';
+}
+function renderBrandSummary() {
+  const rows = S.brand, tiles = document.getElementById('brandTiles'), mat = document.getElementById('brandMatrix');
+  if (!tiles || !mat) return;
+  const pub = rows.filter(r => r.status === 'Published').length, notStarted = rows.filter(r => !r.status || r.status === 'Not started').length;
+  const hold = rows.filter(r => r.status === 'On hold').length, prog = rows.length - pub - notStarted - hold;
+  tiles.innerHTML = [['Content pieces', rows.length, `${new Set(rows.map(r => r.plan + '|' + r.topic)).size} topics`], ['Not started', notStarted, 'waiting'], ['In progress', prog, 'script, shoot, edit or review'], ['Published', pub, rows.length ? Math.round(100 * pub / rows.length) + '% of all pieces' : ''], ['On hold', hold, '']]
+    .map(([l, v, s]) => `<div class="prod-tile"><span class="l">${l}</span><span class="v">${v}</span><span class="s">${s}</span></div>`).join('');
+  const groups = {}; rows.forEach(r => { const k = (r.plan || '') + '|' + (r.topic || ''); (groups[k] = groups[k] || []).push(r); });
+  const keys = Object.keys(groups);
+  mat.innerHTML = keys.length ? '<table class="tracker-table"><thead><tr><th>Plan</th><th>Topic</th><th>Published</th><th>Pieces and their stage</th></tr></thead><tbody>' + keys.map(k => {
+    const g = groups[k], done = g.filter(r => r.status === 'Published').length;
+    return `<tr><td>${esc(g[0].plan) || '—'}</td><td class="cell-main">${esc(g[0].topic)}</td><td class="cell-num"><div class="prog"><div class="prog-track"><div class="prog-fill" style="width:${Math.round(100 * done / g.length)}%"></div></div><b>${done}/${g.length}</b></div></td><td><div class="chips">${g.map(r => `<span class="tag ${stageClass(r.status || 'Not started')}" title="${esc(r.status || 'Not started')}${r.agency ? ' · ' + esc(r.agency) : ''}">${esc(r.piece || r.title || 'Piece')}</span>`).join('')}</div></td></tr>`;
+  }).join('') + '</tbody></table>' : '<div class="empty-tracker"><div class="title">No topics yet</div><div class="sub">Use "+ Add topic" to create all the content pieces for a topic in one go.</div></div>';
+}
 function renderTracker(key) {
   const fields = allFields(key);
   const q = (document.getElementById('search-' + key).value || '').toLowerCase().trim();
@@ -2942,8 +3012,30 @@ function renderTracker(key) {
     ? rows.map(r => `<tr data-id="${esc(r.id)}">${fields.map(f => cell(f, r)).join('')}<td class="cell-actions"><button class="btn btn-sm" type="button" data-edit>Edit</button></td></tr>`).join('')
     : `<tr class="empty-row"><td colspan="${fields.length + 1}">${S[key].length ? 'No records match your search.' : `Nothing here yet. Use the Add button to enter the first ${esc(TRACKERS[key].noun)}.`}</td></tr>`;
   document.getElementById('mount-' + key).innerHTML = `<table class="tracker-table"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+  if (key === 'brand') renderBrandSummary();
 }
 
+function openTopicDlg() {
+  const plan = `<div class="fld"><label for="tp_plan">Brand plan</label><select id="tp_plan"><option>Inncircles Brand</option><option>CEO Brand</option></select></div>`;
+  const topic = `<div class="fld"><label for="tp_topic">Topic *</label><input id="tp_topic" type="text" placeholder="e.g. Invisible Money"></div>`;
+  const pieces = S.pieceTypes.map(p => `<label><input type="checkbox" value="${esc(p)}"${BRAND_FLOW.includes(p) ? ' checked' : ''}>${esc(p)}</label>`).join('');
+  openDlg('Add a topic', plan + topic + `<div class="fld"><span class="lbl">Content pieces to create</span><div class="mod-grid" id="tp_pieces">${pieces}</div><span class="hint">One row is created for each ticked piece, with the usual agency filled in. You can edit each row afterwards.</span></div>` + `<div class="fld"><label for="tp_notes">Notes (optional)</label><textarea id="tp_notes" placeholder="e.g. teaser hook"></textarea></div>`,
+    `<span class="spacer"></span><button class="btn" type="button" data-act="cancel">Cancel</button><button class="btn btn-primary" type="submit">Create pieces</button>`,
+    async () => {
+      const tp = document.getElementById('tp_topic').value.trim(); if (!tp) { toast('Topic is required.'); return; }
+      const pl = document.getElementById('tp_plan').value, notes = document.getElementById('tp_notes').value.trim();
+      const chosen = [...document.querySelectorAll('#tp_pieces input:checked')].map(i => i.value);
+      if (!chosen.length) { toast('Tick at least one content piece.'); return; }
+      const now = Date.now(); let ok = 0;
+      for (let i = 0; i < chosen.length; i++) {
+        const iso = new Date(now + i).toISOString();
+        const row = { plan: pl, topic: tp, piece: chosen[i], title: tp + ' - ' + chosen[i], status: 'Not started', agency: BRAND_DEFAULT_AGENCY[chosen[i]] || '', notes: i === 0 ? notes : '', createdAt: iso, updatedAt: iso };
+        if (await saveDoc('brand/' + uid(), row)) ok++; else break;
+      }
+      if (ok === chosen.length) { closeDlg(); toast(ok + ' pieces added for "' + tp + '".'); }
+    });
+}
+document.getElementById('addtopic-brand').addEventListener('click', openTopicDlg);
 Object.keys(TRACKERS).forEach(key => {
   document.getElementById('addfield-' + key).addEventListener('click', () => openRecord(key, null));
   document.getElementById('search-' + key).addEventListener('input', () => renderTracker(key));
