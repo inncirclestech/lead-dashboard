@@ -1086,6 +1086,7 @@
   .login-card h2 { margin: 0; font-size: 20px; }
   .login-card p { margin: 0; color: var(--text-muted); font-size: 13px; }
   .login-card .login-msg { min-height: 18px; color: var(--stage-lost); }
+  .login-card .login-msg.ok { color: var(--text-default, inherit); }
   .top-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .user-box { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-subtle); }
   .user-box[hidden] { display: none; }
@@ -1468,6 +1469,7 @@
     <div class="fld"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="username" required></div>
     <div class="fld"><label for="loginPass">Password</label><input id="loginPass" type="password" autocomplete="current-password" required></div>
     <button class="btn btn-primary" type="submit">Sign in</button>
+    <button class="link-btn" type="button" id="forgotBtn" style="margin:0;justify-self:start">Forgot password? Email me a reset link</button>
     <p class="login-msg" id="loginMsg" role="status"></p>
   </form>
 </div>
@@ -2669,11 +2671,26 @@ async function gateWithLogin(fb) {
   document.getElementById('loginForm').addEventListener('submit', e => {
     e.preventDefault();
     const em = document.getElementById('loginEmail').value.trim(), pw = document.getElementById('loginPass').value;
-    msg.textContent = 'Signing in...'; explicit = true;
+    msg.classList.remove('ok'); msg.textContent = 'Signing in...'; explicit = true;
     fb.auth.signInWithEmailAndPassword(em, pw).catch(err => {
       explicit = false;
       msg.textContent = /network/i.test(err.code || '') ? 'Could not reach the sign-in service. Check your connection.' : 'Wrong email or password.';
     });
+  });
+  document.getElementById('forgotBtn').addEventListener('click', async () => {
+    const em = document.getElementById('loginEmail').value.trim().toLowerCase();
+    msg.classList.remove('ok');
+    if (!em) { msg.textContent = 'Type your Inncircles email above first, then click this link.'; return; }
+    if (!ACCESS_USERS.includes(em)) { msg.textContent = 'This email is not on the access list. Ask the admin to add it.'; return; }
+    msg.textContent = 'Sending reset link...';
+    try {
+      try { await fb.auth.sendPasswordResetEmail(em, { url: location.origin + location.pathname, handleCodeInApp: false }); }
+      catch (e) { if (e && e.code === 'auth/unauthorized-continue-uri') await fb.auth.sendPasswordResetEmail(em); else throw e; }
+      msg.classList.add('ok');
+      msg.textContent = 'Reset link sent to ' + em + '. Open it from your inbox (check spam too), set a new password, then come back here and sign in.';
+    } catch (e) {
+      msg.textContent = /network/i.test(e.code || '') ? 'Could not reach the service. Check your connection.' : /too-many/.test(e.code || '') ? 'Too many attempts. Wait a few minutes and try again.' : /user-not-found/.test(e.code || '') ? 'No account exists for this email yet. Ask the admin to create it.' : 'Could not send the reset email. Try again or ask the admin.';
+    }
   });
   document.getElementById('signOutBtn').addEventListener('click', () => signOutWith(fb.auth.currentUser, 'logout'));
   fb.auth.onAuthStateChanged(async user => {
