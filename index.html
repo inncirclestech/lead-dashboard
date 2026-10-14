@@ -212,6 +212,8 @@
 
   .module-panel { display: none; }
   .module-panel.is-active { display: block; }
+  .gtm-det { margin: 0 0 10px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md, 8px); padding: 8px 12px; }
+  .gtm-det summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
   .subpanel { display: none; }
   .subpanel.is-active { display: block; }
 
@@ -1330,13 +1332,16 @@
   <div class="subpanel" id="bd-gtm">
     <div class="tracker-table-wrap">
       <div class="tr-head">
-        <div class="tr-title"><h2>GTM Tracker</h2><span class="count-tag" id="count-gtm">0 records</span></div>
-        <div class="tr-tools">
-          <input class="tr-search" id="search-gtm" type="search" placeholder="Search GTM" aria-label="Search GTM">
-          <button class="btn btn-ghost" id="addfield-gtm" type="button">+ Add GTM item</button>
-        </div>
+        <div class="tr-title"><h2>GTM Tracker</h2><span class="count-tag" id="count-gtm"></span>
+          <a class="btn btn-link" href="https://docs.google.com/spreadsheets/d/1bwfO9MVNnWRmCrjkjaDPEKaD2yul7eJAxJ9GLczLFtk/edit?gid=1603786566" target="_blank" rel="noopener">Source: Campaign Readiness sheet &#8599;</a></div>
+        <div class="tr-tools"><span class="hint" id="gtmAsOf"></span></div>
       </div>
-      <div class="table-scroll" id="mount-gtm"></div>
+      <div class="prod-tiles prod-tiles-5" id="gtmTiles"></div>
+      <div class="table-scroll" id="gtmPhases" style="margin-bottom:18px"></div>
+      <div class="tr-head" style="margin-bottom:10px"><div class="tr-title"><h2>Needs attention</h2><span class="count-tag" id="gtmAttnCount"></span></div></div>
+      <div class="table-scroll" id="gtmAttn" style="margin-bottom:18px"></div>
+      <div class="tr-head" style="margin-bottom:10px"><div class="tr-title"><h2>All tasks by phase</h2></div></div>
+      <div id="gtmDetail"></div>
     </div>
   </div>
 
@@ -2449,22 +2454,6 @@ const TRACKERS = {
       { k: 'link', l: 'Link (Canva link or any other link)', t: 'url', linkText: 'Open link', hint: 'Paste the Canva link or any other link for this asset.' }
     ]
   },
-  gtm: {
-    noun: 'GTM item',
-    fields: [
-      { k: 'initiative', l: 'Initiative', t: 'text', req: true, main: true },
-      { k: 'description', l: 'Description', t: 'textarea' },
-      { k: 'owner', l: 'Owner', t: 'owner' },
-      { k: 'segment', l: 'Target Segment / Market', t: 'text' },
-      { k: 'channel', l: 'Channel', t: 'select', opts: ['Direct sales', 'Partners', 'Digital', 'Events', 'Referrals', 'Other'] },
-      { k: 'status', l: 'Status', t: 'select', opts: ['Planned', 'In progress', 'Completed', 'On hold'] },
-      { k: 'startDate', l: 'Start Date', t: 'date' },
-      { k: 'dueDate', l: 'Due Date', t: 'date' },
-      { k: 'metric', l: 'Goal / Metric', t: 'text' },
-      { k: 'link', l: 'Link', t: 'url', linkText: 'Open link', hint: 'Paste a link to the plan, deck or sheet.' },
-      { k: 'comment', l: 'Comment', t: 'textarea' }
-    ]
-  },
   brand: {
     noun: 'content piece',
     fields: [
@@ -2487,7 +2476,7 @@ const TRACKERS = {
 
 const TRACKER_KEYS = Object.keys(TRACKERS);
 const ALL_COLLS = [...TRACKER_KEYS, 'config', 'leadmeta'];
-const S = { poc: [], expcenter: [], impl: [], assetsbd: [], assetsdel: [], projects: [], gtm: [], brand: [], assetTypes: DEFAULT_ASSET_TYPES.slice(), pieceTypes: BRAND_PIECES_DEFAULT.slice(), agencies: BRAND_AGENCIES_DEFAULT.slice(), platforms: BRAND_PLATFORMS_DEFAULT.slice(), cfg: { poc: [], expcenter: [], impl: [], assetsbd: [], assetsdel: [], gtm: [], brand: [] }, modules: DEFAULT_MODULES.slice(), owners: DEFAULT_OWNERS.slice(), plans: {} };
+const S = { poc: [], expcenter: [], impl: [], assetsbd: [], assetsdel: [], projects: [], brand: [], assetTypes: DEFAULT_ASSET_TYPES.slice(), pieceTypes: BRAND_PIECES_DEFAULT.slice(), agencies: BRAND_AGENCIES_DEFAULT.slice(), platforms: BRAND_PLATFORMS_DEFAULT.slice(), cfg: { poc: [], expcenter: [], impl: [], assetsbd: [], assetsdel: [], brand: [] }, modules: DEFAULT_MODULES.slice(), owners: DEFAULT_OWNERS.slice(), plans: {} };
 const Store = { db: null, shared: false };
 const LS = 'inncircles-tracker-v1';
 
@@ -2982,6 +2971,30 @@ function cell(f, rec) {
   return `<td>${v ? esc(v) : '<span class="task-empty">—</span>'}</td>`;
 }
 
+const GTM_SOURCE = { asOf: '14 Oct 2026', sheet: 'Inncircles - Campaign Readiness > Weekly Task Tracker', phases: [["Week 1 · Platform access & setup",[["Google Ads access granted","Inncircles","C","",""],["Microsoft Ads (Bing) access granted","Inncircles","W","",""],["LinkedIn Ads access granted","Inncircles","W","",""],["GSC access","Inncircles","C","",""],["GA4 access","Inncircles","W","",""],["CRM access + permissions","Inncircles","C","",""],["Tag Manager access","Inncircles","C","",""],["Gartner / G2 access","Inncircles","N","No G2/Gartner account",""],["ZoomInfo access","Inncircles","C","",""],["ICP folders creation","Inncircles","C","",""],["Brand & product documentation review","Inncircles","C","",""],["Existing campaign audit","FTA","C","",""],["UTM taxonomy draft","FTA","C","",""],["Stakeholder + reporting cadence alignment","FTA / Inncircles","C","",""]]],["Week 2 · Launch readiness",[["LinkedIn Campaign Manager setup","FTA","C","InMail LinkedIn live Apr 20th",""],["ZoomInfo ICP segments build","FTA","N","Not moving forward",""],["ZoomInfo contact export","FTA","N","Not moving forward",""],["Website landing pages go-live QA","FTA / Inncircles","N","Needs confirmation from Inncircles team",""],["GTM + conversion pixels deploy","FTA","W","Waiting for website to go live",""],["D&B email purchasing","FTA / Inncircles","C","Purchased, 10,000 credits",""],["Sales Handy email purchasing","FTA / Inncircles","W","Waiting for Inncircles team to purchase the tool",""],["UTM taxonomy finalize","FTA","O","",""],["Zapier automation","FTA","C","Done; waiting for Togile leads sync",""],["Togile CRM campaign setup","FTA / Inncircles","O","App Script deployment; needs Togile support or Inncircles team for LinkedIn leads sync",""],["Google Ads account setup","FTA","C","Setup complete; campaign to go live this week",""],["Launch readiness","FTA / Inncircles","O","Final workflow check once automation is ready",""],["Finalising outreach tool","FTA","C","Dripify, Saleshandy",""],["Content strategy framework","FTA","C","Shared with Inncircles team for feedback/approval",""]]],["Priority actions",[["Share GTM/Header-Body scripts with instructions for the dev team","FTA","C","","H"],["Coordinate with web developers to paste tracking codes","Inncircles","C","","H"],["Escalate CRM integration issues with the provider","Inncircles","C","","M"],["Need 'Thank you' page after form submission (accurate conversion numbers)","Inncircles","O","","M"],["Reach out to leads and the Automation Founder for 15-min discovery calls","Inncircles","O","","H"],["Activate 'Thank You' automation flow in Reply.io","FTA","W","","H"],["Update the 'Warm-up' process for the sales handle by EOD","FTA","W","","M"],["Request an onboarding call with D&B Hoovers","Inncircles","O","","M"],["Set up a WhatsApp group with D&B Hoovers","Inncircles","O","","M"],["Send requirement for new single-image creatives for LinkedIn","FTA","N","","M"],["Maintain and share a daily lead/spend tracker","FTA","W","",""],["May month paid daily tracker","FTA","C","","H"]]],["Email outreach setup",[["Reply.io setup + domain config","","N","",""],["Email warmup start","","N","Needs domain config",""],["Import ZoomInfo contacts to Reply.io","","N","Needs ZoomInfo export + suppression lists",""],["Build email sequences","","N","",""],["Personalization framework","","N","",""],["A/B test subject lines","","N","",""],["LinkedIn InMail copy write","","N","",""],["LinkedIn InMail campaigns launch","","N","Needs InMail copy approved",""],["Reply.io + Togile CRM sync","","N","",""],["Compliance check","","N","",""],["Launch email sequences","","N","Needs warmup complete",""]]],["Month 1 · Optimise & report",[["Campaign performance review","","N","",""],["Ad creative A/B analysis","","N","",""],["Email sequence optimization","","N","",""],["Audience refinement","","N","",""],["Lead quality audit","","N","",""],["Buying stage mapping","","N","",""],["Reporting dashboard build","","N","",""],["Month 1 review deck","","N","",""]]],["Month 2 · Scale",[["Scale top-performing campaigns","","N","Needs Month 1 review",""],["Launch Meta/Programmatic","","N","Retarget website + ad engagers",""],["New creative batch develop","","N","",""],["Email sequence V2","","N","",""],["ZoomInfo intent refresh","","N","Weekly cadence going forward",""],["Account scoring model","","N","",""],["Sales-marketing alignment sync","","N","",""],["Content offer expansion","","N","",""],["Landing page optimization","","N","",""]]],["Month 2 · ABM orchestration",[["ABM orchestration: buying stage campaigns","","N","",""],["Retargeting by engagement depth","","N","",""],["InMail V2: decision stage push","","N","",""],["Reply.io multi-channel sequences","","N","",""],["Togile CRM pipeline review","","N","",""],["Negative keyword + audience exclusion audit","","N","",""],["Channel attribution analysis","","N","",""],["60-day review deck","","N","",""]]],["Month 3 · Optimise",[["Budget reallocation","","N","Needs 60-day review",""],["Advanced audience strategies","","N","",""],["Personalized ABM content","","N","",""],["Reply.io sequence optimization","","N","",""],["Sales enablement content","","N","",""],["Conversion rate optimization","","N","",""],["Pipeline velocity analysis","","N","",""]]],["Month 3 · Expand & review",[["Account penetration analysis","","N","",""],["Expand TAL: new segments","","N","",""],["Full-funnel reporting","","N","",""],["Revenue attribution","","N","",""],["Playbook documentation","","N","",""],["Q2 campaign plan","","N","",""],["90-day executive review","","N","",""]]]] };
+function gtmCls(c) { return c === 'C' ? 'tag-green' : (c === 'W' || c === 'O') ? 'tag-blue' : 'tag-grey'; }
+const GTM_LABEL = { C: 'Completed', W: 'WIP', O: 'Ongoing', N: 'Not started' };
+function renderGtm() {
+  const tiles = document.getElementById('gtmTiles'); if (!tiles) return;
+  const ph = GTM_SOURCE.phases, all = [];
+  ph.forEach(([n, ts]) => ts.forEach(t => all.push({ phase: n, task: t[0], owner: t[1], st: t[2], note: t[3], pri: t[4] })));
+  const cnt = c => all.filter(t => t.st === c).length, tot = all.length, done = cnt('C'), act = cnt('W') + cnt('O'), ns = cnt('N');
+  const started = ph.slice(0, 3).flatMap(p => p[1]), startedDone = started.filter(t => t[2] === 'C').length;
+  document.getElementById('count-gtm').textContent = tot + ' tasks';
+  document.getElementById('gtmAsOf').textContent = 'Read-only · data as of ' + GTM_SOURCE.asOf + ' · source: ' + GTM_SOURCE.sheet;
+  tiles.innerHTML = [['Total tasks', tot, ph.length + ' phases (30-60-90 day plan)'], ['Completed', done, Math.round(100 * done / tot) + '% of the full plan'], ['In progress', act, cnt('W') + ' WIP, ' + cnt('O') + ' ongoing'], ['Not started', ns, 'incl. ' + all.filter(t => t.st === 'N' && /Not moving forward/.test(t.note)).length + ' not moving forward'], ['Launch phase done', startedDone + '/' + started.length, 'Week 1, Week 2 and priority actions']]
+    .map(([l, v, s]) => `<div class="prod-tile"><span class="l">${l}</span><span class="v">${v}</span><span class="s">${s}</span></div>`).join('');
+  document.getElementById('gtmPhases').innerHTML = '<table class="tracker-table"><thead><tr><th>Phase</th><th>Progress</th><th>Completed</th><th>WIP / Ongoing</th><th>Not started</th><th>Owners</th></tr></thead><tbody>' + ph.map(([n, ts]) => {
+    const d = ts.filter(t => t[2] === 'C').length, a = ts.filter(t => t[2] === 'W' || t[2] === 'O').length, nn = ts.length - d - a;
+    const ow = {}; ts.forEach(t => { const k = t[1] || 'Not assigned'; ow[k] = (ow[k] || 0) + 1; });
+    return `<tr><td class="cell-main">${esc(n)}</td><td class="cell-num"><div class="prog"><div class="prog-track"><div class="prog-fill" style="width:${Math.round(100 * d / ts.length)}%"></div></div><b>${d}/${ts.length}</b></div></td><td>${d}</td><td>${a}</td><td>${nn}</td><td>${Object.keys(ow).map(k => esc(k) + ' (' + ow[k] + ')').join(', ')}</td></tr>`;
+  }).join('') + '</tbody></table>';
+  const attn = all.filter(t => t.st !== 'C' && (t.note || t.st === 'W' || t.st === 'O') && ph.slice(0, 3).some(p => p[0] === t.phase));
+  document.getElementById('gtmAttnCount').textContent = attn.length + ' open';
+  document.getElementById('gtmAttn').innerHTML = '<table class="tracker-table"><thead><tr><th>Task</th><th>Phase</th><th>Owner</th><th>Status</th><th>Blocker / note</th></tr></thead><tbody>' + attn.map(t => `<tr><td class="cell-main">${esc(t.task)}</td><td>${esc(t.phase)}</td><td>${esc(t.owner) || '—'}</td><td><span class="tag ${gtmCls(t.st)}">${GTM_LABEL[t.st]}</span></td><td>${esc(t.note) || '—'}</td></tr>`).join('') + '</tbody></table>';
+  document.getElementById('gtmDetail').innerHTML = ph.map(([n, ts], i) => `<details class="gtm-det"${i < 3 ? ' open' : ''}><summary>${esc(n)} <span class="count-tag">${ts.filter(t => t[2] === 'C').length}/${ts.length} done</span></summary><div class="table-scroll"><table class="tracker-table"><thead><tr><th>Task</th><th>Owner</th><th>Status</th><th>Priority</th><th>Note</th></tr></thead><tbody>${ts.map(t => `<tr><td class="cell-main">${esc(t[0])}</td><td>${esc(t[1]) || '—'}</td><td><span class="tag ${gtmCls(t[2])}">${GTM_LABEL[t[2]]}</span></td><td>${t[4] === 'H' ? 'High' : t[4] === 'M' ? 'Medium' : '—'}</td><td>${esc(t[3]) || '—'}</td></tr>`).join('')}</tbody></table></div></details>`).join('');
+}
+renderGtm();
 function stageClass(v) {
   if (/^(Completed|Published)$/.test(v)) return 'tag-green';
   if (/^(In progress|Shooting|Editing|In review|Scheduled|Script ready)$/.test(v)) return 'tag-blue';
